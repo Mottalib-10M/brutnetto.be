@@ -1,0 +1,22 @@
+---
+import AmountPage from '../../components/AmountPage.astro';
+import { route, MONTHLY } from '../../i18n/routes';
+import { monthlyLabel } from '../../i18n/nav';
+import { monthlyAngle } from '../../lib/amount-angles';
+import { compute, type Input } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr';
+const f = fmt(lang);
+export function getStaticPaths() { return MONTHLY.map((a) => ({ params: { amount: String(a) } })); }
+const amount = Number(Astro.params.amount);
+const cases: Array<[string, Omit<Input, 'gross'>]> = [['Isolé', {}], ['Isolé, 2 enfants', { children: 2 }], ['Conjoint avec revenus', { situation: 'conjoint_revenus' }], ['Conjoint sans revenus', { situation: 'conjoint_sans' }], ['Ouvrier isolé', { status: 'ouvrier' }]];
+const rows = cases.map(([l, o]) => { const r = compute({ gross: amount, ...o }); return [l, f.money(r.pp, 2), f.money(r.csss, 2), f.money(r.net, 2)]; });
+const i = MONTHLY.indexOf(amount as (typeof MONTHLY)[number]);
+const near = [MONTHLY[i - 1], MONTHLY[i + 1]].filter(Boolean) as number[];
+const S = src(lang);
+---
+<AmountPage lang={lang} id={`m-${amount}`} crumb={monthlyLabel(amount, lang)} angle={monthlyAngle(amount, lang)} gross={amount}
+  table={{ caption: `${f.money(amount, 0)} brut selon la situation familiale`, headers: ['Situation', 'Précompte', 'Cotisation spéciale', 'Net mensuel'], rows }}
+  neighbours={[...near.map((n) => ({ href: route(`m-${n}`, lang), name: monthlyLabel(n, lang) })), { href: route('brutNet', lang), name: 'Calcul brut net' }, { href: route('bonus', lang), name: 'Bonus à l’emploi' }]}
+  sources={[S.formule, S.onss, S.bonus]} />

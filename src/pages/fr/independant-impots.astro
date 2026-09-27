@@ -1,0 +1,49 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { selfEmployed, employerCost, compute } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const I = P.inasti; const s = selfEmployed(60000); const minQ = I.min_income * I.rate1 / 4;
+const rows = [25000, 40000, 60000, 80000, 120000].map((p) => { const x = selfEmployed(p); return [f.money(p, 0), f.money(x.contributions, 0), f.money(x.tax, 0), f.money(x.net, 0), f.pct(1 - x.net / p, 1)]; });
+const faqs = [
+  { q: 'Combien de cotisations sociales paie un indépendant en 2026 ?', a: `${f.pct(I.rate1, 1)} du revenu professionnel jusqu’à ${f.money(I.limit1, 2)} et ${f.pct(I.rate2, 2)} de la partie comprise entre ce montant et ${f.money(I.limit2, 2)}, selon l’INASTI. Au-delà, aucune cotisation n’est due. S’y ajoutent les frais de gestion de la caisse d’assurances sociales.` },
+  { q: 'Quelle est la cotisation minimale d’un indépendant à titre principal ?', a: `Elle est calculée sur un revenu minimum de ${f.money(I.min_income, 2)}, soit environ ${f.money(minQ, 2)} par trimestre hors frais de gestion. Elle est due même si le revenu réel est plus bas. Les indépendants à titre complémentaire et les starters bénéficient de règles particulières.` },
+  { q: 'Sur quel revenu les cotisations sont-elles calculées ?', a: 'Sur le revenu professionnel net imposable de l’année, établi par l’administration fiscale. Pendant l’année, la caisse réclame des cotisations provisoires, calculées sur un revenu de référence ; elles sont régularisées lorsque le revenu définitif est connu, généralement deux ans plus tard.' },
+  { q: 'Les cotisations sociales sont-elles déductibles ?', a: 'Oui. Les cotisations sociales obligatoires payées par l’indépendant sont déductibles comme frais professionnels. C’est pourquoi le calculateur les soustrait du bénéfice avant de calculer l’impôt des personnes physiques. La déduction se fait dans la déclaration fiscale de l’année de paiement.' },
+  { q: 'Un indépendant paie-t-il du précompte professionnel ?', a: 'Non. L’indépendant n’a pas d’employeur qui retient un précompte. Il est invité à effectuer des versements anticipés au cours de l’année ; à défaut, une majoration d’impôt est appliquée. Les versements anticipés donnent aussi droit à une bonification les premières années d’activité.' },
+  { q: 'Combien verser en versements anticipés ?', a: 'L’objectif est de payer pendant l’année l’impôt estimé sur le revenu professionnel. Une méthode simple consiste à calculer l’impôt probable avec ce calculateur et à le répartir en quatre versements, avant les échéances d’avril, de juillet, d’octobre et de décembre. Les versements précoces évitent davantage de majoration.' },
+];
+---
+<Guide lang={lang} id="independant" title="Impôts de l’indépendant 2026 : cotisations et IPP" h1="Impôts de l’indépendant en 2026 : cotisations sociales et impôt"
+  description="Ce que paie un indépendant en Belgique en 2026 : cotisations INASTI de 20,5 % puis 14,16 %, impôt des personnes physiques, taxe communale et versements."
+  intro="Un indépendant ne reçoit pas de fiche de paie. Il paie lui-même ses cotisations sociales et son impôt. Voici l’estimation pour 2026, et la comparaison avec un salarié."
+  resume={`Un indépendant à titre principal en Belgique paie deux prélèvements sur son bénéfice. Le premier est la cotisation sociale, versée à une caisse d’assurances sociales : selon l’INASTI, elle est de ${f.pct(I.rate1, 1)} du revenu professionnel jusqu’à ${f.money(I.limit1, 2)} et de ${f.pct(I.rate2, 2)} de la tranche suivante, jusqu’à ${f.money(I.limit2, 2)}, avec une cotisation minimale calculée sur ${f.money(I.min_income, 2)}. Le second est l’impôt des personnes physiques, selon les mêmes tranches que les salariés, de 25 à 50 %, plus la taxe communale. Les cotisations sociales sont déductibles et réduisent donc la base de l’impôt. Pour un bénéfice de ${f.money(60000, 0)} avant cotisations, un isolé paie environ ${f.money(s.contributions, 0)} de cotisations et ${f.money(s.tax, 0)} d’impôt, et conserve ${f.money(s.net, 0)}. L’estimation ne tient pas compte des frais de gestion de la caisse, des déductions fiscales particulières ni des réductions pour starters.`}
+  faqs={faqs} related={['baremes', 'cout', 'brutNet', 'onss', 'home', 'pp']} sources={[S.inasti, S.ipp_taux, S.formule]}>
+  <h2>Cotisations et impôt selon le bénéfice</h2>
+  <ContentTable headers={['Bénéfice avant cotisations', 'Cotisations sociales', 'Impôt (7 % communal)', 'Revenu net', 'Prélèvement total']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <p>Le calcul suppose un isolé sans enfant ni déduction particulière. Les cotisations sont calculées au point fixe, sur le revenu net de cotisations, comme le fait l’administration.</p>
+
+  <h2>Les cotisations sociales INASTI</h2>
+  <p>Les cotisations sociales des indépendants financent leur pension, leurs soins de santé, leurs indemnités d’incapacité de travail et le droit passerelle. Elles sont calculées sur le revenu professionnel net imposable de l’année de cotisation. Comme ce revenu n’est connu que plus tard, la caisse réclame d’abord des cotisations provisoires trimestrielles, basées sur le revenu d’une année antérieure réévalué, puis les régularise. L’indépendant peut demander à adapter ses cotisations provisoires s’il prévoit un revenu nettement différent.</p>
+
+  <h2>L’impôt des personnes physiques</h2>
+  <p>Le revenu professionnel net, après frais réels et cotisations sociales, est imposé selon le barème progressif : 25 % jusqu’à {f.money(P.ipp.brackets[0].upto ?? 0, 0)}, 40 %, 45 % puis 50 % au-delà de {f.money(P.ipp.brackets[2].upto ?? 0, 0)}, avec une quotité exemptée de {f.money(P.ipp.quotite, 0)}. La taxe communale s’y ajoute, et le calculateur permet d’en choisir le taux. Les <a href={route('baremes', lang)}>barèmes de l’impôt</a> détaillent les tranches.</p>
+
+  <h2>Versements anticipés</h2>
+  <p>Faute de précompte, l’indépendant doit payer son impôt par versements anticipés trimestriels. S’il ne le fait pas, une majoration est ajoutée à l’impôt lors de l’enrôlement. Les indépendants qui débutent en sont dispensés pendant leurs trois premières années, et reçoivent une bonification s’ils effectuent tout de même des versements. Répartir l’impôt estimé en quatre versements est la manière la plus simple d’éviter la majoration.</p>
+
+  <h2>Salarié ou indépendant</h2>
+  <p>À coût égal pour le donneur d’ordre, la comparaison est délicate. Un salarié à {f.money(5000, 0)} brut par mois coûte environ {f.money(employerCost(5000).annual, 0)} par an à son employeur et touche {f.money(compute({ gross: 5000 }).net * 12, 0)} net sur douze mois, plus le pécule et le treizième mois. Un indépendant doit en outre financer ses congés, sa pension complémentaire et ses périodes sans revenus. Le <a href={route('cout', lang)}>coût employeur</a> aide à comparer les deux statuts.</p>
+
+  <h2>Société ou personne physique</h2>
+  <p>Au-delà d’un certain revenu, beaucoup d’indépendants passent en société, où le bénéfice est soumis à l’impôt des sociétés et où le dirigeant se verse une rémunération. Ce choix dépend du niveau de revenu, des besoins de réinvestissement et des règles sur la rémunération minimale du dirigeant. Il mérite l’avis d’un comptable, car il n’est pas couvert par ce calculateur.</p>
+  <h2>Un exemple pas à pas</h2>
+  <p>Pour un bénéfice de {f.money(60000, 0)} avant cotisations, la caisse d’assurances sociales réclame environ {f.money(s.contributions, 0)} par an, soit {f.money(s.quarterly, 2)} par trimestre. Ces cotisations étant déductibles, le revenu imposable tombe à {f.money(s.taxable, 0)}. L’impôt, calculé au barème avec la quotité exemptée et 7 % de taxe communale, atteint {f.money(s.tax, 0)}. Il reste {f.money(s.net, 0)} à l’indépendant, avant frais de gestion de la caisse et avant toute épargne-pension complémentaire. Pour comparer avec un salaire, il faut encore tenir compte de l’absence de pécule de vacances et de treizième mois.</p>
+
+  <h2>Les starters et l’activité complémentaire</h2>
+  <p>Un indépendant qui débute paie des cotisations provisoires calculées sur un revenu forfaitaire, puis régularisées. Il peut demander à les réduire s’il prévoit un revenu faible. Un indépendant à titre complémentaire, qui exerce aussi un emploi salarié à au moins mi-temps, ne paie des cotisations qu’au-delà d’un seuil de revenus, avec des règles propres. Ces situations ne sont pas modélisées ici ; la caisse d’assurances sociales fournit le calcul exact.</p>
+</Guide>

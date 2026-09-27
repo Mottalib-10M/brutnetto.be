@@ -1,0 +1,29 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { ex, P } from '../../lib/tables';
+import { hourlyToMonthly } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const h = 19; const m = hourlyToMonthly(h); const r = ex(m);
+const minH = P.rmmmg.amount * 12 / (P.rmmmg.hours_week * 52);
+const rows = [14, 16, 19, 22, 26, 32].map((x) => { const mm = hourlyToMonthly(x); const a = ex(mm); return [f.money(x, 2), f.money(mm, 2), f.money(a.net, 2), f.money(a.net * 12 / (P.rmmmg.hours_week * 52), 2)]; });
+const faqs = [
+  { q: 'Comment convertir un salaire horaire en salaire mensuel ?', a: `Multipliez le salaire horaire par le nombre d’heures par semaine, par 52, puis divisez par 12. Pour ${f.money(h, 2)} de l’heure à 38 heures par semaine, le salaire mensuel brut est de ${f.money(m, 2)}. La plupart des commissions paritaires utilisent une durée de 38 heures, mais certaines ont 37 ou 39 heures.` },
+  { q: 'Quel est le salaire horaire minimum en Belgique ?', a: `Le revenu minimum mensuel moyen garanti de ${f.money(P.rmmmg.amount, 2)} pour 38 heures par semaine correspond à environ ${f.money(minH, 2)} de l’heure. Les minimums sectoriels fixés par les commissions paritaires sont souvent plus élevés et doivent être vérifiés pour chaque secteur.` },
+  { q: 'Le salaire horaire net tient-il compte du bonus à l’emploi ?', a: 'Oui. Le calculateur convertit d’abord le salaire horaire en salaire mensuel à temps plein, puis applique l’ONSS, le bonus à l’emploi, le précompte et la cotisation spéciale. Pour un temps partiel, le bonus est proratisé selon le nombre d’heures, ce qui peut modifier légèrement le net.' },
+];
+---
+<ToolPage lang={lang} id="horaire" title="Salaire horaire brut net 2026 : de l’heure au mois" h1="Salaire horaire : du brut par heure au net par mois"
+  description="Convertissez un salaire horaire brut en salaire mensuel et en net en Belgique en 2026, à 38 heures par semaine ou selon votre horaire, bonus à l’emploi inclus."
+  intro="Indiquez le salaire horaire brut et le nombre d’heures par semaine. Le calculateur donne le brut mensuel et le net après toutes les retenues."
+  mode="horaire" initialHourly={h} faqs={faqs} related={['brutNet', 'minimum', 'bonus', 'netBrut', 'home', 'cout']} sources={[S.rmmmg, S.formule, S.bonus]}>
+  <p>En Belgique, beaucoup d’ouvriers, d’intérimaires et de travailleurs de l’horeca sont payés à l’heure. Le salaire mensuel s’obtient en multipliant le taux horaire par les heures hebdomadaires et par 52, puis en divisant par 12. Avec {f.money(h, 2)} de l’heure et 38 heures par semaine, le brut mensuel est de {f.money(m, 2)}. Pour un employé isolé, cela donne {f.money(r.net, 2)} net, après {f.money(r.onssNet, 2)} d’ONSS, {f.money(r.pp, 2)} de précompte et {f.money(r.csss, 2)} de cotisation spéciale. À ce niveau, le bonus à l’emploi joue un rôle important : il réduit la cotisation ONSS de {f.money(r.bonus, 2)} et le précompte de {f.money(r.fiscalBonus, 2)}. Pour un ouvrier, l’ONSS est calculé sur 108 % du brut, mais le bonus est aussi plus élevé. Choisissez le statut ouvrier dans le calculateur pour en tenir compte. Les heures supplémentaires, primes d’équipe et suppléments de nuit ne sont pas inclus.</p>
+  <h2>Salaire horaire, mensuel et net</h2>
+  <ContentTable headers={['Brut par heure', 'Brut par mois (38 h)', 'Net par mois', 'Net par heure']} align={['r', 'r', 'r', 'r']} rows={rows} />
+  <p>Le net par heure diminue en proportion quand le salaire augmente, parce que le bonus à l’emploi se retire et que le précompte est progressif.</p>
+  <h2>Temps partiel et étudiants</h2>
+  <p>Pour un temps partiel, indiquez le nombre d’heures réellement prestées par semaine. Le calcul reste une approximation, car le bonus à l’emploi est défini sur le salaire de référence à temps plein. Les étudiants sous contrat d’occupation d’étudiant, dans la limite de 650 heures par an, ne paient pas de précompte et une cotisation de solidarité réduite, que ce calculateur ne couvre pas. Pour les minimums légaux, voyez la page sur le <a href={route('minimum', lang)}>salaire minimum</a>.</p>
+</ToolPage>

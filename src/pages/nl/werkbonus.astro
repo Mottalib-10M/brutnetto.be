@@ -1,0 +1,49 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { compute, workBonus } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const E = P.bonus.employe; const O = P.bonus.ouvrier;
+const params = [['Volledig luik B (bediende)', `${f.money(E.b_max, 2)} tot ${f.money(E.b_from, 2)}`], ['Afbouw luik B', `− ${f.dec(E.b_slope, 4)} × (S − ${f.money(E.b_from, 2)}), nul bij ${f.money(E.b_to, 2)}`], ['Volledig luik A (bediende)', `${f.money(E.a_max, 2)} tot ${f.money(E.a_from, 2)}`], ['Afbouw luik A', `− ${f.dec(E.a_slope, 4)} × (S − ${f.money(E.a_from, 2)}), nul bij ${f.money(E.a_to, 2)}`], ['Arbeiders, maxima', `A ${f.money(O.a_max, 2)} · B ${f.money(O.b_max, 2)}`], ['Fiscale werkbonus', `${f.pct(P.bonus.fiscal_a, 2)} van luik A · ${f.pct(P.bonus.fiscal_b, 2)} van luik B`]];
+const rows = [2200, 2400, 2600, 2800, 3000, 3200, 3400].map((g) => { const w = workBonus(g); const r = compute({ gross: g }); return [f.money(g, 0), f.money(w.a, 2), f.money(w.b, 2), f.money(r.bonus, 2), f.money(r.fiscalBonus, 2), f.money(r.net, 2)]; });
+const faqs = [
+  { q: 'Wat is de werkbonus?', a: 'Het is een vermindering van de persoonlijke RSZ-bijdrage voor werknemers met een laag loon, om hun nettoloon te verhogen zonder de kost voor de werkgever te verhogen. Hij bestaat uit een luik A voor lage lonen en een luik B voor zeer lage lonen. Een fiscale werkbonus verlaagt daarnaast de bedrijfsvoorheffing.' },
+  { q: 'Tot welk loon geldt de werkbonus?', a: `Sinds 1 september 2026 tot ${f.money(E.a_to, 2)} bruto per maand voor een voltijdse bediende. Luik B stopt bij ${f.money(E.b_to, 2)}. De grenzen en bedragen worden geïndexeerd en werden in juli en daarna in september 2026 aangepast na de verhoging van het minimumloon.` },
+  { q: 'Wordt de werkbonus automatisch toegekend?', a: 'Ja. De werkgever past hem ambtshalve toe op de loonfiche wanneer het refertemaandloon binnen de grenzen ligt, en geeft hem aan bij de RSZ. De werknemer hoeft niets te doen. Ook de fiscale werkbonus wordt automatisch toegepast in de berekening van de bedrijfsvoorheffing.' },
+  { q: 'Hoe wordt de werkbonus berekend bij deeltijds werk?', a: 'Het bedrag wordt eerst bepaald op het refertemaandloon omgerekend naar voltijds, en daarna vermenigvuldigd met de tewerkstellingsbreuk. Een halftijdse werknemer met 1 500 euro heeft dus een refertemaandloon van 3 000 euro en krijgt de helft van de bonus die bij dat bedrag hoort.' },
+  { q: 'Waarom zorgt de werkbonus voor een loonval?', a: 'Omdat hij daalt wanneer het loon stijgt. Tussen ongeveer 2 300 en 3 400 euro bruto kost elke extra euro een deel van de bonus bovenop de belasting, zodat een opslag van 100 euro bruto in de zone van luik B maar een twintigtal euro netto kan opleveren.' },
+  { q: 'Krijg ik de werkbonus ook op mijn vakantiegeld?', a: 'De werkbonus kan worden toegepast op gewone lonen, premies en de eindafrekening van het enkel vakantiegeld, maar niet op het enkel vertrekvakantiegeld van bedienden of op opzeggingsvergoedingen. Het dubbel vakantiegeld valt onder een aparte bijdrage, zonder werkbonus. De werkgever past die regels automatisch toe.' },
+  { q: 'Wat als mijn loon schommelt?', a: 'De werkbonus wordt elke maand opnieuw berekend op het refertemaandloon van die maand. Een maand met een premie of overuren kan dus minder werkbonus opleveren dan een gewone maand. Over het jaar gemeten kan het totaal daardoor licht afwijken van twaalf keer het bedrag van een gewone maand.' },
+];
+---
+<Guide lang={lang} id="bonus" title="Werkbonus 2026: luik A en luik B, bedragen" h1="Werkbonus 2026: luik A, luik B en fiscale werkbonus"
+  description="De werkbonus in 2026: luik A en luik B, bedragen sinds 1 september 2026, loongrenzen, fiscale werkbonus, deeltijds werk en het effect op een loonsverhoging."
+  intro="De werkbonus verhoogt het nettoloon van lage lonen. Zo werkt hij in 2026, met de bedragen die sinds september gelden."
+  resume={`De sociale werkbonus is een vermindering van de persoonlijke socialezekerheidsbijdrage voor werknemers met een laag loon. Hij heeft twee luiken. Luik A, voor lage lonen, bedraagt ${f.money(E.a_max, 2)} per maand voor een voltijdse bediende tot een refertemaandloon van ${f.money(E.a_from, 2)}, en daalt daarna tot hij verdwijnt bij ${f.money(E.a_to, 2)}. Luik B, voor zeer lage lonen, bedraagt ${f.money(E.b_max, 2)} tot ${f.money(E.b_from, 2)} en verdwijnt bij ${f.money(E.b_to, 2)}. Die bedragen gelden sinds 1 september 2026. De bonus kan de verschuldigde bijdrage niet overschrijden; is dat wel het geval, dan wordt eerst luik B afgetopt. Arbeiders, aangegeven aan 108 %, krijgen hogere bedragen. De sociale werkbonus gaat samen met een fiscale werkbonus, die de bedrijfsvoorheffing verlaagt met ${f.pct(P.bonus.fiscal_a, 2)} van luik A en ${f.pct(P.bonus.fiscal_b, 2)} van luik B. Op het minimumloon nemen beide bonussen bijna de volledige RSZ-bijdrage en een groot deel van de voorheffing weg.`}
+  faqs={faqs} related={['brutNet', 'onss', 'minimum', 'horaire', 'home', 'netBrut']} sources={[S.bonus, S.formule, S.rmmmg]}>
+  <h2>Parameters sinds 1 september 2026</h2>
+  <ContentTable headers={['Element', 'Bedrag of formule']} align={['l', 'l']} rows={params} />
+  <p>S is het refertemaandloon voor een voltijdse job, aan 100 %. Het bekomen bedrag R wordt op de cent afgerond. Voor juli en augustus 2026 viel luik A vroeger weg, bij 3 336,98 euro, met een steilere helling.</p>
+
+  <h2>De werkbonus volgens loon, alleenstaande bediende</h2>
+  <ContentTable headers={['Bruto', 'Luik A', 'Luik B', 'Toegekende bonus', 'Fiscale werkbonus', 'Netto']} align={['r', 'r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <p>Bij 2 200 euro overschrijdt de som van beide luiken de verschuldigde bijdrage: luik B wordt afgetopt zodat de bonus de RSZ niet overschrijdt. De kolom toegekende bonus houdt rekening met die grens.</p>
+
+  <h2>Waarom twee luiken</h2>
+  <p>De werkbonus bestaat sinds 2000, maar werd meermaals versterkt. In 2023 voegde de regering een tweede luik toe, gericht op de laagste lonen, om het verschil tussen het minimumloon en de sociale uitkeringen te vergroten. Luik A neemt de oude werkbonus over, luik B brengt het supplement. Elk luik heeft zijn eigen grens en zijn eigen helling, wat de twee afbouwzones in de tabel verklaart.</p>
+
+  <h2>De fiscale werkbonus</h2>
+  <p>Naast de vermindering van de bijdrage voorziet de sleutelformule van de voorheffing een fiscale vermindering in verhouding tot de werkelijk toegekende sociale werkbonus: {f.pct(P.bonus.fiscal_a, 2)} van luik A en {f.pct(P.bonus.fiscal_b, 2)} van luik B. Ze wordt als laatste toegepast op de maandelijkse voorheffing, die niet negatief kan worden. In de aangifte wordt een gelijkwaardig belastingkrediet op de jaarbedragen berekend.</p>
+
+  <h2>Het effect op een loonsverhoging</h2>
+  <p>Omdat hij met het loon daalt, creëert de werkbonus zones waarin een opslag weinig oplevert. In de zone van luik B, tussen {f.money(E.b_from, 0)} en {f.money(E.b_to, 0)}, komt het verlies van de bonus bij de belasting en de verloren fiscale bonus: van 100 euro bruto extra blijft maar een twintigtal euro netto over. In de zone van luik A is het verlies kleiner. Boven {f.money(E.a_to, 0)} wordt een opslag enkel nog verminderd door RSZ, voorheffing en bijzondere bijdrage. Voordelen zonder RSZ, zoals maaltijdcheques, genieten in die zones vaak de voorkeur.</p>
+
+  <h2>Deeltijds werk en onvolledige prestaties</h2>
+  <p>Bij deeltijds werk wordt het loon omgezet naar een voltijds refertemaandloon, wordt het bedrag van de bonus bepaald en daarna vermenigvuldigd met de tewerkstellingsbreuk. Bij een onvolledige maand, zoals ziekte die de werkgever niet betaalt, wordt het refertemaandloon gereconstrueerd en de bonus pro rata de gewerkte dagen toegekend. De <a href={route('horaire', lang)}>rekenmodule voor het uurloon</a> en <a href={route('brutNet', lang)}>bruto netto berekenen</a> passen de bedragen voor een voltijdse job toe.</p>
+  <h2>Een voorbeeld</h2>
+  <p>Een bediende met {f.money(2600, 0)} bruto per maand betaalt een brutobijdrage van {f.money(compute({ gross: 2600 }).onss, 2)}. Luik A levert {f.money(workBonus(2600).a, 2)} op en luik B {f.money(workBonus(2600).b, 2)}, samen {f.money(compute({ gross: 2600 }).bonus, 2)}, zodat nog {f.money(compute({ gross: 2600 }).onssNet, 2)} RSZ wordt ingehouden. De fiscale werkbonus verlaagt de voorheffing daarna met {f.money(compute({ gross: 2600 }).fiscalBonus, 2)}. Het nettoloon bedraagt zo {f.money(compute({ gross: 2600 }).net, 2)}.</p>
+</Guide>

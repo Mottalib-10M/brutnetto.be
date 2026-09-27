@@ -1,0 +1,20 @@
+{
+ "accent": "#B3121F",
+ "symbol": "€",
+ "variants": [
+  {
+   "file": "og-fr.png",
+   "title": "Salaire brut en net 2026\nBelgique",
+   "subtitle": "ONSS 13,07 % · bonus à l'emploi · précompte professionnel · CSSS",
+   "badge": "Formule-clé SPF Finances 2026",
+   "brand": "BrutNetto.be"
+  },
+  {
+   "file": "og-nl.png",
+   "title": "Bruto netto 2026\nBelgië",
+   "subtitle": "RSZ 13,07 % · werkbonus · bedrijfsvoorheffing · BBSZ",
+   "badge": "Sleutelformule FOD Financiën 2026",
+   "brand": "BrutNetto.be"
+  }
+ ]
+}

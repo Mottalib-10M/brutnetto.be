@@ -1,0 +1,27 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, profilePageSchema, organizationSchema } from '../../lib/seo';
+import { CONTACT_EMAIL, SITE_FOUNDED } from '../../data/site-config';
+import { P } from '../../lib/tables';
+const lang = 'fr';
+const title = 'BrutNetto.be : éditeur, méthode et financement du site';
+const description = 'BrutNetto.be est publié par Radif Partners : pourquoi ce calculateur brut net pour la Belgique, comment le site est financé et comment signaler une erreur.';
+const jsonLd = [profilePageSchema({ path: route('about', lang), lang }), organizationSchema(lang), breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }, { name: 'À propos', path: route('about', lang) }])];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'À propos' }]} showAuthor={false}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">À propos du site</h1></header>
+  <div class="prose prose-slate max-w-none" data-author="Radif Partners">
+    <p>BrutNetto.be est publié par <strong>Radif Partners</strong>, un éditeur indépendant de calculateurs de salaire et de fiscalité gratuits pour plusieurs pays. Le site a été lancé en {SITE_FOUNDED}, en français et en néerlandais, pour offrir aux salariés, employeurs et indépendants en Belgique un calcul du salaire net qui applique la formule-clé officielle du précompte professionnel et les montants exacts du bonus à l’emploi, et qui montre chaque étape du calcul.</p>
+    <h2>Pourquoi ce calculateur</h2>
+    <p>Beaucoup de simulateurs se contentent d’un pourcentage moyen ou ignorent le bonus à l’emploi, la cotisation spéciale de sécurité sociale ou la situation familiale. Or ce sont précisément ces éléments qui expliquent les écarts entre deux fiches de paie. Nous avons reconstruit le calcul à partir des textes du SPF Finances et des instructions de l’ONSS, et nous le vérifions sur les exemples officiels.</p>
+    <h2>Notre méthode</h2>
+    <p>Chaque taux est enregistré dans un fichier de paramètres unique, avec sa source et sa date de vérification, et n’est jamais saisi à la main dans une page. Les montants des pages sont calculés par le même moteur que les calculateurs. Les paramètres ont été vérifiés le {P.retrieved_at}. La <a href={route('method', lang)}>méthodologie</a> décrit les règles, les tests et les limites, et la <a href={route('editorial', lang)}>politique éditoriale</a> explique comment nous rédigeons et corrigeons.</p>
+    <h2>Financement</h2>
+    <p>Le site est gratuit et sans inscription. Il pourra afficher de la publicité, placée sous les calculateurs et jamais à l’intérieur. Nous ne vendons aucune donnée, et il n’y en a pas : les calculs se font dans votre navigateur et rien de ce que vous saisissez ne nous est envoyé. Aucun secrétariat social, aucune banque ni aucune administration ne finance ou ne relit le contenu.</p>
+    <h2>Ce que nous ne sommes pas</h2>
+    <p>Nous ne sommes ni un secrétariat social, ni un conseiller fiscal, et nous n’avons aucun lien avec le SPF Finances, l’ONSS ou l’INASTI. Les résultats sont des estimations ; votre fiche de paie et votre avertissement-extrait de rôle font foi.</p>
+    <h2>Signaler une erreur</h2>
+    <p>Si un montant vous semble inexact, écrivez à <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> en indiquant la page, les données saisies et le résultat attendu. Chaque signalement est vérifié auprès de la source officielle, et les corrections sont publiées avec leur date.</p>
+  </div>
+</PageLayout>

@@ -1,0 +1,49 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { compute, employerCost } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const M = P.rmmmg; const r = compute({ gross: M.amount }); const h = M.amount * 12 / (M.hours_week * 52);
+const rows = [['Employé isolé', compute({ gross: M.amount })], ['Employé, 2 enfants', compute({ gross: M.amount, children: 2 })], ['Employé, conjoint sans revenus', compute({ gross: M.amount, situation: 'conjoint_sans' })], ['Ouvrier isolé', compute({ gross: M.amount, status: 'ouvrier' })]].map(([l, x]: any) => [l, f.money(x.onssNet, 2), f.money(x.pp, 2), f.money(x.csss, 2), f.money(x.net, 2)]);
+const faqs = [
+  { q: 'Quel est le salaire minimum en Belgique en 2026 ?', a: `Le revenu minimum mensuel moyen garanti est de ${f.money(M.amount, 2)} brut par mois depuis le 1er avril 2026, pour un travailleur à temps plein de 18 ans ou plus, selon le Conseil national du travail. Il n’existe plus de montants différents selon l’âge ou l’ancienneté depuis avril 2022.` },
+  { q: 'Combien fait le salaire minimum en net ?', a: `Environ ${f.money(r.net, 2)} net par mois pour un employé isolé sans enfant. À ce niveau, le bonus à l’emploi annule la cotisation ONSS et réduit fortement le précompte, si bien que le net est très proche du brut. La situation familiale peut encore l’augmenter.` },
+  { q: 'Les salaires minimums sectoriels sont-ils plus élevés ?', a: 'Souvent, oui. Chaque commission paritaire peut fixer des barèmes minimums par fonction, par ancienneté ou par catégorie, qui s’imposent aux employeurs du secteur. Le revenu minimum interprofessionnel est un plancher absolu, applicable lorsque le secteur ne prévoit rien de plus favorable.' },
+  { q: 'Le salaire minimum va-t-il encore augmenter ?', a: 'Il suit l’indexation automatique des salaires lorsque l’indice santé lissé dépasse l’indice pivot. Des hausses supplémentaires peuvent être décidées par les partenaires sociaux dans un accord interprofessionnel, comme la hausse de 35 € brut du 1er avril 2026. Les montants sont publiés par le Conseil national du travail.' },
+  { q: 'Le salaire minimum horaire existe-t-il ?', a: `Pas en tant que tel. Le minimum est fixé par mois pour un temps plein. Pour un régime de ${M.hours_week} heures par semaine, il correspond à environ ${f.money(h, 2)} de l’heure. Les travailleurs à temps partiel ont droit au minimum proportionnellement à leur durée de travail.` },
+  { q: 'Le salaire minimum s’applique-t-il aux intérimaires ?', a: 'Oui. Un intérimaire doit recevoir la même rémunération qu’un travailleur permanent de l’entreprise utilisatrice occupé à la même fonction, et jamais moins que le minimum de son secteur ou que le revenu minimum interprofessionnel. Le calcul du net est identique à celui d’un salarié.' },
+];
+---
+<Guide lang={lang} id="minimum" title="Salaire minimum Belgique 2026 : RMMMG brut et net" h1="Salaire minimum en Belgique en 2026 : brut, net et coût"
+  description="Le salaire minimum belge (RMMMG) est de 2 189,81 € brut depuis le 1er avril 2026. Voici le net selon la situation familiale, le taux horaire et le coût."
+  intro="Le revenu minimum mensuel moyen garanti fixe le plancher des salaires en Belgique. Voici son montant en 2026 et ce qu’il représente en net."
+  resume={`En Belgique, le salaire minimum interprofessionnel s’appelle revenu minimum mensuel moyen garanti, ou RMMMG. Selon le Conseil national du travail, il s’élève à ${f.money(M.amount, 2)} brut par mois depuis le 1er avril 2026 pour un travailleur à temps plein de 18 ans ou plus, après une augmentation de 35 € prévue par l’accord interprofessionnel. Depuis avril 2022, il n’y a plus de montants différents selon l’âge ou l’ancienneté. Pour un employé isolé, ce salaire donne environ ${f.money(r.net, 2)} net par mois : le bonus à l’emploi efface la cotisation ONSS de 13,07 % et réduit fortement le précompte professionnel. Pour un régime de ${M.hours_week} heures par semaine, le minimum correspond à environ ${f.money(h, 2)} de l’heure. Beaucoup de commissions paritaires fixent des minimums sectoriels plus élevés, qui priment sur le minimum interprofessionnel. Pour l’employeur, un salaire minimum coûte environ ${f.money(employerCost(M.amount).monthly, 2)} par mois avant réductions de cotisations.`}
+  faqs={faqs} related={['bonus', 'horaire', 'brutNet', 'onss', 'home', 'cout']} sources={[S.rmmmg, S.bonus, S.formule]}>
+  <h2>Le salaire minimum en net selon la situation</h2>
+  <ContentTable headers={['Situation', 'ONSS après bonus', 'Précompte', 'Cotisation spéciale', 'Net']} align={['l', 'r', 'r', 'r', 'r']} rows={rows} />
+  <p>Ces montants concernent un temps plein au salaire minimum de {f.money(M.amount, 2)}. L’ONSS est nul parce que le bonus à l’emploi, limité à la cotisation due, l’annule entièrement.</p>
+
+  <h2>Comment le salaire minimum est fixé</h2>
+  <p>Le revenu minimum mensuel moyen garanti n’est pas fixé par une loi, mais par des conventions collectives de travail conclues au sein du Conseil national du travail, principalement la convention n° 43. Il s’applique à tous les employeurs du secteur privé, pour les travailleurs à temps plein âgés d’au moins 18 ans. Il est automatiquement indexé lorsque les salaires le sont, et les partenaires sociaux peuvent convenir d’augmentations supplémentaires, comme les hausses de 35 € brut accordées en avril 2024 et en avril 2026.</p>
+
+  <h2>Minimums sectoriels</h2>
+  <p>Dans la plupart des secteurs, la commission paritaire fixe ses propres barèmes, souvent par catégorie de fonction et par ancienneté. Ces barèmes sont presque toujours supérieurs au minimum interprofessionnel et sont obligatoires pour les employeurs du secteur. Pour connaître le minimum applicable à un emploi, il faut donc identifier la commission paritaire de l’employeur et consulter ses barèmes. Le minimum interprofessionnel reste le plancher absolu.</p>
+
+  <h2>Temps partiel et salaire horaire</h2>
+  <p>Un travailleur à temps partiel a droit au salaire minimum au prorata de son temps de travail. Pour un mi-temps, le minimum est la moitié du montant mensuel. Pour exprimer le minimum par heure, on divise le montant annuel par le nombre d’heures d’un temps plein : {f.money(h, 2)} pour un régime de {M.hours_week} heures. Le <a href={route('horaire', lang)}>calculateur de salaire horaire</a> convertit n’importe quel taux horaire en salaire net mensuel.</p>
+
+  <h2>Pourquoi le net est si proche du brut</h2>
+  <p>Le bonus à l’emploi, renforcé ces dernières années, vise précisément les salaires proches du minimum. Le volet A et le volet B cumulés dépassent la cotisation ONSS due au niveau du salaire minimum ; ils sont donc écrêtés à ce montant. Le bonus fiscal diminue ensuite le précompte. L’objectif est d’accroître l’écart entre le salaire minimum et les allocations sociales, pour rendre le travail plus attractif. La page sur le <a href={route('bonus', lang)}>bonus à l’emploi</a> détaille ce mécanisme.</p>
+
+  <h2>Coût pour l’employeur</h2>
+  <p>Au salaire minimum, l’employeur paie environ {f.money(employerCost(M.amount).monthly, 2)} par mois avec le taux de base de 25 %. En pratique, la réduction structurelle des cotisations patronales, plus importante pour les bas salaires, diminue sensiblement ce montant. Le <a href={route('cout', lang)}>calculateur de coût employeur</a> donne une estimation hors réductions.</p>
+  <h2>Salaire minimum et allocations</h2>
+  <p>L’écart entre le salaire minimum et les allocations sociales est un objectif explicite des réformes récentes. En renforçant le bonus à l’emploi et en augmentant le minimum de 35 € brut à deux reprises, les partenaires sociaux et le gouvernement ont voulu rendre le passage d’une allocation à un emploi plus avantageux. À temps plein, un travailleur au salaire minimum perçoit un net proche de {f.money(r.net, 0)}, auquel s’ajoutent le pécule de vacances et, selon le secteur, une prime de fin d’année.</p>
+
+  <h2>Étudiants et jeunes</h2>
+  <p>Le minimum interprofessionnel s’applique à partir de 18 ans. Les étudiants sous contrat d’occupation d’étudiant ont droit au salaire prévu par leur secteur, avec un régime de cotisations réduit dans la limite de 650 heures par an. Pour les jeunes de moins de 18 ans, des barèmes sectoriels peuvent prévoir des montants inférieurs.</p>
+</Guide>

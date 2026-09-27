@@ -1,0 +1,27 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { ex, P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const g = 3300; const r = ex(g);
+const rows = [2300, 2700, 3100, 3600, 4200, 5500].map((x) => { const a = ex(x); return [f.money(x, 0), f.money(a.onssNet, 2), f.money(a.pp, 2), f.money(a.csss, 2), f.money(a.net, 2)]; });
+const faqs = [
+  { q: 'Hoe reken je een brutoloon om naar netto in België?', a: `Trek eerst de persoonlijke RSZ-bijdrage van 13,07 % af, verminderd met de werkbonus voor lage lonen. Bereken daarna de bedrijfsvoorheffing met de sleutelformule van de FOD Financiën, en vervolgens de bijzondere bijdrage voor de sociale zekerheid. Bij ${f.money(g, 0)} bruto houdt een alleenstaande bediende ${f.money(r.net, 2)} netto over.` },
+  { q: 'Waarom verschilt mijn nettoloon van deze berekening?', a: 'Verschillen komen vaak van voordelen in natura, maaltijdcheques, een groepsverzekering, een variabel loon of een andere gezinssituatie die aan de werkgever is gemeld. Sommige sectoren houden ook eigen bedragen in. Vergelijk je loonfiche lijn per lijn met de weergegeven berekening.' },
+  { q: 'Geldt de berekening ook voor deeltijds werk?', a: 'De rekenmodule gaat uit van een voltijdse job. Bij deeltijds werk wordt de werkbonus berekend op het refertemaandloon voor een voltijdse job en daarna pro rata toegepast, wat een iets ander nettoloon kan geven. De voorheffing wordt berekend op het werkelijk betaalde loon.' },
+];
+---
+<ToolPage lang={lang} id="brutNet" title="Bruto netto berekenen 2026: loon lijn per lijn" h1="Bruto netto berekenen, lijn per lijn"
+  description="Bereken je nettoloon vanuit het brutoloon in België voor 2026: RSZ, werkbonus, bedrijfsvoorheffing volgens de sleutelformule en bijzondere bijdrage, per lijn."
+  intro="Vul je bruto maandloon, je statuut en je gezinssituatie in. De rekenmodule toont elke inhouding zoals op een loonfiche."
+  mode="brutNet" initialGross={g} faqs={faqs} related={['home', 'pp', 'netBrut', 'bonus', 'csss', 'onss']} sources={[S.formule, S.onss, S.csss]}>
+  <p>Van bruto naar netto gaan in België vraagt drie opeenvolgende berekeningen. De eerste is de persoonlijke socialezekerheidsbijdrage: 13,07 % van het brutoloon voor een bediende en 13,07 % van 108 % van het brutoloon voor een arbeider. Voor lage lonen wordt ze verminderd met de sociale werkbonus. De tweede is de bedrijfsvoorheffing, een voorschot op de belasting, berekend met de sleutelformule van de FOD Financiën op het belastbaar loon, namelijk het brutoloon min de ingehouden RSZ. De derde is de bijzondere bijdrage voor de sociale zekerheid, die elke maand volgens een barema wordt ingehouden. Voor een alleenstaande bediende met {f.money(g, 0)} bruto bedraagt de RSZ {f.money(r.onssNet, 2)}, de voorheffing {f.money(r.pp, 2)} en de bijzondere bijdrage {f.money(r.csss, 2)}, wat een nettoloon van {f.money(r.net, 2)} geeft. De rekenmodule gebruikt de bedragen van de werkbonus die sinds 1 september 2026 gelden en de sleutelformule die sinds 1 januari 2026 van toepassing is.</p>
+  <h2>Van bruto naar netto, alleenstaande bediende</h2>
+  <ContentTable headers={['Bruto', 'RSZ na werkbonus', 'Voorheffing', 'Bijzondere bijdrage', 'Netto']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <p>Het ingehouden deel stijgt met het loon, omdat de werkbonus verdwijnt en het barema van de voorheffing progressief is.</p>
+  <h2>De opties die het nettoloon veranderen</h2>
+  <p>De gezinssituatie weegt zwaar. Een partner zonder beroepsinkomen maakt het huwelijksquotiënt mogelijk, en elk kind ten laste verlaagt de jaarbelasting met een vast bedrag uit de sleutelformule. Een alleenstaande ouder krijgt een extra vermindering. Ook het statuut telt: een arbeider betaalt RSZ op 108 % van zijn brutoloon, maar krijgt een hogere werkbonus. Een inhouding voor een groepsverzekering verlaagt de voorheffing ten slotte met 30 % van het bedrag. Voor de omgekeerde berekening zoekt <a href={route('netBrut', lang)}>van netto naar bruto</a> het nodige brutoloon, en <a href={route('pp', lang)}>bedrijfsvoorheffing berekenen</a> legt de sleutelformule in detail uit.</p>
+</ToolPage>

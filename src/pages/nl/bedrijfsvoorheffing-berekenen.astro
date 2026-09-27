@@ -1,0 +1,31 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { ex, P } from '../../lib/tables';
+import { ppBase } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const r = ex(4200); const b = r.ppBase;
+const steps = [['Belastbaar maandloon', f.money(r.imposable, 2)], ['Bruto jaarinkomen (× 12)', f.money(b.annual, 2)], ['Forfaitaire beroepskosten', `− ${f.money(b.frais, 2)}`], ['Netto belastbaar jaarinkomen', f.money(b.net, 2)], ['Basisbelasting na belastingvrije som', f.money(b.base, 2)], ['Jaarbelasting', f.money(b.annualTax, 2)], ['Maandelijkse voorheffing (÷ 12)', f.money(r.pp, 2)]];
+const sit = [0, 1, 2, 3].map((n) => [String(n), f.money(ppBase(2500, { children: n }).monthly, 2), f.money(ppBase(3500, { children: n }).monthly, 2), f.money(ppBase(3500, { children: n, situation: 'conjoint_sans' }).monthly, 2)]);
+const faqs = [
+  { q: 'Wat is bedrijfsvoorheffing?', a: 'Het is een voorschot op de personenbelasting dat de werkgever elke maand op het loon inhoudt en aan de FOD Financiën doorstort. Het bedrag wordt berekend met de officiële sleutelformule. De definitieve belasting volgt na de aangifte, en het verschil leidt tot een terugbetaling of een bijbetaling.' },
+  { q: 'Bevat de voorheffing de gemeentebelasting?', a: 'Ja, forfaitair. De sleutelformule bevat een verhoging van 7 % voor de aanvullende gemeente- en agglomeratiebelasting. Heft je gemeente een hoger percentage, dan betaal je iets bij bij de afrekening; is het lager, dan krijg je het verschil terug. Het verschil is meestal klein.' },
+  { q: 'Geeft de officiële simulator hetzelfde resultaat?', a: `Ja, voor de gevallen die hij dekt. De rekenmotor van deze site volgt de sleutelformule 2026 en vindt het resultaat van de simulator van de FOD Financiën terug: ${f.money(ppBase(2500, { children: 1 }).monthly, 2)} per maand voor 2 500 euro na sociale inhoudingen, een alleenstaande met één kind. Automatische tests controleren dat geval bij elke publicatie.` },
+];
+---
+<ToolPage lang={lang} id="pp" title="Bedrijfsvoorheffing 2026 berekenen met de sleutelformule" h1="Bedrijfsvoorheffing 2026: de berekening volgens de sleutelformule"
+  description="Bereken de bedrijfsvoorheffing 2026 met de sleutelformule van de FOD Financiën: forfaitaire kosten, barema, belastingvrije som, kinderen, huwelijksquotiënt."
+  intro="De bedrijfsvoorheffing is de belasting die elke maand op het loon wordt ingehouden. Dit is de exacte berekening, zoals een sociaal secretariaat ze maakt."
+  mode="pp" initialGross={4200} faqs={faqs} related={['brutNet', 'baremes', 'bonus', 'home', 'prime', 'pecule']} sources={[S.formule, S.pp_calcul, S.ipp_taux]}>
+  <p>De bedrijfsvoorheffing wordt berekend in vijf stappen die de sleutelformule van de FOD Financiën vastlegt voor lonen die vanaf 1 januari 2026 worden betaald. Je vertrekt van het belastbaar maandloon, het brutoloon min de ingehouden RSZ-bijdragen, en vermenigvuldigt dat met twaalf. Je trekt de forfaitaire beroepskosten af, 30 % met een maximum van {f.money(P.pp.frais_max, 0)} per jaar. Op het resultaat pas je het basisbarema toe, van 26,75 % tot 53,50 %, dat al 7 % gemeentebelasting bevat, en je trekt de belasting op de belastingvrije som af, {f.money(P.pp.quotite_reduction, 2)}, samen met de verminderingen voor kinderen of andere gezinslasten. De jaarbelasting deel je door twaalf. Ten slotte trek je de maandelijkse verminderingen af: 30 % van de inhoudingen voor een groepsverzekering en de fiscale werkbonus. Voor {f.money(4200, 0)} bruto betaalt een alleenstaande bediende {f.money(r.pp, 2)} voorheffing per maand. Elk bedrag wordt bij elke stap op de cent afgerond, zoals de formule voorschrijft.</p>
+  <h2>De stappen voor {f.money(4200, 0)} bruto, alleenstaande</h2>
+  <ContentTable headers={['Stap', 'Bedrag']} align={['l', 'r']} rows={steps} />
+  <h2>Voorheffing volgens gezinssituatie</h2>
+  <ContentTable headers={['Kinderen ten laste', '2 500 euro belastbaar, alleenstaande', '3 500 euro belastbaar, alleenstaande', '3 500 euro, partner zonder inkomen']} align={['r', 'r', 'r', 'r']} rows={sit} />
+  <p>De tabel vertrekt van het belastbaar loon, na RSZ. Het huwelijksquotiënt kent de partner zonder inkomen 30 % van het netto belastbaar inkomen toe, met een maximum van {f.money(P.pp.conjoint_max, 0)} per jaar.</p>
+  <h2>Voorheffing en definitieve belasting</h2>
+  <p>De voorheffing is slechts een raming van de belasting. De definitieve belasting houdt rekening met de werkelijke gemeentebelasting, met aftrekken zoals pensioensparen of dienstencheques, en met de inkomens van het gezin. De <a href={route('baremes', lang)}>belastingschijven 2026</a> tonen de tarieven van de aangifte. Premies en vakantiegeld volgen bijzondere percentages, uitgelegd bij de <a href={route('prime', lang)}>eindejaarspremie</a>.</p>
+</ToolPage>

@@ -1,0 +1,24 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema } from '../../lib/seo';
+const lang = 'fr';
+---
+<PageLayout title="Mentions légales et conditions d’utilisation de BrutNetto.be" description="Mentions légales de BrutNetto.be : éditeur, hébergeur, nature des résultats, limites de responsabilité, réutilisation du contenu et widget gratuit à intégrer." lang={lang} noindex={true} jsonLd={[breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }, { name: 'Mentions légales', path: route('terms', lang) }])]} breadcrumbs={[{ label: 'Mentions légales' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Mentions légales et conditions d’utilisation</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <h2>Éditeur</h2>
+    <LegalIdentity lang="fr" />
+    <h2>Hébergeur</h2>
+    <LegalIdentity lang="fr" mode="hosting" />
+    <h2>Nature des résultats</h2>
+    <p>Les calculateurs fournissent des estimations fondées sur les taux officiels en vigueur, vérifiés à la date indiquée sur chaque page. Ils ne constituent pas un conseil fiscal, social ou juridique et ne remplacent ni votre fiche de paie, ni votre avertissement-extrait de rôle, ni un secrétariat social. Votre situation peut relever de règles non prises en compte, énumérées dans la <a href={route('method', lang)}>méthodologie</a>.</p>
+    <h2>Responsabilité</h2>
+    <p>Nous veillons à l’exactitude des taux et corrigeons rapidement les erreurs signalées, mais nous ne pouvons garantir l’absence d’erreur ni la disponibilité permanente du site. Nous ne sommes pas responsables des décisions prises sur la base des estimations. Rien dans ces conditions ne limite une responsabilité qui ne peut l’être légalement.</p>
+    <h2>Réutilisation</h2>
+    <p>Les textes, tableaux et le code sont protégés par le droit d’auteur. Vous pouvez citer de courts extraits avec un lien vers la page. Le calculateur peut être intégré librement avec le code de la <a href={route('widget', lang)}>page widget</a>, à condition de conserver le lien de crédit.</p>
+    <h2>Droit applicable</h2>
+    <p>Ces conditions sont régies par le droit français, droit de l’établissement de l’éditeur, sans préjudice des règles impératives de protection des consommateurs de votre pays de résidence.</p>
+  </div>
+</PageLayout>

@@ -1,0 +1,29 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { ex, P } from '../../lib/tables';
+import { hourlyToMonthly } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const h = 19; const m = hourlyToMonthly(h); const r = ex(m);
+const minH = P.rmmmg.amount * 12 / (P.rmmmg.hours_week * 52);
+const rows = [14, 16, 19, 22, 26, 32].map((x) => { const mm = hourlyToMonthly(x); const a = ex(mm); return [f.money(x, 2), f.money(mm, 2), f.money(a.net, 2), f.money(a.net * 12 / (P.rmmmg.hours_week * 52), 2)]; });
+const faqs = [
+  { q: 'Hoe reken je een uurloon om naar een maandloon?', a: `Vermenigvuldig het uurloon met het aantal uren per week en met 52, en deel door 12. Bij ${f.money(h, 2)} per uur en 38 uur per week bedraagt het bruto maandloon ${f.money(m, 2)}. De meeste paritaire comités werken met 38 uur per week, maar sommige met 37 of 39 uur.` },
+  { q: 'Wat is het minimum uurloon in België?', a: `Het gewaarborgd gemiddeld minimum maandinkomen van ${f.money(P.rmmmg.amount, 2)} voor 38 uur per week komt overeen met ongeveer ${f.money(minH, 2)} per uur. De sectorale minimumlonen van de paritaire comités liggen vaak hoger en moeten per sector worden nagekeken. Het gaat om een brutobedrag.` },
+  { q: 'Houdt het netto uurloon rekening met de werkbonus?', a: 'Ja. De rekenmodule zet het uurloon eerst om naar een voltijds maandloon en past daarna de RSZ, de werkbonus, de voorheffing en de bijzondere bijdrage toe. Bij deeltijds werk wordt de werkbonus pro rata toegekend volgens het aantal uren, wat het nettoloon licht kan veranderen.' },
+];
+---
+<ToolPage lang={lang} id="horaire" title="Uurloon bruto netto 2026: van uurloon naar maandloon" h1="Uurloon bruto netto: van bruto per uur naar netto per maand"
+  description="Zet een bruto uurloon om naar een maandloon en een nettoloon in België voor 2026, bij 38 uur per week of volgens je eigen uurrooster, werkbonus inbegrepen."
+  intro="Vul het bruto uurloon en het aantal uren per week in. De rekenmodule geeft het bruto maandloon en het nettoloon na alle inhoudingen."
+  mode="horaire" initialHourly={h} faqs={faqs} related={['brutNet', 'minimum', 'bonus', 'netBrut', 'home', 'cout']} sources={[S.rmmmg, S.formule, S.bonus]}>
+  <p>In België worden veel arbeiders, uitzendkrachten en werknemers in de horeca per uur betaald. Het maandloon krijg je door het uurloon te vermenigvuldigen met de wekelijkse uren en met 52, en dat te delen door 12. Met {f.money(h, 2)} per uur en 38 uur per week bedraagt het bruto maandloon {f.money(m, 2)}. Voor een alleenstaande bediende levert dat {f.money(r.net, 2)} netto op, na {f.money(r.onssNet, 2)} RSZ, {f.money(r.pp, 2)} voorheffing en {f.money(r.csss, 2)} bijzondere bijdrage. Op dit niveau speelt de werkbonus een grote rol: hij verlaagt de RSZ-bijdrage met {f.money(r.bonus, 2)} en de voorheffing met {f.money(r.fiscalBonus, 2)}. Voor een arbeider wordt de RSZ op 108 % van het brutoloon berekend, maar is de werkbonus ook hoger. Kies het statuut arbeider in de rekenmodule om daar rekening mee te houden. Overuren, ploegenpremies en nachttoeslagen zitten niet in de berekening.</p>
+  <h2>Uurloon, maandloon en netto</h2>
+  <ContentTable headers={['Bruto per uur', 'Bruto per maand (38 u)', 'Netto per maand', 'Netto per uur']} align={['r', 'r', 'r', 'r']} rows={rows} />
+  <p>Het netto uurloon daalt verhoudingsgewijs naarmate het loon stijgt, omdat de werkbonus afneemt en de voorheffing progressief is.</p>
+  <h2>Deeltijds werk en studenten</h2>
+  <p>Bij deeltijds werk vul je het aantal werkelijk gepresteerde uren per week in. De berekening blijft een benadering, omdat de werkbonus bepaald wordt op het refertemaandloon voor een voltijdse job. Studenten met een studentenovereenkomst betalen binnen de grens van 650 uur per jaar geen voorheffing en een verlaagde solidariteitsbijdrage, wat deze rekenmodule niet dekt. Voor de wettelijke minima kan je terecht bij het <a href={route('minimum', lang)}>minimumloon</a>.</p>
+</ToolPage>

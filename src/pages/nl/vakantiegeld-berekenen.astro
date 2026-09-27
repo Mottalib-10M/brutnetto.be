@@ -1,0 +1,27 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { P } from '../../lib/tables';
+import { doublePecule } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const g = 3400; const d = doublePecule({ gross: g });
+const rows = [2500, 3000, 3400, 4000, 5000, 6500].map((x) => { const p = doublePecule({ gross: x }); return [f.money(x, 0), f.money(p.amount, 2), f.money(p.onss, 2), f.pct(p.rate, 2), f.money(p.net, 2)]; });
+const faqs = [
+  { q: 'Wanneer wordt het vakantiegeld betaald?', a: 'Voor bedienden betaalt de werkgever het dubbel vakantiegeld bij de hoofdvakantie, vaak in mei of juni, afhankelijk van het bedrijf. Het enkel vakantiegeld is het normale loon voor de vakantiedagen. Voor arbeiders betaalt de vakantiekas het vakantiegeld in één keer, meestal in het voorjaar.' },
+  { q: 'Waarom is de voorheffing op het vakantiegeld zo hoog?', a: `Omdat het vakantiegeld belast wordt als een uitzonderlijke vergoeding, tegen een vast percentage dat afhangt van het normale jaarloon, en niet met de sleutelformule. Bij ${f.money(g, 0)} bruto per maand bedraagt dat percentage ${f.pct(d.rate, 2)}. Een eventueel teveel wordt teruggegeven bij de belastingafrekening.` },
+  { q: 'Wordt het vakantiegeld op het lopende jaar berekend?', a: 'Nee, het slaat op de prestaties van het vorige jaar, het vakantiedienstjaar. Een bediende die het hele vorige jaar bij dezelfde werkgever heeft gewerkt, krijgt een volledig dubbel vakantiegeld. Bij een verandering van werkgever betaalt de vorige werkgever vertrekvakantiegeld. Dat bedrag komt dan bij het laatste loon.' },
+];
+---
+<ToolPage lang={lang} id="pecule" title="Vakantiegeld 2026 berekenen: dubbel vakantiegeld netto" h1="Vakantiegeld berekenen: hoeveel ontvang je netto?"
+  description="Bereken het dubbel vakantiegeld 2026 van een bediende: 92 % van het bruto maandloon, 13,07 % bijdrage op 85/92 en voorheffing tegen het vakantiegeldtarief."
+  intro="Vul je bruto maandloon in. De rekenmodule geeft het bruto dubbel vakantiegeld, de inhoudingen en het nettobedrag dat de werkgever uitbetaalt."
+  mode="pecule" initialGross={g} faqs={faqs} related={['prime', 'brutNet', 'cout', 'pp', 'home', 'onss']} sources={[S.double_pecule, S.formule, S.onss]}>
+  <p>Een bediende in de privésector heeft elk jaar recht op vakantiegeld dat uit twee delen bestaat. Het enkel vakantiegeld is het normale loon dat tijdens de vakantiedagen wordt doorbetaald. Het dubbel vakantiegeld is een extra bedrag, gelijk aan 92 % van het bruto maandloon, dat meestal bij de hoofdvakantie wordt uitbetaald. Bij {f.money(g, 0)} bruto is dat {f.money(d.amount, 2)}. Op 85/92 van dat bedrag wordt een persoonlijke bijdrage van 13,07 % ingehouden, of {f.money(d.onss, 2)}; het resterende deel, dat overeenkomt met de derde dag van de vierde vakantieweek, is vrijgesteld, en er zijn geen werkgeversbijdragen verschuldigd. De voorheffing wordt berekend tegen het tarief voor uitzonderlijke vergoedingen, hier {f.pct(d.rate, 2)}, op het bedrag na bijdrage: {f.money(d.pp, 2)}. Er blijft {f.money(d.net, 2)} netto over. De rekenmodule gaat uit van een volledig gewerkt vorig jaar bij dezelfde werkgever.</p>
+  <h2>Dubbel vakantiegeld volgens loon</h2>
+  <ContentTable headers={['Bruto maandloon', 'Bruto dubbel vakantiegeld', 'Bijdrage', 'Voorheffingspercentage', 'Netto']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <h2>Het vakantiegeld van arbeiders</h2>
+  <p>Arbeiders krijgen hun vakantiegeld niet van de werkgever, maar van een vakantiekas. Het volledige vakantiegeld, enkel en dubbel samen, bedraagt {f.pct(P.pecule.ouvrier_rate, 2)} van het brutoloon aan 108 % van het vorige jaar. Het wordt in één keer uitbetaald, en de vakantiedagen worden dan niet door de werkgever betaald. De vakantiekas houdt de voorheffing in, tegen een percentage dat afhangt van het bedrag. Om de belasting op een premie van de werkgever te ramen, gebruik je de rekenmodule voor de <a href={route('prime', lang)}>eindejaarspremie</a>.</p>
+</ToolPage>

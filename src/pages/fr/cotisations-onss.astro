@@ -1,0 +1,46 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { compute, employerCost } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const O = P.onss; const rate = O.employer_base + O.employer_moderation;
+const rows = [2400, 3000, 3600, 4500, 6000].map((g) => { const e = compute({ gross: g }); const o = compute({ gross: g, status: 'ouvrier' }); return [f.money(g, 0), f.money(e.onss, 2), f.money(e.onssNet, 2), f.money(o.onss, 2), f.money(o.onssNet, 2), f.money(employerCost(g).contributions, 2)]; });
+const faqs = [
+  { q: 'Quel est le taux de l’ONSS personnel en 2026 ?', a: 'Le travailleur salarié paie 13,07 % de sa rémunération brute : 7,50 % pour les pensions, 3,55 % pour les soins de santé, 1,15 % pour les indemnités et 0,87 % pour le chômage. Pour les ouvriers, le pourcentage est appliqué sur 108 % du salaire brut.' },
+  { q: 'Pourquoi l’ONSS des ouvriers est-il calculé sur 108 % ?', a: 'Parce que le pécule de vacances des ouvriers est payé par une caisse de vacances et non par l’employeur. La majoration de 8 % de la base de calcul finance cette partie du pécule. En contrepartie, le pécule versé par la caisse n’est pas soumis aux cotisations ordinaires.' },
+  { q: 'Combien l’employeur paie-t-il de cotisations ?', a: `Pour un employé du secteur privé de catégorie 1, la cotisation patronale de base est de ${f.pct(O.employer_base, 2)}, plus une modération salariale de ${f.pct(O.employer_moderation, 2)} au maximum, soit ${f.pct(rate, 0)}. Des cotisations spécifiques et la réduction structurelle modifient ce taux selon les cas.` },
+  { q: 'Le bonus à l’emploi réduit-il mes droits sociaux ?', a: 'Non. Le bonus à l’emploi diminue la cotisation personnelle due sur les bas salaires, mais les droits à la pension, aux soins de santé et au chômage sont calculés sur le salaire brut, comme si la cotisation avait été payée intégralement.' },
+  { q: 'L’ONSS est-il déductible de l’impôt ?', a: 'Oui, indirectement. Le précompte professionnel et l’impôt sont calculés sur la rémunération imposable, c’est-à-dire le brut diminué des cotisations sociales personnelles. Un euro de cotisation ONSS réduit donc la base imposable d’un euro. C’est pourquoi la ligne ONSS précède le précompte sur la fiche de paie.' },
+  { q: 'Les primes sont-elles soumises à l’ONSS ?', a: 'Oui, la plupart des primes et avantages en espèces sont soumis à la cotisation de 13,07 %, comme la prime de fin d’année. Certaines exceptions existent : les chèques-repas dans les limites légales, les éco-chèques, les remboursements de frais propres à l’employeur et le bonus salarial collectif, soumis à un régime particulier.' },
+];
+---
+<Guide lang={lang} id="onss" title="Cotisations ONSS 2026 : 13,07 % et part patronale" h1="Cotisations ONSS 2026 : ce que paient le travailleur et l’employeur"
+  description="Cotisations de sécurité sociale 2026 : 13,07 % pour le travailleur, 108 % pour les ouvriers, 25 % pour l’employeur, bonus à l’emploi et réductions en Belgique."
+  intro="La sécurité sociale belge est financée par deux cotisations sur le salaire : celle du travailleur, retenue sur la fiche de paie, et celle de l’employeur, qui s’y ajoute."
+  resume={`En Belgique, le salaire brut d’un travailleur du secteur privé supporte une cotisation personnelle de sécurité sociale de 13,07 %, retenue par l’employeur et versée à l’Office national de sécurité sociale. Elle se répartit entre les pensions, pour 7,50 %, les soins de santé et les indemnités, pour 4,70 %, et le chômage, pour 0,87 %. Pour un ouvrier, le taux est appliqué sur 108 % du salaire brut, afin de financer le pécule de vacances payé par la caisse de vacances. Les bas salaires bénéficient du bonus à l’emploi, qui réduit cette cotisation jusqu’à l’annuler au niveau du salaire minimum. L’employeur paie de son côté une cotisation patronale de base de ${f.pct(O.employer_base, 2)} et une modération salariale de ${f.pct(O.employer_moderation, 2)} au maximum, soit ${f.pct(rate, 0)} pour la catégorie 1 du secteur marchand, avant réduction structurelle. Pour un employé à ${f.money(3600, 0)} brut, la cotisation personnelle est de ${f.money(compute({ gross: 3600 }).onss, 2)} par mois et la cotisation patronale d’environ ${f.money(employerCost(3600).contributions, 2)}.`}
+  faqs={faqs} related={['brutNet', 'bonus', 'cout', 'csss', 'pecule', 'home']} sources={[S.onss, S.bonus, S.double_pecule]}>
+  <h2>Cotisations mensuelles selon le salaire</h2>
+  <ContentTable headers={['Brut', 'ONSS employé', 'Employé après bonus', 'ONSS ouvrier', 'Ouvrier après bonus', 'Part patronale employé']} align={['r', 'r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <p>La colonne après bonus montre la cotisation réellement retenue. Pour un ouvrier, la base de 108 % augmente la cotisation brute, mais le bonus est lui aussi majoré.</p>
+
+  <h2>À quoi servent les cotisations</h2>
+  <p>La cotisation personnelle de 13,07 % finance les grandes branches de la sécurité sociale des travailleurs salariés : la pension de retraite, l’assurance maladie-invalidité, qui couvre à la fois les soins de santé et les indemnités en cas d’incapacité de travail, et l’assurance chômage. Les accidents du travail, les maladies professionnelles et les vacances annuelles des ouvriers sont financés par des cotisations patronales spécifiques. Les allocations familiales relèvent aujourd’hui des Régions. Le financement global de la sécurité sociale combine ces cotisations avec des moyens de l’État et le financement alternatif, notamment une partie de la TVA.</p>
+
+  <h2>Le calcul sur la fiche de paie</h2>
+  <p>La cotisation personnelle est calculée sur la rémunération brute soumise, qui comprend le salaire de base, les primes, les heures supplémentaires et certains avantages. Elle est retenue avant le précompte professionnel, et le montant retenu diminue la base imposable. Sur la fiche de paie, la ligne ONSS apparaît donc juste après le brut, suivie du bonus à l’emploi éventuel, puis de la rémunération imposable. Les chèques-repas, dans les limites légales, et certains frais propres à l’employeur remboursés ne sont pas soumis à l’ONSS.</p>
+
+  <h2>Le pécule de vacances et le treizième mois</h2>
+  <p>Le double pécule de vacances des employés n’est soumis qu’à une cotisation personnelle spéciale de 13,07 % sur 85/92 de son montant, sans cotisation patronale. La prime de fin d’année, en revanche, subit l’ONSS ordinaire. Le calcul détaillé de ces deux montants se trouve dans les calculateurs du <a href={route('pecule', lang)}>pécule de vacances</a> et de la <a href={route('prime', lang)}>prime de fin d’année</a>.</p>
+
+  <h2>La part patronale et les réductions</h2>
+  <p>La cotisation patronale varie selon la catégorie d’employeur. Pour le secteur marchand, le taux global a été ramené à environ 25 % par le tax shift. La réduction structurelle, calculée par trimestre, diminue encore la cotisation pour les bas et moyens salaires. D’autres réductions visent des groupes cibles, comme les premiers engagements ou certains travailleurs âgés. Le <a href={route('cout', lang)}>calculateur de coût employeur</a> applique le taux de base de 25 % sans ces réductions.</p>
+
+  <h2>Étudiants et flexi-jobs</h2>
+  <p>Les étudiants sous contrat d’occupation d’étudiant ne paient qu’une cotisation de solidarité réduite, dans la limite de 650 heures par an. Les flexi-jobs relèvent d’un régime particulier, avec une cotisation patronale spéciale et aucune cotisation personnelle. Ces régimes ne sont pas couverts par les calculateurs de ce site, qui concernent les contrats de travail ordinaires.</p>
+  <h2>Cotisations et droits à la pension</h2>
+  <p>Les cotisations de pension ne constituent pas une épargne individuelle : le régime des salariés fonctionne par répartition, les cotisations d’aujourd’hui finançant les pensions actuelles. Les droits du travailleur sont calculés sur ses rémunérations brutes, dans la limite d’un plafond annuel, et sur la durée de sa carrière. Le bonus à l’emploi ne réduit donc pas la pension future, puisque celle-ci se base sur le brut et non sur la cotisation effectivement payée.</p>
+</Guide>

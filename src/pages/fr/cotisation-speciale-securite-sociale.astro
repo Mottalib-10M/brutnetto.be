@@ -1,0 +1,50 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { csss } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const C = P.csss;
+const bar = [[`jusqu’à ${f.money(C.t0, 2)}`, f.money(0, 2), f.money(0, 2)], [`${f.money(C.t0 + 0.01, 2)} à ${f.money(C.t1, 2)}`, f.money(0, 2), f.money(C.two_income_flat, 2)], [`${f.money(C.t1 + 0.01, 2)} à ${f.money(C.t2, 2)}`, `${f.pct(C.rate1, 1)} au-delà de ${f.money(C.t1, 2)}`, `idem, minimum ${f.money(C.two_income_flat, 2)}`], [`${f.money(C.t2 + 0.01, 2)} à ${f.money(C.t3, 2)}`, `${f.money(C.base2, 2)} + ${f.pct(C.rate2, 1)}, maximum ${f.money(C.max_single, 2)}`, `${f.money(C.base2, 2)} + ${f.pct(C.rate2, 1)}, maximum ${f.money(C.max_two, 2)}`], [`au-delà de ${f.money(C.t3, 2)}`, f.money(C.max_single, 2), f.money(C.max_two, 2)]];
+const ex = [1500, 2100, 2500, 3500, 4500, 6000, 8000].map((g) => [f.money(g, 0), f.money(csss(g, false), 2), f.money(csss(g, true), 2)]);
+const faqs = [
+  { q: 'Qu’est-ce que la cotisation spéciale de sécurité sociale ?', a: 'C’est une cotisation créée en 1994 pour contribuer au financement de la sécurité sociale, due par les ménages selon leurs revenus. Pour les salariés, elle est retenue chaque mois par l’employeur, puis régularisée par l’administration fiscale au moment de l’avertissement-extrait de rôle.' },
+  { q: 'Pourquoi est-elle différente pour les ménages à deux revenus ?', a: 'Parce que la cotisation annuelle définitive est calculée sur les revenus du ménage. Pour éviter une régularisation trop importante, les retenues mensuelles sont un peu plus élevées lorsque les deux conjoints ont des revenus professionnels, avec un plafond mensuel supérieur.' },
+  { q: 'Quel est le montant maximum de la cotisation spéciale ?', a: `La retenue mensuelle est plafonnée à ${f.money(C.max_single, 2)} pour un isolé ou un ménage à un revenu, et à ${f.money(C.max_two, 2)} pour un ménage à deux revenus. La cotisation annuelle définitive a son propre plafond, calculé sur les revenus nets imposables du ménage.` },
+  { q: 'Pourquoi dois-je parfois un supplément de cotisation spéciale ?', a: 'Les retenues mensuelles ne connaissent pas les revenus de l’autre conjoint ni les autres revenus du ménage. Si le montant annuel calculé sur le revenu net imposable du ménage dépasse les retenues, la différence est ajoutée à l’impôt dans l’avertissement-extrait de rôle.' },
+  { q: 'La cotisation spéciale est-elle déductible ?', a: 'Non. Contrairement à la cotisation ONSS ordinaire, elle n’est pas déduite de la rémunération imposable. Elle est retenue en plus du précompte professionnel et n’a pas d’effet sur le calcul de l’impôt. Elle apparaît sur une ligne séparée de la fiche de paie.' },
+  { q: 'La cotisation spéciale change-t-elle en 2026 ?', a: 'Le barème des retenues mensuelles n’est pas indexé chaque année et reste celui publié par l’ONSS. Le calculateur applique les seuils en vigueur à la date de vérification. Si le législateur modifie le barème, les nouveaux montants seront intégrés et la date de mise à jour de la page changera.' },
+];
+---
+<Guide lang={lang} id="csss" title="Cotisation spéciale de sécurité sociale 2026 : barème" h1="Cotisation spéciale de sécurité sociale : barème des retenues mensuelles"
+  description="La cotisation spéciale de sécurité sociale en 2026 : barème des retenues mensuelles pour isolés et ménages à deux revenus, plafonds et régularisation annuelle."
+  intro="La cotisation spéciale de sécurité sociale est la troisième retenue de la fiche de paie, après l’ONSS et le précompte. Voici comment elle est calculée."
+  resume={`La cotisation spéciale de sécurité sociale est une contribution supplémentaire au financement de la sécurité sociale, introduite en 1994 et due par les ménages en fonction de leurs revenus. Pour les travailleurs salariés, l’employeur la retient chaque mois sur le salaire selon un barème qui dépend du salaire brut et de la situation du ménage. Rien n’est retenu jusqu’à ${f.money(C.t0, 2)} par mois. Ensuite, le montant augmente par paliers pour atteindre un maximum de ${f.money(C.max_single, 2)} par mois pour un isolé ou un ménage à un seul revenu, et de ${f.money(C.max_two, 2)} pour un ménage à deux revenus. Sur un salaire de ${f.money(3500, 0)}, un isolé paie ${f.money(csss(3500, false), 2)} par mois. Ces retenues sont une avance : la cotisation annuelle définitive est calculée par l’administration fiscale sur le revenu net imposable du ménage et régularisée dans l’avertissement-extrait de rôle, ce qui peut conduire à un supplément ou à un remboursement.`}
+  faqs={faqs} related={['brutNet', 'onss', 'pp', 'baremes', 'home', 'netBrut']} sources={[S.csss, S.onss, S.formule]}>
+  <h2>Barème des retenues mensuelles</h2>
+  <ContentTable headers={['Salaire brut mensuel', 'Isolé ou ménage à un revenu', 'Ménage à deux revenus']} align={['l', 'l', 'l']} rows={bar} />
+  <p>Les seuils correspondent aux seuils trimestriels publiés par l’ONSS, divisés par trois. Le calculateur applique le barème au salaire brut du mois.</p>
+
+  <h2>Exemples de retenues</h2>
+  <ContentTable headers={['Salaire brut', 'Isolé', 'Deux revenus']} align={['r', 'r', 'r']} rows={ex} />
+
+  <h2>Retenue mensuelle et cotisation annuelle</h2>
+  <p>La retenue mensuelle ne tient compte que du salaire payé par l’employeur et d’une indication sur la situation du ménage. La cotisation annuelle définitive, elle, est calculée sur le revenu net imposable global du ménage : salaires des deux conjoints, revenus de remplacement et autres revenus professionnels. Elle suit un barème annuel progressif, avec un plafond. L’administration fiscale compare ce montant aux retenues de l’année et régularise la différence dans l’avertissement-extrait de rôle. Pour un ménage à deux revenus élevés, il est fréquent qu’un petit supplément soit dû.</p>
+
+  <h2>Situation du ménage déclarée à l’employeur</h2>
+  <p>L’employeur applique le barème isolé ou ménage à un revenu, sauf si le travailleur est marié ou cohabitant légal et que son conjoint a des revenus professionnels. Il est donc important de signaler un changement de situation familiale au service du personnel. Une erreur n’a pas de conséquence définitive, puisque la régularisation annuelle corrige le montant, mais elle peut entraîner un supplément à payer.</p>
+
+  <h2>Place dans le calcul du net</h2>
+  <p>La cotisation spéciale est retenue après l’ONSS et le précompte, et elle n’est pas déductible. Son poids reste modeste : au maximum environ 1 % d’un salaire élevé et un peu plus pour les salaires moyens. Elle explique néanmoins une partie de l’écart entre un calcul simplifié et une fiche de paie réelle. Le <a href={route('brutNet', lang)}>calcul brut net</a> l’intègre automatiquement, avec le choix de la situation familiale.</p>
+
+  <h2>Qui en est exonéré</h2>
+  <p>Les retenues ne concernent que les revenus professionnels au-delà du premier seuil. Les étudiants sous contrat d’étudiant et les bénéficiaires de certains régimes particuliers ne sont pas soumis aux retenues mensuelles. Pour les revenus de remplacement, comme les pensions ou les allocations de chômage, la cotisation est établie lors de la régularisation annuelle, selon les revenus du ménage. Les indépendants, eux, paient la cotisation spéciale uniquement via l’avertissement-extrait de rôle.</p>
+  <h2>Un exemple de régularisation</h2>
+  <p>Prenons un couple marié où chacun gagne {f.money(3500, 0)} brut par mois. L’employeur de chacun retient la cotisation au barème des ménages à deux revenus, soit {f.money(csss(3500, true), 2)} par mois et par personne. Lors du calcul annuel, l’administration additionne les revenus nets imposables du ménage et applique le barème annuel. Si le total dû dépasse la somme des retenues, un supplément apparaît dans l’avertissement-extrait de rôle ; dans le cas inverse, la différence est remboursée. Pour un isolé qui n’a qu’un salaire, les retenues mensuelles sont en général proches du montant définitif.</p>
+
+  <h2>Pourquoi cette cotisation existe</h2>
+  <p>La cotisation spéciale a été instaurée pour contribuer à l’équilibre financier de la sécurité sociale, en complément des cotisations ordinaires. Elle est progressive, car elle dépend des revenus du ménage, mais reste plafonnée. Elle est perçue par l’administration fiscale en même temps que l’impôt, ce qui explique sa régularisation via l’avertissement-extrait de rôle plutôt que par l’ONSS.</p>
+</Guide>

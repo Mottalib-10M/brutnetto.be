@@ -1,0 +1,27 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { ex, P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const g = 3300; const r = ex(g);
+const rows = [2300, 2700, 3100, 3600, 4200, 5500].map((x) => { const a = ex(x); return [f.money(x, 0), f.money(a.onssNet, 2), f.money(a.pp, 2), f.money(a.csss, 2), f.money(a.net, 2)]; });
+const faqs = [
+  { q: 'Comment passer du salaire brut au salaire net en Belgique ?', a: `Retirez d’abord la cotisation ONSS personnelle de 13,07 %, diminuée du bonus à l’emploi pour les bas salaires. Calculez ensuite le précompte professionnel avec la formule-clé du SPF Finances, puis la cotisation spéciale de sécurité sociale. Pour ${f.money(g, 0)} brut, un employé isolé obtient ${f.money(r.net, 2)} net.` },
+  { q: 'Pourquoi mon net diffère-t-il de ce calculateur ?', a: 'Les écarts viennent souvent d’avantages en nature, de chèques-repas, d’une assurance de groupe, d’un salaire variable ou d’une situation familiale différente déclarée à l’employeur. Certains secteurs appliquent aussi des retenues propres. Comparez ligne par ligne votre fiche de paie avec le détail affiché.' },
+  { q: 'Le calcul vaut-il pour un temps partiel ?', a: 'Le calculateur suppose un temps plein. Pour un temps partiel, le bonus à l’emploi est calculé sur le salaire de référence à temps plein puis proratisé, ce qui peut donner un net légèrement différent. Le précompte, lui, se calcule sur le salaire réellement payé.' },
+];
+---
+<ToolPage lang={lang} id="brutNet" title="Salaire brut net 2026 : le calcul détaillé ligne par ligne" h1="Calcul du salaire brut en net, ligne par ligne"
+  description="Calculez votre salaire net depuis le brut en Belgique en 2026 : ONSS, bonus à l’emploi, précompte selon la formule-clé et cotisation spéciale, ligne par ligne."
+  intro="Indiquez votre brut mensuel, votre statut et votre situation familiale. Le calculateur affiche chaque retenue comme sur une fiche de paie."
+  mode="brutNet" initialGross={g} faqs={faqs} related={['home', 'pp', 'netBrut', 'bonus', 'csss', 'onss']} sources={[S.formule, S.onss, S.csss]}>
+  <p>Passer du brut au net en Belgique demande trois calculs successifs. Le premier est la cotisation personnelle de sécurité sociale, 13,07 % du brut pour un employé et 13,07 % de 108 % du brut pour un ouvrier. Pour les salaires bas, elle est réduite par le bonus à l’emploi social. Le deuxième est le précompte professionnel, une avance sur l’impôt, calculée avec la formule-clé du SPF Finances sur la rémunération imposable, c’est-à-dire le brut moins l’ONSS retenu. Le troisième est la cotisation spéciale de sécurité sociale, retenue chaque mois selon un barème. Pour un employé isolé à {f.money(g, 0)} brut, l’ONSS est de {f.money(r.onssNet, 2)}, le précompte de {f.money(r.pp, 2)} et la cotisation spéciale de {f.money(r.csss, 2)}, soit un net de {f.money(r.net, 2)}. Le calculateur applique les montants du bonus à l’emploi en vigueur depuis le 1er septembre 2026 et la formule-clé applicable depuis le 1er janvier 2026.</p>
+  <h2>Du brut au net, employé isolé</h2>
+  <ContentTable headers={['Brut', 'ONSS après bonus', 'Précompte', 'Cotisation spéciale', 'Net']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <p>La part retenue augmente avec le salaire, parce que le bonus à l’emploi disparaît et que le barème du précompte est progressif.</p>
+  <h2>Les options qui changent le net</h2>
+  <p>La situation familiale compte beaucoup. Un conjoint sans revenus professionnels permet d’appliquer le quotient conjugal, et chaque enfant à charge réduit l’impôt annuel d’un montant fixe de la formule-clé. Un parent isolé reçoit une réduction supplémentaire. Le statut compte aussi : un ouvrier paie l’ONSS sur 108 % de son brut, mais reçoit un bonus à l’emploi plus élevé. Enfin, une retenue d’assurance de groupe réduit le précompte de 30 % de son montant. Pour l’opération inverse, le <a href={route('netBrut', lang)}>calcul du net vers le brut</a> retrouve le brut nécessaire, et le <a href={route('pp', lang)}>calcul du précompte</a> détaille la formule-clé.</p>
+</ToolPage>

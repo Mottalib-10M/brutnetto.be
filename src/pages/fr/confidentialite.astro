@@ -1,0 +1,23 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema } from '../../lib/seo';
+import { CONTACT_EMAIL, LEGAL } from '../../data/site-config';
+const lang = 'fr';
+---
+<PageLayout title="Politique de confidentialité de BrutNetto.be : vos données" description="Confidentialité sur BrutNetto.be : les calculs se font dans votre navigateur, aucune donnée personnelle n’est envoyée, pas d’inscription ni de compte à créer." lang={lang} noindex={true} jsonLd={[breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }, { name: 'Confidentialité', path: route('privacy', lang) }])]} breadcrumbs={[{ label: 'Confidentialité' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Politique de confidentialité</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <h2>Responsable du traitement</h2>
+    <LegalIdentity lang="fr" />
+    <h2>Ce que nous ne collectons pas</h2>
+    <p>Les calculateurs fonctionnent entièrement dans votre navigateur. Le salaire, le statut, la situation familiale et les autres montants saisis ne nous sont pas envoyés, ne sont pas stockés sur un serveur et ne sont pas liés à votre personne. Il n’y a ni compte, ni lettre d’information, ni formulaire collectant des données personnelles. Si vous utilisez le lien de partage, vos montants figurent dans l’adresse, visible uniquement par les personnes à qui vous l’envoyez.</p>
+    <h2>Journaux d’hébergement</h2>
+    <p>Le site est hébergé par {LEGAL.hosting.name}. Comme tout serveur web, l’hébergeur enregistre des données techniques pour chaque requête, telles que l’adresse IP, la page demandée, la date et le type de navigateur, afin de fournir le site et de le protéger contre les abus. Nous n’utilisons pas ces journaux pour identifier les visiteurs.</p>
+    <h2>Mesure d’audience et publicité</h2>
+    <p>Aucun outil de mesure d’audience ni de publicité n’est actif actuellement. Si nous en ajoutons, rien ne sera chargé sans votre consentement préalable, et la page <a href={route('cookies', lang)}>cookies</a> indiquera ce qui est déposé. Votre choix est conservé uniquement dans votre navigateur.</p>
+    <h2>Vos droits</h2>
+    <p>Le règlement général sur la protection des données vous donne un droit d’accès, de rectification et d’opposition sur les données personnelles vous concernant. Comme indiqué, nous n’en détenons aucune issue des calculateurs. Pour toute demande, écrivez à <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. Vous pouvez aussi introduire une plainte auprès de l’Autorité de protection des données en Belgique ou de l’autorité française, la {LEGAL.supervisoryAuthority}, pays d’établissement de l’éditeur.</p>
+  </div>
+</PageLayout>

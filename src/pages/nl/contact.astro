@@ -1,0 +1,25 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, contactPageSchema } from '../../lib/seo';
+import { CONTACT_EMAIL } from '../../data/site-config';
+const lang = 'nl';
+const title = 'Contact BrutNetto.be: een fout melden of een vraag stellen';
+const description = 'Schrijf naar de uitgever van BrutNetto.be om een rekenfout te melden, een vraag over de methode te stellen of de rekenmodule gratis op je site in te sluiten.';
+const jsonLd = [contactPageSchema({ name: title, description, path: route('contact', lang), lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Contact', path: route('contact', lang) }])];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Contact' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Contact</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <p>E-mail is het enige kanaal: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. We lezen elk bericht en antwoorden meestal binnen enkele werkdagen.</p>
+    <h2>Een fout melden</h2>
+    <p>Vermeld de pagina, het ingevulde brutoloon, het statuut en de gezinssituatie, het getoonde bedrag en het bedrag dat je verwachtte, zo mogelijk met de bron: een lijn van je loonfiche of je aanslagbiljet. Stuur geen rijksregisternummer, rekeningnummer of volledige documenten; de bedragen volstaan.</p>
+    <h2>Vragen over je eigen situatie</h2>
+    <p>We geven geen persoonlijk belastingadvies. Voor je voorheffing en belasting kan je terecht bij de FOD Financiën; voor je bijdragen bij je werkgever of zijn sociaal secretariaat; voor je statuut als zelfstandige bij je sociaal verzekeringsfonds.</p>
+    <h2>De rekenmodule insluiten</h2>
+    <p>De bruto-nettoberekening kan gratis op elke site worden ingesloten. De code en de voorwaarden staan op de <a href={route('widget', lang)}>widgetpagina</a>.</p>
+    <h2>Uitgever</h2>
+    <LegalIdentity lang="nl" />
+  </div>
+</PageLayout>

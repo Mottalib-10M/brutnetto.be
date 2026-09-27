@@ -1,0 +1,21 @@
+{
+ "name": "BrutNetto.be",
+ "short_name": "BrutNetto.be",
+ "description": "Calcul du salaire brut en net en Belgique pour 2026 : ONSS, bonus à l'emploi, précompte professionnel et cotisation spéciale.",
+ "start_url": "/fr/",
+ "display": "standalone",
+ "background_color": "#ffffff",
+ "theme_color": "#B3121F",
+ "icons": [
+  {
+   "src": "/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+# BrutNetto.be
+
+> Calculateurs gratuits de salaire brut en net pour la Belgique, en français et en néerlandais, pour 2026. Publié par Radif Partners. Précompte professionnel selon la formule-clé du SPF Finances, ONSS et bonus à l'emploi selon l'ONSS, avec source et date sur chaque page. Calcul dans le navigateur.
+
+## Calculateurs (FR)
+- [Salaire brut en net](https://brutnetto.be/fr/), [précompte professionnel](https://brutnetto.be/fr/precompte-professionnel/), [net en brut](https://brutnetto.be/fr/net-brut/), [salaire horaire](https://brutnetto.be/fr/salaire-horaire/), [pécule de vacances](https://brutnetto.be/fr/pecule-de-vacances/), [prime de fin d'année](https://brutnetto.be/fr/prime-de-fin-annee/), [coût employeur](https://brutnetto.be/fr/cout-employeur/).
+
+## Rekenmodules (NL)
+- [Bruto netto](https://brutnetto.be/nl/), [bedrijfsvoorheffing](https://brutnetto.be/nl/bedrijfsvoorheffing-berekenen/), [netto bruto](https://brutnetto.be/nl/netto-bruto/), [uurloon](https://brutnetto.be/nl/uurloon-bruto-netto/), [vakantiegeld](https://brutnetto.be/nl/vakantiegeld-berekenen/), [eindejaarspremie](https://brutnetto.be/nl/eindejaarspremie/), [werkgeverskost](https://brutnetto.be/nl/werkgeverskost-berekenen/).
+
+## Méthode / Methodologie
+- https://brutnetto.be/fr/methodologie/
+- https://brutnetto.be/nl/methodologie/

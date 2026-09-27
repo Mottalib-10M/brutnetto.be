@@ -1,0 +1,27 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { P } from '../../lib/tables';
+import { doublePecule } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const g = 3400; const d = doublePecule({ gross: g });
+const rows = [2500, 3000, 3400, 4000, 5000, 6500].map((x) => { const p = doublePecule({ gross: x }); return [f.money(x, 0), f.money(p.amount, 2), f.money(p.onss, 2), f.pct(p.rate, 2), f.money(p.net, 2)]; });
+const faqs = [
+  { q: 'Quand le pécule de vacances est-il payé ?', a: 'Pour les employés, le double pécule est payé par l’employeur au moment des vacances principales, souvent en mai ou juin selon l’entreprise. Le simple pécule correspond au salaire normal des jours de vacances. Pour les ouvriers, la caisse de vacances verse le pécule en une fois, généralement au printemps.' },
+  { q: 'Pourquoi le précompte sur le pécule est-il si élevé ?', a: `Parce que le pécule est taxé comme une allocation exceptionnelle, à un taux fixe qui dépend de la rémunération annuelle normale, et non avec la formule-clé. Pour ${f.money(g, 0)} brut par mois, ce taux est de ${f.pct(d.rate, 2)}. L’excédent éventuel est récupéré lors du décompte fiscal.` },
+  { q: 'Le pécule est-il calculé sur l’année en cours ?', a: 'Non, il se rapporte aux prestations de l’année précédente, appelée exercice de vacances. Un employé qui a travaillé toute l’année précédente chez le même employeur reçoit un double pécule complet. En cas de changement d’employeur, l’ancien employeur paie un pécule de sortie.' },
+];
+---
+<ToolPage lang={lang} id="pecule" title="Pécule de vacances 2026 : double pécule brut et net" h1="Pécule de vacances : combien toucherez-vous net ?"
+  description="Calculez le double pécule de vacances 2026 d’un employé : 92 % du brut mensuel, cotisation de 13,07 % sur 85/92 et précompte au taux des pécules de vacances."
+  intro="Indiquez votre salaire brut mensuel. Le calculateur donne le double pécule brut, les retenues et le montant net versé par l’employeur."
+  mode="pecule" initialGross={g} faqs={faqs} related={['prime', 'brutNet', 'cout', 'pp', 'home', 'onss']} sources={[S.double_pecule, S.formule, S.onss]}>
+  <p>Un employé du secteur privé a droit chaque année à un pécule de vacances composé de deux parties. Le simple pécule est le salaire normal qui continue d’être payé pendant les jours de vacances. Le double pécule est une somme supplémentaire, égale à 92 % du salaire mensuel brut, versée généralement au moment des vacances principales. Pour {f.money(g, 0)} brut, il vaut {f.money(d.amount, 2)}. Une cotisation personnelle de 13,07 % est retenue sur 85/92 de ce montant, soit {f.money(d.onss, 2)} ; la partie restante, qui correspond au troisième jour de la quatrième semaine de vacances, en est exonérée, et aucune cotisation patronale n’est due. Le précompte est calculé au taux des allocations exceptionnelles, {f.pct(d.rate, 2)} ici, sur le montant après cotisation : {f.money(d.pp, 2)}. Il reste {f.money(d.net, 2)} net. Le calculateur suppose une année complète de prestations l’année précédente chez le même employeur.</p>
+  <h2>Double pécule selon le salaire</h2>
+  <ContentTable headers={['Brut mensuel', 'Double pécule brut', 'Cotisation', 'Taux de précompte', 'Net']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <h2>Le pécule des ouvriers</h2>
+  <p>Les ouvriers ne reçoivent pas leur pécule de l’employeur, mais d’une caisse de vacances. Le pécule total, simple et double, représente {f.pct(P.pecule.ouvrier_rate, 2)} de la rémunération brute à 108 % de l’année précédente. Il est payé en une fois, et les jours de vacances ne sont alors pas rémunérés par l’employeur. Le précompte est retenu par la caisse, à un taux qui dépend du montant du pécule. Pour estimer la charge fiscale d’une prime payée par l’employeur, utilisez le calculateur de <a href={route('prime', lang)}>prime de fin d’année</a>.</p>
+</ToolPage>

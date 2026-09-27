@@ -1,0 +1,109 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import BeCalculator from '../../components/calc/BeCalculator';
+import ContentTable from '../../components/ContentTable.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import Sources from '../../components/Sources.astro';
+import { YEAR, LAST_UPDATED, AUTHOR_NAME, LANG_TAGS } from '../../data/site-config';
+import { route, MONTHLY } from '../../i18n/routes';
+import { monthlyLabel, label } from '../../i18n/nav';
+import { webApplicationSchema, faqSchema, breadcrumbSchema, organizationSchema, personSchema, websiteSchema } from '../../lib/seo';
+import { ex, P } from '../../lib/tables';
+import { employerCost, doublePecule, yearEndBonus, grossForNet } from '../../lib/engine/be';
+import { fmt, displayDate } from '../../lib/format';
+import { src } from '../../lib/sources';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const title = `Salaire brut en net Belgique 2026 : calcul du salaire net`;
+const description = `Calculez votre salaire net en Belgique pour 2026 : ONSS de 13,07 %, bonus à l’emploi, précompte selon la formule-clé et cotisation spéciale. Gratuit et anonyme.`;
+const g = 3500; const r = ex(g); const E = P.bonus.employe;
+const rows = [2200, 2600, 3000, 3500, 4000, 5000, 6000, 7500].map((x) => { const a = ex(x); return [f.money(x, 0), f.money(a.onssNet, 2), f.money(a.pp, 2), f.money(a.csss, 2), f.money(a.net, 2), f.pct(a.net / x, 1)]; });
+const fam = [['Isolé', ex(g)], ['Isolé, 1 enfant', ex(g, { children: 1 })], ['Isolé, 2 enfants', ex(g, { children: 2 })], ['Parent isolé, 2 enfants', ex(g, { children: 2, parentIsole: true })], ['Conjoint avec revenus', ex(g, { situation: 'conjoint_revenus' })], ['Conjoint sans revenus', ex(g, { situation: 'conjoint_sans' })]].map(([l, x]: any) => [l, f.money(x.pp, 2), f.money(x.csss, 2), f.money(x.net, 2)]);
+const faqs = [
+  { q: 'Comment calculer son salaire net en Belgique ?', a: `Du salaire brut, retirez la cotisation ONSS de 13,07 % diminuée du bonus à l’emploi, puis le précompte professionnel calculé avec la formule-clé du SPF Finances, et enfin la cotisation spéciale de sécurité sociale. Pour ${f.money(g, 0)} brut, un employé isolé reçoit ${f.money(r.net, 2)} net par mois en 2026.` },
+  { q: 'Quel pourcentage du brut reste en net ?', a: `Entre 55 et 95 % selon le salaire et la situation familiale. Au salaire minimum, le bonus à l’emploi laisse plus de 90 % du brut ; à ${f.money(g, 0)}, il reste ${f.pct(r.net / g, 1)} pour un isolé ; au-delà de 6 000 €, moins de 60 %. Les enfants à charge et un conjoint sans revenus augmentent le net.` },
+  { q: 'Le calculateur tient-il compte des changements de 2026 ?', a: 'Oui. Il applique la formule-clé du précompte pour les rémunérations payées depuis le 1er janvier 2026, les montants du bonus à l’emploi en vigueur depuis le 1er septembre 2026 et le salaire minimum de 2 189,81 € du 1er avril 2026. Les paramètres sont vérifiés à la date indiquée en haut de la page.' },
+  { q: 'Quelle différence entre employé et ouvrier ?', a: 'Pour un ouvrier, la cotisation ONSS est calculée sur 108 % du salaire brut, parce que son pécule de vacances est payé par une caisse de vacances. Le bonus à l’emploi est aussi plus élevé. À salaire brut égal, le net mensuel d’un ouvrier est donc un peu plus bas, mais son pécule est versé séparément.' },
+  { q: 'Pourquoi une augmentation rapporte-t-elle parfois très peu ?', a: `Entre ${f.money(E.b_from, 0)} et ${f.money(E.a_to, 0)} brut, le bonus à l’emploi diminue quand le salaire augmente. La perte de bonus s’ajoute au précompte, si bien que 100 € brut de plus peuvent ne rapporter qu’une vingtaine d’euros net dans la zone du volet B. Au-delà, une augmentation rapporte de 40 à 44 % en net.` },
+  { q: 'Le précompte professionnel est-il l’impôt définitif ?', a: 'Non, c’est une avance. L’impôt définitif est calculé après la déclaration fiscale, avec la taxe communale réelle, les réductions d’impôt et les revenus du ménage. La différence avec le précompte retenu donne un remboursement ou un supplément dans l’avertissement-extrait de rôle.' },
+  { q: 'Mes données sont-elles enregistrées ?', a: 'Non. Le calcul se fait entièrement dans votre navigateur, avec les paramètres 2026 intégrés à la page. Rien de ce que vous saisissez n’est envoyé ni conservé. Le lien de partage, si vous l’utilisez, contient les montants dans l’adresse, visible seulement par ceux à qui vous l’envoyez.' },
+];
+const related = ['brutNet', 'pp', 'netBrut', 'horaire', 'pecule', 'prime', 'cout', 'bonus', 'baremes'].map((id) => ({ href: route(id, lang), name: label(id, lang), description: '' }));
+const sources = [S.formule, S.onss, S.bonus, S.csss, S.rmmmg, S.ipp_taux];
+const jsonLd = [webApplicationSchema({ name: `Calcul salaire brut net ${YEAR}`, description, path: route('home', lang), lang }), faqSchema(faqs, lang), breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }]), organizationSchema(lang), personSchema(lang), websiteSchema(lang)];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} faqs={faqs} related={related} sources={sources}>
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Salaire brut en net {YEAR} : calculez votre salaire net en Belgique</h1>
+    <p class="mt-3 text-lg text-navy-600">Indiquez votre salaire brut mensuel, votre statut et votre situation familiale. Vous obtenez la cotisation ONSS, le bonus à l’emploi, le précompte professionnel, la cotisation spéciale de sécurité sociale et votre salaire net, ligne par ligne comme sur une fiche de paie.</p>
+    <p class="mt-3"><span class="inline-block rounded-full border border-navy-200 bg-white px-3 py-1 text-xs font-medium text-navy-600">Formule-clé SPF Finances {YEAR} · vérifié le <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, LANG_TAGS[lang])}</time> par {AUTHOR_NAME}</span></p>
+  </header>
+  <BeCalculator client:load mode="brutNet" lang={lang} methodHref={route('method', lang)} />
+  <AdSlot slot="home-1" />
+  <section class="prose prose-slate max-w-none">
+    <h2 id="reponse">Ce qui reste de {f.money(g, 0)} brut par mois</h2>
+    <p>Pour un employé isolé sans enfant payé {f.money(g, 0)} brut par mois en 2026, la cotisation personnelle de sécurité sociale de 13,07 % retire {f.money(r.onss, 2)}. À ce niveau, le bonus à l’emploi ne joue plus : il s’arrête à {f.money(E.a_to, 2)}. La rémunération imposable est donc de {f.money(r.imposable, 2)}. Le précompte professionnel, calculé avec la formule-clé du SPF Finances, s’élève à {f.money(r.pp, 2)}. La cotisation spéciale de sécurité sociale ajoute {f.money(r.csss, 2)}. Le salaire net est de {f.money(r.net, 2)}, soit {f.pct(r.net / g, 1)} du brut. Avec un conjoint sans revenus professionnels, le quotient conjugal fait monter le net à {f.money(ex(g, { situation: 'conjoint_sans' }).net, 2)}, et avec deux enfants à charge, il atteint {f.money(ex(g, { children: 2 }).net, 2)}. De son côté, l’employeur paie environ {f.money(employerCost(g).monthly, 2)} par mois, cotisations patronales comprises. Une fois par an s’ajoutent le double pécule de vacances, {f.money(doublePecule({ gross: g }).net, 2)} net, et, dans la plupart des secteurs, un treizième mois de {f.money(yearEndBonus({ gross: g }).net, 2)} net.</p>
+
+    <h2 id="etapes">Comment le salaire net est calculé</h2>
+    <p>Le passage du brut au net suit toujours les mêmes étapes, que l’employeur ou le secrétariat social applique chaque mois.</p>
+    <ol>
+      <li><strong>Salaire brut.</strong> Le salaire de base, les primes, les heures supplémentaires et les avantages soumis à l’ONSS.</li>
+      <li><strong>Cotisation ONSS personnelle.</strong> 13,07 % du brut pour un employé, 13,07 % de 108 % du brut pour un ouvrier.</li>
+      <li><strong>Bonus à l’emploi social.</strong> Pour les salaires jusqu’à {f.money(E.a_to, 2)}, une réduction de la cotisation en deux volets, A et B, plafonnée à la cotisation due.</li>
+      <li><strong>Rémunération imposable.</strong> Le brut moins l’ONSS réellement retenu.</li>
+      <li><strong>Précompte professionnel.</strong> Calculé avec la formule-clé : annualisation, frais forfaitaires, barème de 26,75 à 53,50 %, quotité exemptée, réductions pour charges de famille, puis bonus fiscal.</li>
+      <li><strong>Cotisation spéciale de sécurité sociale.</strong> Une retenue mensuelle fixée par barème, selon le salaire et le ménage.</li>
+    </ol>
+    <p>Le salaire net est ce qui reste après ces retenues. Les chèques-repas, les indemnités de frais et les avantages en nature éventuels ne sont pas compris dans ce calcul.</p>
+
+    <h2 id="parametres">Paramètres {YEAR}</h2>
+    <ContentTable headers={['Paramètre', 'Valeur']} align={['l', 'r']} rows={[
+      ['Cotisation ONSS personnelle', '13,07 % (ouvriers : sur 108 %)'],
+      ['Bonus à l’emploi, volet A (employé)', `${f.money(E.a_max, 2)} jusqu’à ${f.money(E.a_from, 2)}, nul à ${f.money(E.a_to, 2)}`],
+      ['Bonus à l’emploi, volet B (employé)', `${f.money(E.b_max, 2)} jusqu’à ${f.money(E.b_from, 2)}, nul à ${f.money(E.b_to, 2)}`],
+      ['Frais professionnels forfaitaires (précompte)', `30 %, maximum ${f.money(P.pp.frais_max, 0)} par an`],
+      ['Barème du précompte', '26,75 % à 53,50 % (7 % de taxe communale inclus)'],
+      ['Quotité exemptée (précompte)', `${f.money(P.pp.quotite, 0)}`],
+      ['Cotisation spéciale, maximum mensuel', `${f.money(P.csss.max_single, 2)} (isolé) · ${f.money(P.csss.max_two, 2)} (deux revenus)`],
+      ['Salaire minimum (RMMMG) depuis le 1er avril 2026', f.money(P.rmmmg.amount, 2)],
+    ]} />
+
+    <h2 id="exemples">Du brut au net, employé isolé sans enfant</h2>
+    <ContentTable headers={['Brut', 'ONSS après bonus', 'Précompte', 'Cotisation spéciale', 'Net', 'Net / brut']} align={['r', 'r', 'r', 'r', 'r', 'r']} rows={rows} />
+    <p>La part du brut qui reste en net diminue avec le salaire. Au salaire minimum, le bonus à l’emploi efface l’ONSS ; au-delà de {f.money(E.a_to, 0)}, il n’existe plus et le précompte progresse selon le barème.</p>
+
+    <h2 id="famille">Selon la situation familiale, {f.money(g, 0)} brut</h2>
+    <ContentTable headers={['Situation', 'Précompte', 'Cotisation spéciale', 'Net']} align={['l', 'r', 'r', 'r']} rows={fam} />
+    <p>Chaque enfant à charge diminue l’impôt annuel d’un montant fixe, et le parent isolé reçoit une réduction supplémentaire. Le quotient conjugal attribue au conjoint sans revenus 30 % du revenu imposable, au maximum {f.money(P.pp.conjoint_max, 0)} par an. Lorsque le conjoint a des revenus, la cotisation spéciale suit le barème des ménages à deux revenus.</p>
+
+    <h2 id="annuel">Sur une année complète</h2>
+    <p>Un employé ne reçoit pas seulement douze salaires. Le double pécule de vacances, égal à 92 % du brut mensuel, est versé une fois par an avec un précompte à taux fixe, et la plupart des commissions paritaires prévoient une prime de fin d’année d’un mois de salaire. Pour {f.money(g, 0)} brut, le total net de l’année approche {f.money(r.net * 12 + doublePecule({ gross: g }).net + yearEndBonus({ gross: g }).net, 0)}. Les calculateurs du <a href={route('pecule', lang)}>pécule de vacances</a> et de la <a href={route('prime', lang)}>prime de fin d’année</a> détaillent ces montants. Pour savoir quel brut demander pour un net donné, le <a href={route('netBrut', lang)}>calcul du net au brut</a> fait la recherche inverse ; il faut par exemple {f.money(grossForNet(2800), 2)} brut pour toucher 2 800 € net en tant qu’isolé.</p>
+
+    <h2 id="employeur">Ce que coûte le salaire à l’employeur</h2>
+    <p>L’employeur paie en plus du brut une cotisation patronale de base et une modération salariale, environ 25 % au total pour un employé du secteur privé. Un salaire de {f.money(g, 0)} coûte ainsi {f.money(employerCost(g).monthly, 2)} par mois et environ {f.money(employerCost(g).annual, 0)} par an avec treizième mois et double pécule. La réduction structurelle diminue ce coût pour les bas et moyens salaires. Le <a href={route('cout', lang)}>calculateur de coût employeur</a> donne le détail.</p>
+
+    <AdSlot slot="home-2" />
+
+    <h2 id="salaires">Exemples par salaire brut</h2>
+    <p>Chaque page ci-dessous part d’un salaire et explique le seuil qui compte à ce niveau : bonus à l’emploi, cotisation spéciale, quotient conjugal, enfants, pécule de vacances, treizième mois ou tranche la plus élevée.</p>
+    <ul class="columns-2 sm:columns-3" data-chrome>
+      {MONTHLY.map((x) => <li><a href={route(`m-${x}`, lang)}>{monthlyLabel(x, lang)}</a></li>)}
+    </ul>
+
+    <h2 id="conseils">Six points à vérifier sur votre fiche de paie</h2>
+    <ol>
+      <li><strong>Le statut.</strong> Employé ou ouvrier change la base ONSS et le bonus à l’emploi.</li>
+      <li><strong>La situation familiale déclarée.</strong> Enfants à charge, conjoint avec ou sans revenus : une erreur modifie le précompte chaque mois.</li>
+      <li><strong>Le bonus à l’emploi.</strong> Sous {f.money(E.a_to, 0)} brut à temps plein, il doit apparaître sur la fiche de paie.</li>
+      <li><strong>La cotisation spéciale.</strong> Son montant dépend de la situation du ménage ; elle est régularisée dans l’avertissement-extrait de rôle.</li>
+      <li><strong>Les avantages non soumis.</strong> Chèques-repas et indemnités de frais augmentent le net sans passer par l’ONSS.</li>
+      <li><strong>Le décompte fiscal.</strong> Le précompte est une avance ; vérifiez chaque année l’avertissement-extrait de rôle.</li>
+    </ol>
+
+    <h2 id="limites">Ce que le calculateur ne couvre pas</h2>
+    <p>Le calcul suppose un temps plein et un salaire constant. Il ne tient pas compte des avantages en nature comme la voiture de société, des chèques-repas, des heures supplémentaires avec réduction de précompte, des régimes particuliers comme les flexi-jobs, les étudiants ou les dirigeants d’entreprise, ni des réductions fiscales accordées dans la déclaration. Pour un temps partiel, le bonus à l’emploi est proratisé, ce qui peut modifier légèrement le net. La <a href={route('method', lang)}>méthodologie</a> décrit toutes les règles appliquées et les tests qui les vérifient.</p>
+
+    <h2 id="impot">Du précompte à l’impôt final</h2>
+    <p>Le précompte retenu chaque mois est une estimation de l’impôt sur le salaire. L’impôt définitif, calculé l’année suivante, utilise les <a href={route('baremes', lang)}>barèmes de l’impôt</a> de 25 à 50 %, la taxe communale réelle de votre commune et toutes vos réductions d’impôt. Pour la plupart des salariés sans autres revenus, la différence est modeste. Elle peut être plus importante en cas de changement de situation en cours d’année, de revenus du conjoint ou de dépenses donnant droit à une réduction, comme l’épargne-pension ou les titres-services.</p>
+    <Sources lang={lang} />
+  </section>
+</PageLayout>

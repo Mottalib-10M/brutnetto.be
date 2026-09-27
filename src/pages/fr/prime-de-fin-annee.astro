@@ -1,0 +1,29 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { P } from '../../lib/tables';
+import { yearEndBonus } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const g = 3700; const y = yearEndBonus({ gross: g });
+const rows = [2500, 3000, 3700, 4500, 5500, 7000].map((x) => { const b = yearEndBonus({ gross: x }); return [f.money(x, 0), f.money(b.onss, 2), f.pct(b.rate, 2), f.money(b.pp, 2), f.money(b.net, 2)]; });
+const taux = P.exceptionnel.filter((t) => t.autre > 0).map((t, i, a) => [t.upto ? `jusqu’à ${f.money(t.upto, 0)}` : `au-delà de ${f.money(a[i - 1].upto ?? 0, 0)}`, f.pct(t.autre, 2)]);
+const faqs = [
+  { q: 'Comment est taxée la prime de fin d’année ?', a: `Elle subit l’ONSS personnel de 13,07 %, puis un précompte au taux des allocations exceptionnelles, fixé selon la rémunération annuelle normale. Pour ${f.money(g, 0)} brut par mois, ce taux est de ${f.pct(y.rate, 2)} et la prime nette de ${f.money(y.net, 2)}. Le bonus à l’emploi ne s’applique pas à cette prime.` },
+  { q: 'Pourquoi une grande partie de la prime disparaît-elle ?', a: 'Parce que le taux de précompte des allocations exceptionnelles est proche du taux marginal, voire supérieur pour certains salaires. Ce n’est toutefois qu’une avance : dans la déclaration, la prime s’ajoute aux autres revenus, et une partie du précompte peut être remboursée lors du décompte final.' },
+  { q: 'Qui a droit à une prime de fin d’année ?', a: 'Le droit découle d’une convention collective sectorielle, du règlement de travail ou du contrat de travail. La commission paritaire auxiliaire pour employés et de nombreux secteurs prévoient une prime égale à un mois de salaire, souvent sous condition d’ancienneté et au prorata des prestations de l’année.' },
+];
+---
+<ToolPage lang={lang} id="prime" title="Prime de fin d’année 2026 : treizième mois brut et net" h1="Prime de fin d’année : combien reste-t-il de votre treizième mois ?"
+  description="Calculez le net de votre prime de fin d’année 2026 : ONSS de 13,07 % et précompte au taux des allocations exceptionnelles selon votre rémunération annuelle."
+  intro="Indiquez votre salaire brut mensuel. Le calculateur suppose une prime égale à un mois de brut et donne le montant net versé en décembre."
+  mode="prime" initialGross={g} faqs={faqs} related={['pecule', 'pp', 'brutNet', 'cout', 'home', 'baremes']} sources={[S.formule, S.onss, S.pp_calcul]}>
+  <p>La prime de fin d’année, appelée aussi treizième mois, est versée en décembre dans la plupart des secteurs. Elle est soumise à la cotisation ONSS personnelle de 13,07 %, sans bonus à l’emploi, puis au précompte professionnel. Celui-ci n’est pas calculé avec la formule-clé mais selon un tableau de taux fixes pour les allocations exceptionnelles, qui dépend de la rémunération annuelle brute normale. Pour un salaire de {f.money(g, 0)} brut par mois, la prime brute de {f.money(y.amount, 2)} perd {f.money(y.onss, 2)} d’ONSS et {f.money(y.pp, 2)} de précompte au taux de {f.pct(y.rate, 2)} : il reste {f.money(y.net, 2)} net. Le calculateur ne tient pas compte des exonérations et réductions pour enfants à charge prévues pour les revenus modestes, ni des primes payées par un fonds de sécurité d’existence, qui suivent un taux distinct. Pour un ouvrier, la prime est souvent calculée autrement et soumise à l’ONSS sur 108 %.</p>
+  <h2>Prime nette selon le salaire mensuel</h2>
+  <ContentTable headers={['Brut mensuel', 'ONSS', 'Taux de précompte', 'Précompte', 'Prime nette']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <h2>Les taux des allocations exceptionnelles</h2>
+  <ContentTable headers={['Rémunération annuelle normale', 'Taux de précompte']} align={['l', 'r']} rows={taux} />
+  <p>Le même mécanisme s’applique au <a href={route('pecule', lang)}>double pécule de vacances</a>, avec des taux un peu plus bas. Le <a href={route('pp', lang)}>précompte professionnel ordinaire</a> suit la formule-clé.</p>
+</ToolPage>

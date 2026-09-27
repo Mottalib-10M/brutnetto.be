@@ -1,0 +1,54 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { selfEmployed, employerCost, compute } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const I = P.inasti; const s = selfEmployed(60000); const minQ = I.min_income * I.rate1 / 4;
+const rows = [25000, 40000, 60000, 80000, 120000].map((p) => { const x = selfEmployed(p); return [f.money(p, 0), f.money(x.contributions, 0), f.money(x.tax, 0), f.money(x.net, 0), f.pct(1 - x.net / p, 1)]; });
+const faqs = [
+  { q: 'Hoeveel sociale bijdragen betaalt een zelfstandige in 2026?', a: `${f.pct(I.rate1, 1)} van het beroepsinkomen tot ${f.money(I.limit1, 2)} en ${f.pct(I.rate2, 2)} op het deel tussen dat bedrag en ${f.money(I.limit2, 2)}, volgens het RSVZ. Daarboven is geen bijdrage verschuldigd. Daarbij komen de beheerskosten van het sociaal verzekeringsfonds. De bijdragen worden per kwartaal betaald.` },
+  { q: 'Wat is de minimumbijdrage van een zelfstandige in hoofdberoep?', a: `Ze wordt berekend op een minimuminkomen van ${f.money(I.min_income, 2)}, of ongeveer ${f.money(minQ, 2)} per kwartaal zonder beheerskosten. Ze is verschuldigd, ook als het werkelijke inkomen lager ligt. Zelfstandigen in bijberoep en starters genieten bijzondere regels. Het fonds rekent daarbij ook beheerskosten aan.` },
+  { q: 'Op welk inkomen worden de bijdragen berekend?', a: 'Op het netto belastbaar beroepsinkomen van het jaar, vastgesteld door de fiscale administratie. Tijdens het jaar vraagt het sociaal verzekeringsfonds voorlopige bijdragen, berekend op een referte-inkomen; ze worden geregulariseerd zodra het definitieve inkomen bekend is, meestal twee jaar later. Het fonds stuurt dan een afrekening.' },
+  { q: 'Zijn de sociale bijdragen aftrekbaar?', a: 'Ja. De verplichte sociale bijdragen die de zelfstandige betaalt, zijn aftrekbaar als beroepskosten. Daarom trekt de rekenmodule ze van de winst af voordat de personenbelasting wordt berekend. De aftrek gebeurt in de belastingaangifte van het jaar waarin ze betaald werden, wat het belastbaar inkomen en dus ook de belasting verlaagt.' },
+  { q: 'Betaalt een zelfstandige bedrijfsvoorheffing?', a: 'Nee. De zelfstandige heeft geen werkgever die voorheffing inhoudt. Hij wordt uitgenodigd om tijdens het jaar voorafbetalingen te doen; zonder die voorafbetalingen volgt een belastingvermeerdering. Voorafbetalingen geven in de eerste jaren van activiteit ook recht op een bonificatie. Starters zijn drie jaar vrijgesteld van die vermeerdering.' },
+  { q: 'Hoeveel moet ik voorafbetalen?', a: 'Het doel is tijdens het jaar de geraamde belasting op het beroepsinkomen te betalen. Een eenvoudige methode is de waarschijnlijke belasting met deze rekenmodule te berekenen en ze over vier voorafbetalingen te spreiden, vóór de vervaldagen in april, juli, oktober en december. Vroege voorafbetalingen vermijden meer vermeerdering.' },
+  { q: 'Welke kosten mag een zelfstandige aftrekken?', a: 'Alle kosten die nodig zijn om het beroepsinkomen te verwerven of te behouden: huur van lokalen, materiaal, verplaatsingen, telefoon, boekhouder, verzekeringen en de verplichte sociale bijdragen. Voor gemengd gebruik, zoals een wagen of een woning, is enkel het beroepsdeel aftrekbaar, en voor wagens gelden bijzondere beperkingen.' },
+];
+---
+<Guide lang={lang} id="independant" title="Belastingen zelfstandige 2026: sociale bijdragen en PB" h1="Belastingen van een zelfstandige in 2026: sociale bijdragen en personenbelasting"
+  description="Wat een zelfstandige in België in 2026 betaalt: RSVZ-bijdragen van 20,5 % en 14,16 %, personenbelasting, gemeentebelasting en voorafbetalingen, met voorbeelden."
+  intro="Een zelfstandige krijgt geen loonfiche. Hij betaalt zelf zijn sociale bijdragen en zijn belasting. Dit is de raming voor 2026, en de vergelijking met een werknemer."
+  resume={`Een zelfstandige in hoofdberoep in België betaalt twee heffingen op zijn winst. De eerste is de sociale bijdrage, betaald aan een sociaal verzekeringsfonds: volgens het RSVZ bedraagt ze ${f.pct(I.rate1, 1)} van het beroepsinkomen tot ${f.money(I.limit1, 2)} en ${f.pct(I.rate2, 2)} op de volgende schijf, tot ${f.money(I.limit2, 2)}, met een minimumbijdrage berekend op ${f.money(I.min_income, 2)}. De tweede is de personenbelasting, volgens dezelfde schijven als voor werknemers, van 25 tot 50 %, plus de gemeentebelasting. De sociale bijdragen zijn aftrekbaar en verlagen dus de belastbare basis. Voor een winst van ${f.money(60000, 0)} vóór bijdragen betaalt een alleenstaande ongeveer ${f.money(s.contributions, 0)} bijdragen en ${f.money(s.tax, 0)} belasting, en houdt hij ${f.money(s.net, 0)} over. De raming houdt geen rekening met de beheerskosten van het fonds, bijzondere fiscale aftrekken of verminderingen voor starters.`}
+  faqs={faqs} related={['baremes', 'cout', 'brutNet', 'onss', 'home', 'pp']} sources={[S.inasti, S.ipp_taux, S.formule]}>
+  <h2>Bijdragen en belasting volgens winst</h2>
+  <ContentTable headers={['Winst vóór bijdragen', 'Sociale bijdragen', 'Belasting (7 % gemeente)', 'Netto inkomen', 'Totale heffing']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <p>De berekening gaat uit van een alleenstaande zonder kinderen of bijzondere aftrek. De bijdragen worden berekend op het inkomen na bijdragen, zoals de administratie dat doet.</p>
+
+  <h2>De sociale bijdragen van het RSVZ</h2>
+  <p>De sociale bijdragen van zelfstandigen financieren hun pensioen, hun geneeskundige verzorging, hun uitkeringen bij arbeidsongeschiktheid en het overbruggingsrecht. Ze worden berekend op het netto belastbaar beroepsinkomen van het bijdragejaar. Omdat dat inkomen pas later gekend is, vraagt het fonds eerst voorlopige kwartaalbijdragen, gebaseerd op het geherwaardeerde inkomen van een vroeger jaar, en regulariseert het ze daarna. De zelfstandige kan vragen zijn voorlopige bijdragen aan te passen als hij een duidelijk ander inkomen verwacht.</p>
+
+  <h2>De personenbelasting</h2>
+  <p>Het netto beroepsinkomen, na werkelijke kosten en sociale bijdragen, wordt belast volgens het progressieve barema: 25 % tot {f.money(P.ipp.brackets[0].upto ?? 0, 0)}, 40 %, 45 % en 50 % boven {f.money(P.ipp.brackets[2].upto ?? 0, 0)}, met een belastingvrije som van {f.money(P.ipp.quotite, 0)}. De gemeentebelasting komt daarbij, en in de rekenmodule kan je het percentage kiezen. De <a href={route('baremes', lang)}>belastingschijven</a> geven de details.</p>
+
+  <h2>Voorafbetalingen</h2>
+  <p>Zonder voorheffing moet de zelfstandige zijn belasting via driemaandelijkse voorafbetalingen betalen. Doet hij dat niet, dan wordt bij de inkohiering een vermeerdering aan de belasting toegevoegd. Starters zijn daarvan vrijgesteld tijdens hun eerste drie jaar, en krijgen een bonificatie als ze toch voorafbetalingen doen. De geraamde belasting over vier voorafbetalingen spreiden is de eenvoudigste manier om de vermeerdering te vermijden.</p>
+
+  <h2>Werknemer of zelfstandige</h2>
+  <p>Bij een gelijke kost voor de opdrachtgever is de vergelijking lastig. Een werknemer met {f.money(5000, 0)} bruto per maand kost zijn werkgever ongeveer {f.money(employerCost(5000).annual, 0)} per jaar en ontvangt {f.money(compute({ gross: 5000 }).net * 12, 0)} netto over twaalf maanden, plus vakantiegeld en eindejaarspremie. Een zelfstandige moet daarnaast zijn vakantie, zijn aanvullend pensioen en zijn periodes zonder inkomen financieren. De <a href={route('cout', lang)}>werkgeverskost</a> helpt beide statuten te vergelijken.</p>
+
+  <h2>Vennootschap of natuurlijk persoon</h2>
+  <p>Boven een bepaald inkomen stappen veel zelfstandigen over naar een vennootschap, waar de winst onder de vennootschapsbelasting valt en de bedrijfsleider zichzelf een bezoldiging uitkeert. Die keuze hangt af van het inkomensniveau, de nood aan herinvestering en de regels over de minimumbezoldiging van de bedrijfsleider. Ze verdient het advies van een boekhouder, want deze rekenmodule dekt ze niet.</p>
+  <h2>Een voorbeeld stap voor stap</h2>
+  <p>Voor een winst van {f.money(60000, 0)} vóór bijdragen vraagt het sociaal verzekeringsfonds ongeveer {f.money(s.contributions, 0)} per jaar, of {f.money(s.quarterly, 2)} per kwartaal. Omdat die bijdragen aftrekbaar zijn, daalt het belastbaar inkomen tot {f.money(s.taxable, 0)}. De belasting, berekend volgens het barema met de belastingvrije som en 7 % gemeentebelasting, bedraagt {f.money(s.tax, 0)}. De zelfstandige houdt {f.money(s.net, 0)} over, vóór beheerskosten van het fonds en vóór aanvullend pensioensparen. Om met een loon te vergelijken, moet je ook rekening houden met het ontbreken van vakantiegeld en eindejaarspremie.</p>
+
+  <h2>Starters en bijberoep</h2>
+  <p>Een beginnende zelfstandige betaalt voorlopige bijdragen berekend op een forfaitair inkomen, die later worden geregulariseerd. Hij kan vragen ze te verlagen als hij een laag inkomen verwacht. Een zelfstandige in bijberoep, die daarnaast minstens halftijds als werknemer werkt, betaalt pas bijdragen boven een inkomensgrens, met eigen regels. Die situaties worden hier niet berekend; het sociaal verzekeringsfonds geeft de exacte berekening.</p>
+
+  <h2>Btw</h2>
+  <p>Een zelfstandige is meestal btw-plichtig en rekent btw aan op zijn facturen. Die btw is geen inkomen: ze wordt aan de staat doorgestort, na aftrek van de btw op de aankopen. Kleine ondernemingen kunnen onder bepaalde voorwaarden de vrijstellingsregeling gebruiken. De bedragen in de rekenmodule zijn altijd exclusief btw.</p>
+  <p>De rekenmodule geeft een eerste raming. Voor een definitieve berekening, bijvoorbeeld bij de keuze tussen een eenmanszaak en een vennootschap, blijft een boekhouder de beste raadgever.</p>
+</Guide>

@@ -1,0 +1,51 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, webPageSchema } from '../../lib/seo';
+import { P, ex } from '../../lib/tables';
+import { bareme, ppBase, doublePecule, employerCost } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const title = 'Brut net 2026 : méthodologie, sources, tests et limites';
+const description = 'Comment BrutNetto.be calcule l’ONSS, le bonus à l’emploi, le précompte selon la formule-clé 2026, la cotisation spéciale, le pécule et le coût pour l’employeur.';
+const m = ex(2189.81); const r = ex(3500);
+const checks = [
+  ['Barème, 16 710 €', f.money(bareme(16710), 2), 'Annexe 1 : 4 469,93 €'],
+  ['Barème, 51 050 €', f.money(bareme(51050), 2), 'Annexe 1 : 20 320,38 €'],
+  ['Simulateur SPF Finances : 2 500 € imposables, isolé, 1 enfant', f.money(ppBase(2500, { children: 1 }).monthly, 2), '329,01 €'],
+  ['Salaire minimum : bonus retenu', f.money(m.bonus, 2), 'Écrêté à l’ONSS de 286,21 €'],
+  ['3 500 € employé isolé : précompte', f.money(r.pp, 2), 'Calcul manuel : 617,41 €'],
+  ['3 500 € : double pécule brut', f.money(doublePecule({ gross: 3500 }).amount, 2), '92 % du brut'],
+  ['3 500 € : coût employeur mensuel', f.money(employerCost(3500).monthly, 2), 'Brut + 25 %'],
+];
+const jsonLd = [webPageSchema({ name: title, description, path: route('method', lang), lang }), breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }, { name: 'Méthodologie', path: route('method', lang) }])];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Méthodologie' }]} sources={Object.values(S)}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Comment les calculs sont faits</h1>
+    <p class="mt-3 text-lg text-navy-600">Tous les montants du site viennent d’un seul moteur, écrit sous forme de fonctions pures qui s’exécutent dans votre navigateur, et tous ses paramètres figurent dans un fichier unique de valeurs 2026, chacune avec sa source.</p></header>
+  <div class="prose prose-slate max-w-none">
+    <h2>Sources et mises à jour</h2>
+    <p>Le précompte professionnel suit la formule-clé du SPF Finances pour les rémunérations payées à partir du 1er janvier 2026, dont le texte et les annexes ont été lus dans Fisconet. Le bonus à l’emploi applique les montants publiés par l’ONSS pour la période commençant le 1er septembre 2026. Les taux de cotisation proviennent des instructions administratives de l’ONSS, la cotisation spéciale de sécurité sociale de son barème, le salaire minimum du Conseil national du travail et les cotisations des indépendants de l’INASTI. Les valeurs ont été lues le {P.retrieved_at} et sont revues à chaque nouvelle formule-clé, indexation ou modification du bonus à l’emploi.</p>
+    <h2>Cotisations et bonus à l’emploi</h2>
+    <p>L’ONSS personnel est de 13,07 % du brut, ou de 108 % du brut pour un ouvrier, arrondi au cent. Le bonus à l’emploi est calculé sur le salaire brut mensuel supposé à temps plein, volet A et volet B selon les formules de l’ONSS, chaque montant arrondi au cent. Si leur somme dépasse la cotisation, le volet B est réduit en premier, puis le volet A, comme le prévoient les instructions.</p>
+    <h2>Précompte professionnel</h2>
+    <p>La rémunération imposable, le brut moins l’ONSS retenu, est multipliée par douze. Les frais forfaitaires de 30 %, plafonnés à {f.money(P.pp.frais_max, 0)}, sont déduits. Le barème de l’annexe 1 est appliqué, avec les montants cumulés arrondis de la formule, puis la quotité exemptée ou le quotient conjugal, et les réductions pour enfants et parent isolé des annexes 3 et 4. L’impôt annuel est divisé par douze, puis diminué de 30 % des retenues d’assurance de groupe et du bonus fiscal : {f.pct(P.bonus.fiscal_a, 2)} du volet A et {f.pct(P.bonus.fiscal_b, 2)} du volet B. Chaque étape est arrondie au cent, le demi-cent vers le haut.</p>
+    <h2>Cotisation spéciale, pécule, prime et coût</h2>
+    <p>La cotisation spéciale suit le barème mensuel, selon que le ménage a un ou deux revenus. Le double pécule vaut 92 % du brut, avec 13,07 % d’ONSS sur 85/92 et un précompte au taux des pécules de vacances ; la prime de fin d’année subit l’ONSS ordinaire et le taux des autres allocations exceptionnelles, d’après la rémunération annuelle normale imposable. Le coût employeur ajoute 25 % de cotisations patronales de base et de modération salariale.</p>
+    <h2>Vérifications</h2>
+    <p>Ces cas font partie des tests exécutés avant chaque publication ; la publication échoue si l’un d’eux change.</p>
+    <ContentTable headers={['Cas', 'Moteur', 'Référence']} align={['l', 'r', 'l']} rows={checks} />
+    <h2>Limites</h2>
+    <ul>
+      <li>Temps plein supposé : le bonus à l’emploi n’est pas proratisé pour un temps partiel.</li>
+      <li>Pas d’avantages en nature, de chèques-repas, d’heures supplémentaires avec réduction de précompte ni de dirigeants d’entreprise.</li>
+      <li>Les exonérations pour enfants sur les primes et pécules ne sont pas appliquées.</li>
+      <li>Le coût employeur n’inclut pas la réduction structurelle ni les cotisations sectorielles.</li>
+      <li>L’impôt des indépendants est estimé sans frais de gestion de caisse ni déductions particulières.</li>
+      <li>La formule-clé peut être adaptée en cours d’année ; le site suit la version en vigueur à la date de vérification.</li>
+    </ul>
+    <p>Les résultats sont des estimations. En cas d’écart non expliqué par ces limites, écrivez-nous via la <a href={route('contact', lang)}>page de contact</a> ; les corrections sont datées comme l’indique la <a href={route('editorial', lang)}>politique éditoriale</a>.</p>
+  </div>
+</PageLayout>

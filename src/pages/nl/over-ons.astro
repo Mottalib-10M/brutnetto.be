@@ -1,0 +1,27 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, profilePageSchema, organizationSchema } from '../../lib/seo';
+import { CONTACT_EMAIL, SITE_FOUNDED } from '../../data/site-config';
+import { P } from '../../lib/tables';
+const lang = 'nl';
+const title = 'Over BrutNetto.be: uitgever, werkwijze en financiering';
+const description = 'BrutNetto.be wordt uitgegeven door Radif Partners: waarom deze bruto-nettoberekening voor België, hoe de site gefinancierd wordt en hoe je een fout meldt.';
+const jsonLd = [profilePageSchema({ path: route('about', lang), lang }), organizationSchema(lang), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Over ons', path: route('about', lang) }])];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Over ons' }]} showAuthor={false}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Over de site</h1></header>
+  <div class="prose prose-slate max-w-none" data-author="Radif Partners">
+    <p>BrutNetto.be wordt uitgegeven door <strong>Radif Partners</strong>, een onafhankelijke uitgever van gratis loon- en belastingberekeningen voor verschillende landen. De site werd in {SITE_FOUNDED} gelanceerd, in het Nederlands en het Frans, om werknemers, werkgevers en zelfstandigen in België een nettoloonberekening te bieden die de officiële sleutelformule van de bedrijfsvoorheffing en de exacte bedragen van de werkbonus toepast, en elke stap van de berekening toont.</p>
+    <h2>Waarom deze rekenmodule</h2>
+    <p>Veel simulators gebruiken een gemiddeld percentage of vergeten de werkbonus, de bijzondere bijdrage voor de sociale zekerheid of de gezinssituatie. Net die elementen verklaren de verschillen tussen twee loonfiches. We hebben de berekening opgebouwd vanuit de teksten van de FOD Financiën en de instructies van de RSZ, en we controleren ze met de officiële voorbeelden.</p>
+    <h2>Onze werkwijze</h2>
+    <p>Elk tarief staat in één parameterbestand, met de bron en de controledatum, en wordt nooit met de hand in een pagina getypt. De bedragen op de pagina’s worden berekend met dezelfde rekenmotor als de rekenmodules. De parameters werden nagekeken op {P.retrieved_at}. De <a href={route('method', lang)}>methodologie</a> beschrijft de regels, de tests en de grenzen, en het <a href={route('editorial', lang)}>redactiebeleid</a> legt uit hoe we schrijven en corrigeren.</p>
+    <h2>Financiering</h2>
+    <p>De site is gratis en vraagt geen registratie. Er kan in de toekomst reclame verschijnen, onder de rekenmodules en nooit erin. We verkopen geen gegevens, en er zijn er ook geen: de berekeningen gebeuren in je browser en niets van wat je invult, wordt naar ons verstuurd. Geen sociaal secretariaat, bank of overheid financiert of leest de inhoud na.</p>
+    <h2>Wat we niet zijn</h2>
+    <p>We zijn geen sociaal secretariaat of belastingadviseur, en we hebben geen band met de FOD Financiën, de RSZ of het RSVZ. De resultaten zijn ramingen; je loonfiche en je aanslagbiljet zijn bepalend.</p>
+    <h2>Een fout melden</h2>
+    <p>Lijkt een bedrag niet te kloppen, schrijf dan naar <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> met de pagina, de ingevulde gegevens en het verwachte resultaat. Elke melding wordt nagekeken in de officiële bron, en correcties worden met hun datum gepubliceerd.</p>
+  </div>
+</PageLayout>

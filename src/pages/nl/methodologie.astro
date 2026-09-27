@@ -1,0 +1,51 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, webPageSchema } from '../../lib/seo';
+import { P, ex } from '../../lib/tables';
+import { bareme, ppBase, doublePecule, employerCost } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const title = 'Methodologie van de bruto-nettoberekening: bronnen en tests';
+const description = 'Hoe BrutNetto.be de RSZ, de werkbonus, de voorheffing volgens de sleutelformule 2026, de bijzondere bijdrage, het vakantiegeld en de werkgeverskost berekent.';
+const m = ex(2189.81); const r = ex(3500);
+const checks = [
+  ['Barema, 16 710 euro', f.money(bareme(16710), 2), 'Bijlage 1: 4 469,93 euro'],
+  ['Barema, 51 050 euro', f.money(bareme(51050), 2), 'Bijlage 1: 20 320,38 euro'],
+  ['Simulator FOD Financiën: 2 500 euro belastbaar, alleenstaande, 1 kind', f.money(ppBase(2500, { children: 1 }).monthly, 2), '329,01 euro'],
+  ['Minimumloon: toegekende werkbonus', f.money(m.bonus, 2), 'Afgetopt op de RSZ van 286,21 euro'],
+  ['3 500 euro alleenstaande bediende: voorheffing', f.money(r.pp, 2), 'Manuele berekening: 617,41 euro'],
+  ['3 500 euro: bruto dubbel vakantiegeld', f.money(doublePecule({ gross: 3500 }).amount, 2), '92 % van het brutoloon'],
+  ['3 500 euro: werkgeverskost per maand', f.money(employerCost(3500).monthly, 2), 'Bruto + 25 %'],
+];
+const jsonLd = [webPageSchema({ name: title, description, path: route('method', lang), lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Methodologie', path: route('method', lang) }])];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Methodologie' }]} sources={Object.values(S)}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Hoe de berekeningen gebeuren</h1>
+    <p class="mt-3 text-lg text-navy-600">Alle bedragen op de site komen uit één rekenmotor, geschreven als zuivere functies die in je browser draaien, en alle parameters staan in één bestand met de waarden voor 2026, elk met zijn bron.</p></header>
+  <div class="prose prose-slate max-w-none">
+    <h2>Bronnen en updates</h2>
+    <p>De bedrijfsvoorheffing volgt de sleutelformule van de FOD Financiën voor lonen betaald vanaf 1 januari 2026, waarvan de tekst en de bijlagen in Fisconet werden gelezen. De werkbonus past de bedragen toe die de RSZ publiceerde voor de periode vanaf 1 september 2026. De bijdragevoeten komen uit de administratieve instructies van de RSZ, de bijzondere bijdrage voor de sociale zekerheid uit haar barema, het minimumloon van de Nationale Arbeidsraad en de bijdragen van zelfstandigen van het RSVZ. De waarden werden gelezen op {P.retrieved_at} en worden herzien bij elke nieuwe sleutelformule, indexering of wijziging van de werkbonus.</p>
+    <h2>Bijdragen en werkbonus</h2>
+    <p>De persoonlijke RSZ bedraagt 13,07 % van het brutoloon, of van 108 % van het brutoloon voor een arbeider, afgerond op de cent. De werkbonus wordt berekend op het bruto maandloon, verondersteld voltijds, luik A en luik B volgens de formules van de RSZ, elk bedrag afgerond op de cent. Als hun som de bijdrage overschrijdt, wordt eerst luik B verminderd en daarna luik A, zoals de instructies voorschrijven.</p>
+    <h2>Bedrijfsvoorheffing</h2>
+    <p>Het belastbaar loon, het brutoloon min de ingehouden RSZ, wordt met twaalf vermenigvuldigd. De forfaitaire kosten van 30 %, begrensd op {f.money(P.pp.frais_max, 0)}, worden afgetrokken. Het barema van bijlage 1 wordt toegepast, met de afgeronde cumulatieve bedragen van de formule, daarna de belastingvrije som of het huwelijksquotiënt, en de verminderingen voor kinderen en alleenstaande ouders uit bijlagen 3 en 4. De jaarbelasting wordt door twaalf gedeeld en daarna verminderd met 30 % van de inhoudingen voor een groepsverzekering en met de fiscale werkbonus: {f.pct(P.bonus.fiscal_a, 2)} van luik A en {f.pct(P.bonus.fiscal_b, 2)} van luik B. Elke stap wordt op de cent afgerond, de halve cent naar boven.</p>
+    <h2>Bijzondere bijdrage, vakantiegeld, premie en kost</h2>
+    <p>De bijzondere bijdrage volgt het maandbarema, naargelang het gezin één of twee inkomens heeft. Het dubbel vakantiegeld bedraagt 92 % van het brutoloon, met 13,07 % RSZ op 85/92 en een voorheffing tegen het tarief voor vakantiegeld; de eindejaarspremie ondergaat de gewone RSZ en het tarief voor andere uitzonderlijke vergoedingen, op basis van het normale belastbare jaarloon. De werkgeverskost telt 25 % basiswerkgeversbijdragen en loonmatiging bij het brutoloon.</p>
+    <h2>Controles</h2>
+    <p>Deze gevallen maken deel uit van de tests die vóór elke publicatie worden uitgevoerd; de publicatie mislukt als een ervan verandert.</p>
+    <ContentTable headers={['Geval', 'Rekenmotor', 'Referentie']} align={['l', 'r', 'l']} rows={checks} />
+    <h2>Grenzen</h2>
+    <ul>
+      <li>Voltijds verondersteld: de werkbonus wordt niet pro rata berekend voor deeltijds werk.</li>
+      <li>Geen voordelen in natura, maaltijdcheques, overuren met vermindering van voorheffing of bedrijfsleiders.</li>
+      <li>De vrijstellingen voor kinderen op premies en vakantiegeld worden niet toegepast.</li>
+      <li>De werkgeverskost omvat de structurele vermindering en de sectorale bijdragen niet.</li>
+      <li>De belasting van zelfstandigen wordt geraamd zonder beheerskosten van het fonds of bijzondere aftrekken.</li>
+      <li>De sleutelformule kan in de loop van het jaar worden aangepast; de site volgt de versie die op de controledatum geldt.</li>
+    </ul>
+    <p>De resultaten zijn ramingen. Bij een verschil dat deze grenzen niet verklaren, schrijf ons via de <a href={route('contact', lang)}>contactpagina</a>; correcties worden gedateerd zoals het <a href={route('editorial', lang)}>redactiebeleid</a> vermeldt.</p>
+  </div>
+</PageLayout>

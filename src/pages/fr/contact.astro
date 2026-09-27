@@ -1,0 +1,25 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, contactPageSchema } from '../../lib/seo';
+import { CONTACT_EMAIL } from '../../data/site-config';
+const lang = 'fr';
+const title = 'Contact BrutNetto.be : une erreur, une question, le widget';
+const description = 'Écrivez à l’éditeur de BrutNetto.be pour signaler une erreur de calcul, poser une question sur la méthode ou intégrer gratuitement le calculateur sur un site.';
+const jsonLd = [contactPageSchema({ name: title, description, path: route('contact', lang), lang }), breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }, { name: 'Contact', path: route('contact', lang) }])];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Contact' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Contact</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <p>Le courriel est le seul canal : <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. Nous lisons chaque message et répondons généralement en quelques jours ouvrables.</p>
+    <h2>Signaler une erreur</h2>
+    <p>Indiquez la page, le salaire brut, le statut et la situation familiale saisis, le montant affiché et celui que vous attendiez, avec sa source si possible : une ligne de fiche de paie ou un avertissement-extrait de rôle. N’envoyez ni numéro de registre national, ni numéro de compte, ni document complet ; les montants suffisent.</p>
+    <h2>Questions sur votre situation</h2>
+    <p>Nous ne donnons pas de conseil fiscal personnalisé. Pour votre précompte et votre impôt, adressez-vous au SPF Finances ; pour vos cotisations, à votre employeur ou à son secrétariat social ; pour votre statut d’indépendant, à votre caisse d’assurances sociales.</p>
+    <h2>Intégrer le calculateur</h2>
+    <p>Le calculateur brut net peut être intégré gratuitement sur n’importe quel site. Le code et les conditions figurent sur la <a href={route('widget', lang)}>page widget</a>.</p>
+    <h2>Éditeur</h2>
+    <LegalIdentity lang="fr" />
+  </div>
+</PageLayout>

@@ -1,0 +1,51 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { csss } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const C = P.csss;
+const bar = [[`tot ${f.money(C.t0, 2)}`, f.money(0, 2), f.money(0, 2)], [`${f.money(C.t0 + 0.01, 2)} tot ${f.money(C.t1, 2)}`, f.money(0, 2), f.money(C.two_income_flat, 2)], [`${f.money(C.t1 + 0.01, 2)} tot ${f.money(C.t2, 2)}`, `${f.pct(C.rate1, 1)} boven ${f.money(C.t1, 2)}`, `idem, minimum ${f.money(C.two_income_flat, 2)}`], [`${f.money(C.t2 + 0.01, 2)} tot ${f.money(C.t3, 2)}`, `${f.money(C.base2, 2)} + ${f.pct(C.rate2, 1)}, maximum ${f.money(C.max_single, 2)}`, `${f.money(C.base2, 2)} + ${f.pct(C.rate2, 1)}, maximum ${f.money(C.max_two, 2)}`], [`boven ${f.money(C.t3, 2)}`, f.money(C.max_single, 2), f.money(C.max_two, 2)]];
+const ex = [1500, 2100, 2500, 3500, 4500, 6000, 8000].map((g) => [f.money(g, 0), f.money(csss(g, false), 2), f.money(csss(g, true), 2)]);
+const faqs = [
+  { q: 'Wat is de bijzondere bijdrage voor de sociale zekerheid?', a: 'Het is een bijdrage die in 1994 werd ingevoerd om mee de sociale zekerheid te financieren, verschuldigd door de gezinnen volgens hun inkomen. Voor werknemers houdt de werkgever ze elke maand in, waarna de fiscale administratie ze regulariseert bij het aanslagbiljet.' },
+  { q: 'Waarom verschilt ze voor gezinnen met twee inkomens?', a: 'Omdat de definitieve jaarlijkse bijdrage op de inkomens van het gezin wordt berekend. Om een te grote regularisatie te vermijden, liggen de maandelijkse inhoudingen iets hoger wanneer beide partners een beroepsinkomen hebben, met een hoger maandelijks maximum. Meld een wijziging van je gezinssituatie dus aan je werkgever.' },
+  { q: 'Wat is het maximum van de bijzondere bijdrage?', a: `De maandelijkse inhouding is begrensd op ${f.money(C.max_single, 2)} voor een alleenstaande of een gezin met één inkomen, en op ${f.money(C.max_two, 2)} voor een gezin met twee inkomens. De definitieve jaarlijkse bijdrage heeft een eigen maximum, berekend op het netto belastbaar inkomen van het gezin.` },
+  { q: 'Waarom moet ik soms bijzondere bijdrage bijbetalen?', a: 'De maandelijkse inhoudingen kennen de inkomsten van de andere partner en de andere inkomsten van het gezin niet. Ligt het jaarbedrag, berekend op het netto belastbaar inkomen van het gezin, hoger dan de inhoudingen, dan wordt het verschil bij de belasting gevoegd in het aanslagbiljet.' },
+  { q: 'Is de bijzondere bijdrage aftrekbaar?', a: 'Nee. Anders dan de gewone RSZ-bijdrage wordt ze niet van het belastbaar loon afgetrokken. Ze wordt bovenop de bedrijfsvoorheffing ingehouden en heeft geen invloed op de berekening van de belasting. Ze staat op een aparte lijn van de loonfiche. Ze staat meestal onderaan de inhoudingen.' },
+  { q: 'Verandert de bijzondere bijdrage in 2026?', a: 'Het barema van de maandelijkse inhoudingen wordt niet elk jaar geïndexeerd en blijft het barema dat de RSZ publiceert. De rekenmodule past de grenzen toe die op de controledatum gelden. Als de wetgever het barema wijzigt, worden de nieuwe bedragen opgenomen en verandert de updatedatum van de pagina.' },
+  { q: 'Betalen gepensioneerden de bijzondere bijdrage?', a: 'Ze wordt niet maandelijks op het pensioen ingehouden zoals op een loon, maar kan wel verschuldigd zijn bij de jaarlijkse regularisatie, wanneer het netto belastbaar inkomen van het gezin boven de eerste grens ligt. De fiscale administratie berekent ze dan in het aanslagbiljet.' },
+];
+---
+<Guide lang={lang} id="csss" title="Bijzondere bijdrage sociale zekerheid 2026: barema" h1="Bijzondere bijdrage voor de sociale zekerheid: barema van de maandelijkse inhoudingen"
+  description="De bijzondere bijdrage voor de sociale zekerheid in 2026: barema van de inhoudingen voor alleenstaanden en tweeverdieners, maxima en jaarlijkse regularisatie."
+  intro="De bijzondere bijdrage voor de sociale zekerheid is de derde inhouding op de loonfiche, na de RSZ en de voorheffing. Zo wordt ze berekend."
+  resume={`De bijzondere bijdrage voor de sociale zekerheid is een aanvullende bijdrage aan de financiering van de sociale zekerheid, ingevoerd in 1994 en verschuldigd door de gezinnen volgens hun inkomen. Voor werknemers houdt de werkgever ze elke maand op het loon in volgens een barema dat afhangt van het brutoloon en de gezinssituatie. Tot ${f.money(C.t0, 2)} per maand wordt niets ingehouden. Daarna stijgt het bedrag per schijf tot een maximum van ${f.money(C.max_single, 2)} per maand voor een alleenstaande of een gezin met één inkomen, en ${f.money(C.max_two, 2)} voor een gezin met twee inkomens. Op een loon van ${f.money(3500, 0)} betaalt een alleenstaande ${f.money(csss(3500, false), 2)} per maand. Die inhoudingen zijn een voorschot: de definitieve jaarlijkse bijdrage wordt door de fiscale administratie berekend op het netto belastbaar inkomen van het gezin en geregulariseerd in het aanslagbiljet, wat tot een bijbetaling of een terugbetaling kan leiden.`}
+  faqs={faqs} related={['brutNet', 'onss', 'pp', 'baremes', 'home', 'netBrut']} sources={[S.csss, S.onss, S.formule]}>
+  <h2>Barema van de maandelijkse inhoudingen</h2>
+  <ContentTable headers={['Bruto maandloon', 'Alleenstaande of gezin met één inkomen', 'Gezin met twee inkomens']} align={['l', 'l', 'l']} rows={bar} />
+  <p>De grenzen stemmen overeen met de kwartaalgrenzen die de RSZ publiceert, gedeeld door drie. De rekenmodule past het barema toe op het brutoloon van de maand.</p>
+
+  <h2>Voorbeelden van inhoudingen</h2>
+  <ContentTable headers={['Brutoloon', 'Alleenstaande', 'Twee inkomens']} align={['r', 'r', 'r']} rows={ex} />
+
+  <h2>Maandelijkse inhouding en jaarlijkse bijdrage</h2>
+  <p>De maandelijkse inhouding houdt enkel rekening met het loon dat de werkgever betaalt en met een aanwijzing over de gezinssituatie. De definitieve jaarlijkse bijdrage wordt berekend op het globale netto belastbaar inkomen van het gezin: lonen van beide partners, vervangingsinkomens en andere beroepsinkomsten. Ze volgt een progressief jaarbarema met een maximum. De fiscale administratie vergelijkt dat bedrag met de inhoudingen van het jaar en regulariseert het verschil in het aanslagbiljet. Voor een gezin met twee hoge inkomens is een kleine bijbetaling vaak verschuldigd.</p>
+
+  <h2>Gezinssituatie gemeld aan de werkgever</h2>
+  <p>De werkgever past het barema voor een alleenstaande of een gezin met één inkomen toe, tenzij de werknemer gehuwd of wettelijk samenwonend is en de partner een beroepsinkomen heeft. Het is dus belangrijk een wijziging van de gezinssituatie aan de personeelsdienst te melden. Een fout heeft geen definitieve gevolgen, omdat de jaarlijkse regularisatie het bedrag corrigeert, maar ze kan tot een bijbetaling leiden.</p>
+
+  <h2>Plaats in de nettoberekening</h2>
+  <p>De bijzondere bijdrage wordt na de RSZ en de voorheffing ingehouden en is niet aftrekbaar. Haar gewicht blijft beperkt: hoogstens ongeveer 1 % van een hoog loon en iets meer voor gemiddelde lonen. Ze verklaart wel een deel van het verschil tussen een vereenvoudigde berekening en een echte loonfiche. <a href={route('brutNet', lang)}>Bruto netto berekenen</a> neemt ze automatisch op, met de keuze van de gezinssituatie.</p>
+
+  <h2>Wie is vrijgesteld</h2>
+  <p>De inhoudingen gelden enkel voor beroepsinkomsten boven de eerste grens. Studenten met een studentenovereenkomst en begunstigden van bepaalde bijzondere stelsels zijn niet aan de maandelijkse inhoudingen onderworpen. Voor vervangingsinkomens, zoals pensioenen of werkloosheidsuitkeringen, wordt de bijdrage bij de jaarlijkse regularisatie vastgesteld, volgens de inkomens van het gezin. Zelfstandigen betalen de bijzondere bijdrage enkel via het aanslagbiljet.</p>
+  <h2>Een voorbeeld van regularisatie</h2>
+  <p>Neem een gehuwd koppel waarin elk {f.money(3500, 0)} bruto per maand verdient. De werkgever van elk houdt de bijdrage in volgens het barema voor gezinnen met twee inkomens, of {f.money(csss(3500, true), 2)} per maand per persoon. Bij de jaarberekening telt de administratie de netto belastbare inkomens van het gezin samen en past ze het jaarbarema toe. Ligt het verschuldigde totaal hoger dan de som van de inhoudingen, dan volgt een bijbetaling in het aanslagbiljet; in het omgekeerde geval wordt het verschil terugbetaald. Voor een alleenstaande met één loon liggen de maandelijkse inhoudingen meestal dicht bij het definitieve bedrag.</p>
+
+  <h2>Waarom deze bijdrage bestaat</h2>
+  <p>De bijzondere bijdrage werd ingevoerd om bij te dragen aan het financiële evenwicht van de sociale zekerheid, naast de gewone bijdragen. Ze is progressief, omdat ze van de inkomens van het gezin afhangt, maar blijft begrensd. Ze wordt door de fiscale administratie samen met de belasting geïnd, wat verklaart waarom ze via het aanslagbiljet wordt geregulariseerd en niet via de RSZ.</p>
+</Guide>

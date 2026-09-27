@@ -1,0 +1,51 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { ipp, bareme } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const I = P.ipp; let prev = 0;
+const tranches = I.brackets.map((b) => { const lo = prev; prev = b.upto ?? prev; return [b.upto ? `${f.money(lo, 0)} à ${f.money(b.upto, 0)}` : `au-delà de ${f.money(lo, 0)}`, f.pct(b.rate, 0)]; });
+let p2 = 0;
+const pp = P.pp.bareme.map((b) => { const lo = p2; p2 = b.upto ?? p2; return [b.upto ? `${f.money(lo, 0)} à ${f.money(b.upto, 0)}` : `au-delà de ${f.money(lo, 0)}`, f.pct(b.rate, 2)]; });
+const ex = [20000, 30000, 40000, 60000, 90000].map((t) => [f.money(t, 0), f.money(ipp(t), 0), f.pct(ipp(t) / t, 1)]);
+const faqs = [
+  { q: 'Quelles sont les tranches d’imposition en Belgique pour les revenus 2026 ?', a: `25 % jusqu’à ${f.money(I.brackets[0].upto ?? 0, 0)}, 40 % jusqu’à ${f.money(I.brackets[1].upto ?? 0, 0)}, 45 % jusqu’à ${f.money(I.brackets[2].upto ?? 0, 0)} et 50 % au-delà, selon le SPF Finances. La quotité exemptée de base est de ${f.money(I.quotite, 0)}. Les additionnels communaux s’ajoutent à l’impôt ainsi calculé.` },
+  { q: 'Quelle est la différence entre le barème de l’impôt et celui du précompte ?', a: 'Le barème de l’impôt s’applique dans la déclaration, sur le revenu imposable de l’année, avant taxe communale. Le barème du précompte, dans la formule-clé, est utilisé chaque mois par l’employeur : ses taux, de 26,75 % à 53,50 %, incluent déjà une majoration forfaitaire de 7 % pour la taxe communale.' },
+  { q: 'Qu’est-ce que la quotité exemptée d’impôt ?', a: `C’est la partie du revenu sur laquelle aucun impôt n’est dû. Pour les revenus 2026, elle s’élève à ${f.money(I.quotite, 0)} par contribuable. Techniquement, l’impôt est calculé sur tout le revenu, puis on retire l’impôt afférent à cette quotité au taux de la première tranche.` },
+  { q: 'Combien représente la taxe communale ?', a: 'Chaque commune fixe un pourcentage additionnel, calculé sur l’impôt fédéral. Il se situe le plus souvent entre 6 et 9 %, certaines communes étant plus basses. Le précompte suppose un taux forfaitaire de 7 %, et la différence avec le taux réel de votre commune apparaît dans l’avertissement-extrait de rôle.' },
+  { q: 'Le taux marginal de 50 % s’applique-t-il à tout le revenu ?', a: 'Non. Chaque taux ne s’applique qu’à la partie du revenu comprise dans sa tranche. Un revenu imposable de 60 000 € n’est taxé à 50 % que sur la partie au-delà de la dernière limite. Le taux moyen reste donc nettement inférieur au taux marginal.' },
+  { q: 'Les tranches sont-elles les mêmes pour un couple ?', a: 'Oui, les tranches s’appliquent à chaque conjoint séparément, même en cas d’imposition commune. Le quotient conjugal peut toutefois transférer une partie du revenu vers le conjoint qui gagne peu ou rien, ce qui fait baisser l’impôt total du ménage. Les réductions pour enfants sont en principe attribuées au conjoint qui a le revenu le plus élevé.' },
+];
+---
+<Guide lang={lang} id="baremes" title="Barèmes de l’impôt 2026 : tranches et quotité exemptée" h1="Barèmes de l’impôt 2026 en Belgique : tranches, quotité et précompte"
+  description="Les tranches de l’impôt des personnes physiques 2026, la quotité exemptée, la taxe communale et le barème du précompte professionnel, avec des exemples."
+  intro="Deux barèmes coexistent : celui de l’impôt, utilisé dans la déclaration, et celui du précompte, utilisé chaque mois par l’employeur. Voici les deux pour 2026."
+  resume={`En Belgique, l’impôt des personnes physiques sur les revenus 2026, déclarés en 2027, est calculé par tranches. Selon le SPF Finances, le taux est de 25 % jusqu’à ${f.money(I.brackets[0].upto ?? 0, 0)}, 40 % jusqu’à ${f.money(I.brackets[1].upto ?? 0, 0)}, 45 % jusqu’à ${f.money(I.brackets[2].upto ?? 0, 0)} et 50 % au-delà. Chaque contribuable dispose d’une quotité exemptée de base de ${f.money(I.quotite, 0)}, majorée pour les enfants et autres personnes à charge. À l’impôt fédéral s’ajoute la taxe communale, un pourcentage fixé par chaque commune, souvent autour de 7 %. Pendant l’année, l’employeur retient un précompte professionnel calculé avec un barème propre, celui de la formule-clé, dont les taux vont de 26,75 % à 53,50 % parce qu’ils incluent déjà 7 % de taxe communale. Pour un revenu imposable de ${f.money(40000, 0)} après frais professionnels, l’impôt estimé, taxe communale de 7 % comprise, est d’environ ${f.money(ipp(40000), 0)}. Le décompte final compare cet impôt au précompte retenu.`}
+  faqs={faqs} related={['pp', 'brutNet', 'independant', 'csss', 'home', 'prime']} sources={[S.ipp_taux, S.formule, S.pp_calcul]}>
+  <h2>Tranches de l’impôt, revenus 2026</h2>
+  <ContentTable headers={['Revenu imposable', 'Taux']} align={['l', 'r']} rows={tranches} />
+  <p>Les montants sont indexés chaque année. La quotité exemptée de base, {f.money(I.quotite, 0)}, est imposée à 0 % : on calcule l’impôt sur tout le revenu, puis on en retire 25 % de la quotité.</p>
+
+  <h2>Le barème du précompte professionnel</h2>
+  <ContentTable headers={['Revenu annuel net imposable', 'Taux (taxe communale de 7 % incluse)']} align={['l', 'r']} rows={pp} />
+  <p>Ce barème est celui de l’annexe 1 de la formule-clé. Il s’applique au revenu annuel net imposable estimé à partir du salaire du mois, après frais professionnels forfaitaires. La quotité exemptée y est intégrée sous forme d’une réduction fixe de {f.money(P.pp.quotite_reduction, 2)} par an pour un isolé, et doublée pour un ménage avec quotient conjugal.</p>
+
+  <h2>Exemples d’impôt annuel</h2>
+  <ContentTable headers={['Revenu imposable', 'Impôt estimé (7 % communal)', 'Taux moyen']} align={['r', 'r', 'r']} rows={ex} />
+  <p>Ces montants concernent un isolé sans enfant ni déduction. Le revenu imposable est calculé après cotisations sociales et frais professionnels. Pour un salarié, les frais forfaitaires représentent 30 % du salaire imposable, avec un maximum légal fixé chaque année.</p>
+
+  <h2>Taux marginal et taux moyen</h2>
+  <p>Le taux marginal est celui qui frappe le dernier euro gagné ; le taux moyen est l’impôt total divisé par le revenu. À {f.money(40000, 0)} de revenu imposable, le dernier euro est imposé à 45 % plus la taxe communale, alors que le taux moyen est de {f.pct(ipp(40000) / 40000, 1)}. Pour un salarié, le taux marginal réel sur un euro de brut supplémentaire comprend aussi l’ONSS de 13,07 % et, pour les bas salaires, la perte du bonus à l’emploi, qui peut porter le prélèvement sur une augmentation au-delà de 80 %.</p>
+
+  <h2>De la déclaration au décompte</h2>
+  <p>La déclaration des revenus 2026 est remplie en 2027, en grande partie préremplie dans Tax-on-web. L’administration calcule l’impôt, y compris les additionnels communaux, et le compare au précompte retenu par l’employeur. Si le précompte dépasse l’impôt, la différence est remboursée ; sinon, un supplément est à payer. Les éléments qui expliquent le plus souvent un écart sont la taxe communale réelle, les dépenses donnant droit à réduction, comme l’épargne-pension, les titres-services ou les libéralités, et les revenus du conjoint.</p>
+
+  <h2>Pour les indépendants</h2>
+  <p>Les indépendants sont soumis aux mêmes tranches, mais sur un revenu professionnel net après cotisations sociales et frais réels. Ils n’ont pas de précompte et paient des versements anticipés pour éviter une majoration. La page sur les <a href={route('independant', lang)}>impôts de l’indépendant</a> donne une estimation complète, et le <a href={route('pp', lang)}>calcul du précompte</a> montre le barème mensuel appliqué aux salariés.</p>
+  <h2>Les réductions d’impôt les plus courantes</h2>
+  <p>L’impôt calculé sur le barème est ensuite diminué des réductions auxquelles le contribuable a droit. Les plus fréquentes sont l’épargne-pension, les titres-services, les libéralités à des institutions agréées, la garde d’enfants et certaines dépenses liées à l’habitation, dont les règles varient selon la Région. Ces réductions n’apparaissent pas dans le précompte mensuel, sauf exceptions, et expliquent une grande partie des remboursements constatés dans l’avertissement-extrait de rôle.</p>
+</Guide>

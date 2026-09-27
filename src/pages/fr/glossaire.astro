@@ -1,0 +1,38 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, webPageSchema } from '../../lib/seo';
+import { P } from '../../lib/tables';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang);
+const title = 'Glossaire de la fiche de paie belge : ONSS, précompte, CSSS';
+const description = 'Définitions simples des termes de la fiche de paie belge : ONSS, bonus à l’emploi, précompte professionnel, formule-clé, quotient conjugal, pécule de vacances.';
+const terms: Array<[string, string, string?]> = [
+  ['Avertissement-extrait de rôle', 'Le document du SPF Finances qui établit l’impôt définitif et compare celui-ci au précompte retenu.', 'baremes'],
+  ['Bonus à l’emploi', `Réduction de la cotisation ONSS personnelle pour les bas salaires, en deux volets, jusqu’à ${f.money(P.bonus.employe.a_to, 2)} brut.`, 'bonus'],
+  ['Bonus fiscal', 'Réduction du précompte égale à un pourcentage du bonus à l’emploi social accordé.', 'bonus'],
+  ['Commission paritaire', 'Organe qui fixe, pour un secteur, les salaires minimums et les conditions de travail.', 'minimum'],
+  ['Cotisation patronale', 'La part de sécurité sociale payée par l’employeur en plus du salaire brut.', 'cout'],
+  ['Cotisation spéciale de sécurité sociale', `Retenue mensuelle selon un barème, plafonnée à ${f.money(P.csss.max_single, 2)} pour un isolé.`, 'csss'],
+  ['Double pécule de vacances', 'Somme égale à 92 % du salaire mensuel brut, versée une fois par an aux employés.', 'pecule'],
+  ['Formule-clé', 'Le texte du SPF Finances qui définit le calcul exact du précompte professionnel.', 'pp'],
+  ['Frais professionnels forfaitaires', `Déduction de 30 % du revenu, plafonnée à ${f.money(P.pp.frais_max, 0)} dans le précompte.`, 'pp'],
+  ['ONSS', 'Office national de sécurité sociale ; par extension, la cotisation de 13,07 % retenue sur le salaire.', 'onss'],
+  ['Précompte professionnel', 'Avance sur l’impôt retenue chaque mois par l’employeur.', 'pp'],
+  ['Prime de fin d’année', 'Treizième mois prévu par de nombreuses commissions paritaires, taxé à un taux fixe.', 'prime'],
+  ['Quotient conjugal', 'Attribution de 30 % du revenu au conjoint sans revenus, pour l’imposer à un taux plus bas.', 'm-3800'],
+  ['Quotité exemptée', `Partie du revenu non imposée, ${f.money(P.ipp.quotite, 0)} pour les revenus 2026.`, 'baremes'],
+  ['Rémunération imposable', 'Le salaire brut diminué des cotisations sociales personnelles retenues.', 'brutNet'],
+  ['RMMMG', `Revenu minimum mensuel moyen garanti, ${f.money(P.rmmmg.amount, 2)} depuis le 1er avril 2026.`, 'minimum'],
+  ['Simple pécule', 'Le salaire normal payé pendant les jours de vacances d’un employé.', 'pecule'],
+  ['Taxe communale', 'Pourcentage additionnel à l’impôt fédéral, fixé par chaque commune.', 'baremes'],
+];
+const jsonLd = [webPageSchema({ name: title, description, path: route('glossary', lang), lang }), breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }, { name: 'Glossaire', path: route('glossary', lang) }])];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Glossaire' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Glossaire du salaire et de l’impôt</h1>
+    <p class="mt-3 text-lg text-navy-600">Les termes de la fiche de paie, du précompte et de l’avertissement-extrait de rôle, chacun avec un lien vers la page qui l’explique.</p></header>
+  <dl class="prose prose-slate max-w-none">
+    {terms.map(([t, d, id]) => <><dt class="font-semibold text-navy-900">{id ? <a href={route(id, lang)}>{t}</a> : t}</dt><dd>{d}</dd></>)}
+  </dl>
+</PageLayout>

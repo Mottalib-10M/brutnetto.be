@@ -1,0 +1,23 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema } from '../../lib/seo';
+import { CONTACT_EMAIL, LEGAL } from '../../data/site-config';
+const lang = 'nl';
+---
+<PageLayout title="Privacyverklaring van BrutNetto.be: wat we verzamelen" description="Privacy op BrutNetto.be: de berekeningen gebeuren in je browser, er worden geen persoonsgegevens verstuurd, er is geen registratie en geen account nodig." lang={lang} noindex={true} jsonLd={[breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Privacy', path: route('privacy', lang) }])]} breadcrumbs={[{ label: 'Privacy' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Privacyverklaring</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <h2>Verwerkingsverantwoordelijke</h2>
+    <LegalIdentity lang="nl" />
+    <h2>Wat we niet verzamelen</h2>
+    <p>De rekenmodules werken volledig in je browser. Het loon, het statuut, de gezinssituatie en de andere ingevulde bedragen worden niet naar ons verstuurd, niet op een server bewaard en niet aan je persoon gekoppeld. Er is geen account, geen nieuwsbrief en geen formulier dat persoonsgegevens verzamelt. Gebruik je de deellink, dan staan je bedragen in het adres, alleen zichtbaar voor wie je hem stuurt.</p>
+    <h2>Serverlogs</h2>
+    <p>De site wordt gehost door {LEGAL.hosting.name}. Zoals elke webserver registreert de hostingpartij technische gegevens bij elk verzoek, zoals het IP-adres, de gevraagde pagina, de datum en het type browser, om de site te leveren en te beschermen tegen misbruik. We gebruiken die logs niet om bezoekers te identificeren.</p>
+    <h2>Bezoekstatistieken en reclame</h2>
+    <p>Er is momenteel geen statistiek- of reclamescript actief. Voegen we er een toe, dan wordt niets geladen zonder je voorafgaande toestemming, en toont de pagina <a href={route('cookies', lang)}>cookies</a> wat er wordt geplaatst. Je keuze wordt enkel in je browser bewaard.</p>
+    <h2>Je rechten</h2>
+    <p>De algemene verordening gegevensbescherming geeft je een recht op inzage, verbetering en verzet voor persoonsgegevens over jou. Zoals vermeld hebben we er geen uit de rekenmodules. Voor elke vraag kan je schrijven naar <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. Je kan ook klacht indienen bij de Gegevensbeschermingsautoriteit in België of bij de Franse toezichthouder, de {LEGAL.supervisoryAuthority}, in het land waar de uitgever gevestigd is.</p>
+  </div>
+</PageLayout>

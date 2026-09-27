@@ -1,0 +1,45 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { compute, workBonus } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const E = P.bonus.employe; const O = P.bonus.ouvrier;
+const params = [['Volet B plein (employé)', `${f.money(E.b_max, 2)} jusqu’à ${f.money(E.b_from, 2)}`], ['Volet B dégressif', `− ${f.dec(E.b_slope, 4)} × (S − ${f.money(E.b_from, 2)}), nul à ${f.money(E.b_to, 2)}`], ['Volet A plein (employé)', `${f.money(E.a_max, 2)} jusqu’à ${f.money(E.a_from, 2)}`], ['Volet A dégressif', `− ${f.dec(E.a_slope, 4)} × (S − ${f.money(E.a_from, 2)}), nul à ${f.money(E.a_to, 2)}`], ['Ouvriers, maximums', `A ${f.money(O.a_max, 2)} · B ${f.money(O.b_max, 2)}`], ['Bonus fiscal', `${f.pct(P.bonus.fiscal_a, 2)} du volet A · ${f.pct(P.bonus.fiscal_b, 2)} du volet B`]];
+const rows = [2200, 2400, 2600, 2800, 3000, 3200, 3400].map((g) => { const w = workBonus(g); const r = compute({ gross: g }); return [f.money(g, 0), f.money(w.a, 2), f.money(w.b, 2), f.money(r.bonus, 2), f.money(r.fiscalBonus, 2), f.money(r.net, 2)]; });
+const faqs = [
+  { q: 'Qu’est-ce que le bonus à l’emploi ?', a: 'C’est une réduction de la cotisation ONSS personnelle accordée aux travailleurs à bas salaire, pour augmenter leur salaire net sans augmenter le coût pour l’employeur. Il se compose d’un volet A pour les bas salaires et d’un volet B pour les très bas salaires. Un bonus fiscal réduit en plus le précompte professionnel.' },
+  { q: 'Jusqu’à quel salaire le bonus à l’emploi s’applique-t-il ?', a: `Depuis le 1er septembre 2026, jusqu’à ${f.money(E.a_to, 2)} brut par mois pour un employé à temps plein. Le volet B s’arrête à ${f.money(E.b_to, 2)}. Les plafonds et les montants sont indexés et ont été adaptés en juillet puis en septembre 2026 à la suite de la hausse du salaire minimum.` },
+  { q: 'Le bonus à l’emploi est-il automatique ?', a: 'Oui. L’employeur l’applique d’office sur la fiche de paie lorsque le salaire de référence est dans les limites, et le déclare à l’ONSS. Le travailleur n’a aucune démarche à faire. Le bonus fiscal est également appliqué automatiquement dans le calcul du précompte professionnel.' },
+  { q: 'Comment le bonus est-il calculé pour un temps partiel ?', a: 'Le montant est d’abord déterminé sur le salaire de référence converti à temps plein, puis multiplié par la fraction d’occupation. Un temps partiel à mi-temps payé 1 500 € a donc un salaire de référence de 3 000 € et reçoit la moitié du bonus correspondant à ce montant.' },
+  { q: 'Pourquoi le bonus crée-t-il un piège à l’augmentation ?', a: 'Parce qu’il diminue quand le salaire augmente. Entre environ 2 300 et 3 400 € brut, chaque euro supplémentaire fait perdre une partie du bonus en plus de l’impôt, si bien qu’une augmentation de 100 € brut peut ne rapporter qu’une vingtaine d’euros net dans la zone du volet B.' },
+];
+---
+<Guide lang={lang} id="bonus" title="Bonus à l’emploi 2026 : volets A et B, montants" h1="Bonus à l’emploi 2026 : volets A et B et bonus fiscal"
+  description="Le bonus à l’emploi en 2026 : volet A et volet B, montants depuis le 1er septembre 2026, plafonds, bonus fiscal, temps partiel et effet sur les augmentations."
+  intro="Le bonus à l’emploi augmente le salaire net des bas salaires. Voici comment il fonctionne en 2026, avec les montants en vigueur depuis septembre."
+  resume={`Le bonus à l’emploi social est une réduction de la cotisation personnelle de sécurité sociale pour les travailleurs à bas salaire. Il comporte deux volets. Le volet A, pour les bas salaires, vaut ${f.money(E.a_max, 2)} par mois pour un employé à temps plein jusqu’à un salaire de référence de ${f.money(E.a_from, 2)}, puis diminue jusqu’à disparaître à ${f.money(E.a_to, 2)}. Le volet B, pour les très bas salaires, vaut ${f.money(E.b_max, 2)} jusqu’à ${f.money(E.b_from, 2)} et disparaît à ${f.money(E.b_to, 2)}. Ces montants s’appliquent depuis le 1er septembre 2026. Le bonus ne peut pas dépasser la cotisation due ; si c’est le cas, il est écrêté d’abord sur le volet B. Les ouvriers, déclarés à 108 %, bénéficient de montants plus élevés. Le bonus social s’accompagne d’un bonus fiscal, qui réduit le précompte professionnel de ${f.pct(P.bonus.fiscal_a, 2)} du volet A et ${f.pct(P.bonus.fiscal_b, 2)} du volet B. Au salaire minimum, les deux bonus effacent presque toute la cotisation ONSS et une partie importante du précompte.`}
+  faqs={faqs} related={['brutNet', 'onss', 'minimum', 'horaire', 'home', 'netBrut']} sources={[S.bonus, S.formule, S.rmmmg]}>
+  <h2>Paramètres depuis le 1er septembre 2026</h2>
+  <ContentTable headers={['Élément', 'Montant ou formule']} align={['l', 'l']} rows={params} />
+  <p>S est le salaire mensuel de référence à temps plein, à 100 %. Le montant R obtenu est arrondi au cent. Pour juillet et août 2026, le volet A s’éteignait plus tôt, à 3 336,98 €, avec une pente plus forte.</p>
+
+  <h2>Le bonus selon le salaire, employé isolé</h2>
+  <ContentTable headers={['Brut', 'Volet A', 'Volet B', 'Bonus retenu', 'Bonus fiscal', 'Net']} align={['r', 'r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <p>À 2 200 €, la somme des deux volets dépasse la cotisation due : le volet B est écrêté pour que le bonus ne dépasse pas l’ONSS. La colonne du bonus retenu tient compte de cette limite.</p>
+
+  <h2>Pourquoi deux volets</h2>
+  <p>Le bonus à l’emploi existe depuis 2000, mais il a été renforcé à plusieurs reprises. En 2023, le gouvernement a ajouté un second volet, ciblé sur les salaires les plus bas, afin d’augmenter l’écart entre le salaire minimum et les allocations sociales. Le volet A reprend l’ancien bonus, le volet B apporte le supplément. Chaque volet a son propre plafond et sa propre pente, ce qui explique les deux zones de dégressivité visibles dans le tableau.</p>
+
+  <h2>Le bonus fiscal</h2>
+  <p>En plus de la réduction de cotisation, la formule-clé du précompte prévoit une réduction fiscale proportionnelle au bonus social réellement accordé : {f.pct(P.bonus.fiscal_a, 2)} du volet A et {f.pct(P.bonus.fiscal_b, 2)} du volet B. Elle est appliquée en dernier lieu sur le précompte mensuel, qui ne peut pas devenir négatif. Dans la déclaration, un crédit d’impôt équivalent est calculé sur les montants annuels.</p>
+
+  <h2>L’effet sur les augmentations</h2>
+  <p>Parce qu’il diminue avec le salaire, le bonus crée des zones où une augmentation rapporte peu. Dans la zone du volet B, entre {f.money(E.b_from, 0)} et {f.money(E.b_to, 0)}, la perte de bonus s’ajoute à l’impôt et au bonus fiscal perdu : sur 100 € brut de plus, il ne reste qu’une vingtaine d’euros net. Dans la zone du volet A, la perte est moins forte. Au-delà de {f.money(E.a_to, 0)}, l’augmentation n’est plus réduite que par l’ONSS, le précompte et la cotisation spéciale. Les avantages non soumis à l’ONSS, comme les chèques-repas, sont souvent préférés dans ces zones.</p>
+
+  <h2>Temps partiel et prestations incomplètes</h2>
+  <p>Pour un temps partiel, le salaire est converti en salaire de référence à temps plein, le montant du bonus est déterminé, puis il est multiplié par la fraction d’occupation. En cas de mois incomplet, comme une maladie non couverte par l’employeur, le salaire de référence est reconstitué et le bonus est proratisé selon les jours prestés. Le <a href={route('horaire', lang)}>calculateur de salaire horaire</a> et le <a href={route('brutNet', lang)}>calcul brut net</a> appliquent les montants pour un temps plein.</p>
+</Guide>

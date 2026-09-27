@@ -1,0 +1,27 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, webPageSchema } from '../../lib/seo';
+import { REVIEW_CYCLE_MONTHS } from '../../data/site-config';
+const lang = 'nl';
+const title = 'Redactiebeleid van BrutNetto.be: bronnen en correcties';
+const description = 'Hoe BrutNetto.be zijn bronnen kiest, elke parameter van voorheffing, RSZ en werkbonus controleert, zijn updates dateert en gemelde fouten snel corrigeert.';
+const jsonLd = [webPageSchema({ name: title, description, path: route('editorial', lang), lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Redactiebeleid', path: route('editorial', lang) }])];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Redactiebeleid' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Redactiebeleid</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <h2>Bronnen</h2>
+    <p>Tarieven en regels komen enkel uit primaire bronnen: de FOD Financiën, de RSZ, de Nationale Arbeidsraad, het RSVZ en de teksten die zij toepassen. Persartikels en andere rekenmodules dienen nooit als bron voor een cijfer. Elke pagina vermeldt de bronnen die ze gebruikt, en elke parameter in de rekenmotor draagt het adres waar hij werd gelezen.</p>
+    <h2>Cijfers</h2>
+    <p>De bedragen op de pagina’s worden berekend met dezelfde rekenmotor als de rekenmodules, vanuit hetzelfde parameterbestand, zodat een correctie alle pagina’s tegelijk bijwerkt. Tests op basis van officiële voorbeelden, waaronder dat van de simulator van de FOD Financiën, worden vóór elke publicatie uitgevoerd.</p>
+    <h2>Updates</h2>
+    <p>Elke pagina wordt minstens om de {REVIEW_CYCLE_MONTHS} maanden herlezen, en alle parameters bij de publicatie van een nieuwe sleutelformule, bij elke indexering en bij elke wijziging van de werkbonus. De datum bovenaan en onderaan elke pagina is die van de laatste controle.</p>
+    <h2>Correcties</h2>
+    <p>Wanneer een fout wordt gevonden of gemeld, corrigeren we ze, voeren we de tests opnieuw uit en dateren we de wijziging. Belangrijke correcties worden op de betrokken pagina vermeld. Meldingen kan je sturen via de <a href={route('contact', lang)}>contactpagina</a>.</p>
+    <h2>Onafhankelijkheid</h2>
+    <p>Geen bedrijf, sociaal secretariaat of overheid financiert of leest de inhoud na. Eventuele reclame verschijnt nooit in een rekenmodule en beïnvloedt nooit wat we schrijven.</p>
+    <h2>Hulpmiddelen</h2>
+    <p>We gebruiken softwaretools, waaronder taalmodellen, om teksten op te stellen en na te lezen. Elk cijfer komt uit de geteste rekenmotor, en elke regel wordt vóór publicatie in de officiële bron gecontroleerd.</p>
+  </div>
+</PageLayout>

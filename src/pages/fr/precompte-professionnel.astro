@@ -1,0 +1,31 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { ex, P } from '../../lib/tables';
+import { ppBase } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const r = ex(4200); const b = r.ppBase;
+const steps = [['Rémunération imposable du mois', f.money(r.imposable, 2)], ['Revenu annuel brut (× 12)', f.money(b.annual, 2)], ['Frais professionnels forfaitaires', `− ${f.money(b.frais, 2)}`], ['Revenu annuel net imposable', f.money(b.net, 2)], ['Impôt de base après quotité exemptée', f.money(b.base, 2)], ['Impôt annuel', f.money(b.annualTax, 2)], ['Précompte mensuel (÷ 12)', f.money(r.pp, 2)]];
+const sit = [0, 1, 2, 3].map((n) => [String(n), f.money(ppBase(2500, { children: n }).monthly, 2), f.money(ppBase(3500, { children: n }).monthly, 2), f.money(ppBase(3500, { children: n, situation: 'conjoint_sans' }).monthly, 2)]);
+const faqs = [
+  { q: 'Qu’est-ce que le précompte professionnel ?', a: 'C’est une avance sur l’impôt des personnes physiques que l’employeur retient chaque mois sur le salaire et verse au SPF Finances. Le montant est calculé avec la formule-clé officielle. L’impôt définitif est établi après la déclaration, et la différence donne lieu à un remboursement ou à un supplément.' },
+  { q: 'Le précompte inclut-il la taxe communale ?', a: 'Oui, de manière forfaitaire. La formule-clé intègre une majoration de 7 % pour les taxes additionnelles communales et d’agglomération. Si votre commune applique un taux plus élevé, vous paierez un peu plus lors du décompte ; si elle applique un taux plus bas, vous récupérerez la différence.' },
+  { q: 'Le simulateur officiel donne-t-il le même résultat ?', a: `Oui pour les cas couverts. Le moteur de ce site reproduit la formule-clé 2026 et retrouve le résultat du simulateur du SPF Finances : ${f.money(ppBase(2500, { children: 1 }).monthly, 2)} par mois pour 2 500 € après retenues sociales, un isolé avec un enfant. Les tests automatiques vérifient ce cas à chaque publication.` },
+];
+---
+<ToolPage lang={lang} id="pp" title="Précompte professionnel 2026 : calcul avec la formule-clé" h1="Précompte professionnel 2026 : le calcul selon la formule-clé"
+  description="Calculez le précompte professionnel 2026 avec la formule-clé du SPF Finances : frais forfaitaires, barème, quotité exemptée, enfants, quotient conjugal, bonus."
+  intro="Le précompte est l’impôt retenu chaque mois sur le salaire. Voici le calcul exact, tel que le fait un secrétariat social."
+  mode="pp" initialGross={4200} faqs={faqs} related={['brutNet', 'baremes', 'bonus', 'home', 'prime', 'pecule']} sources={[S.formule, S.pp_calcul, S.ipp_taux]}>
+  <p>Le précompte professionnel se calcule en cinq étapes définies par la formule-clé du SPF Finances pour les rémunérations payées à partir du 1er janvier 2026. On part de la rémunération imposable du mois, le brut moins les cotisations ONSS retenues, que l’on multiplie par douze. On retire les frais professionnels forfaitaires, 30 % plafonnés à {f.money(P.pp.frais_max, 0)} par an. On applique au résultat le barème de base, de 26,75 % à 53,50 %, qui inclut déjà 7 % de taxe communale, puis on retire l’impôt sur la quotité exemptée, {f.money(P.pp.quotite_reduction, 2)}, et les réductions pour enfants ou autres charges de famille. On divise l’impôt annuel par douze. Enfin, on retire les réductions mensuelles : 30 % des retenues d’assurance de groupe et le bonus à l’emploi fiscal. Pour {f.money(4200, 0)} brut, un employé isolé paie {f.money(r.pp, 2)} de précompte par mois. Chaque montant est arrondi au cent à chaque étape, comme le prévoit la formule.</p>
+  <h2>Les étapes pour {f.money(4200, 0)} brut, isolé</h2>
+  <ContentTable headers={['Étape', 'Montant']} align={['l', 'r']} rows={steps} />
+  <h2>Précompte selon la situation familiale</h2>
+  <ContentTable headers={['Enfants à charge', '2 500 € imposables, isolé', '3 500 € imposables, isolé', '3 500 €, conjoint sans revenus']} align={['r', 'r', 'r', 'r']} rows={sit} />
+  <p>Le tableau part de la rémunération imposable, après ONSS. Le quotient conjugal attribue au conjoint sans revenus 30 % du revenu net imposable, avec un maximum de {f.money(P.pp.conjoint_max, 0)} par an.</p>
+  <h2>Précompte et impôt final</h2>
+  <p>Le précompte n’est qu’une estimation de l’impôt. L’impôt définitif tient compte de la taxe communale réelle, des déductions comme l’épargne-pension ou les titres-services, et des revenus du ménage. Les <a href={route('baremes', lang)}>barèmes de l’impôt 2026</a> montrent les tranches applicables à la déclaration. Les primes et le pécule de vacances suivent des taux particuliers, détaillés dans le <a href={route('prime', lang)}>calcul de la prime de fin d’année</a>.</p>
+</ToolPage>

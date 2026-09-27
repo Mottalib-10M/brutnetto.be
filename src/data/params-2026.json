@@ -1,0 +1,51 @@
+{
+  "_lisezmoi": "Tous les paramètres légaux vivent ici (RECETTE-SITE.md §4). Précompte : formule-clé SPF Finances ESS-SR/2025-0928, rémunérations payées à partir du 1er janvier 2026. Bonus à l'emploi : montants ONSS applicables à partir du 1er septembre 2026. Montants lus sur la source citée à la date retrieved_at.",
+  "year": 2026,
+  "retrieved_at": "2026-09-28",
+  "sources": {
+    "formule": { "url": "https://eservices.minfin.fgov.be/myminfin-web/pages/public/fisconet/document/389035ca-432e-422b-859d-2d32fbdaa4cf", "label": { "fr": "SPF Finances : formule-clé du précompte professionnel à partir du 1er janvier 2026", "nl": "FOD Financiën: sleutelformule bedrijfsvoorheffing vanaf 1 januari 2026" } },
+    "pp_calcul": { "url": "https://finances.belgium.be/fr/entreprises/personnel_et_remuneration/precompte_professionnel/calcul", "label": { "fr": "SPF Finances : calcul du précompte professionnel", "nl": "FOD Financiën: berekening van de bedrijfsvoorheffing" } },
+    "ipp_taux": { "url": "https://fin.belgium.be/fr/particuliers/declaration-impot/revenus/taux-imposition", "label": { "fr": "SPF Finances : taux d'imposition à l'impôt des personnes physiques", "nl": "FOD Financiën: aanslagvoeten personenbelasting" } },
+    "onss": { "url": "https://www.socialsecurity.be/employer/instructions/dmfa/fr/latest/instructions/socialsecuritycontributions/contributions.html", "label": { "fr": "ONSS : cotisations de sécurité sociale", "nl": "RSZ: socialezekerheidsbijdragen" } },
+    "bonus": { "url": "https://www.socialsecurity.be/employer/instructions/dmfa/fr/latest/instructions/deductions/workers_reductions/workbonus.html", "label": { "fr": "ONSS : bonus à l'emploi, montants à partir du 1er septembre 2026", "nl": "RSZ: werkbonus, bedragen vanaf 1 september 2026" } },
+    "csss": { "url": "https://www.socialsecurity.be/employer/instructions/dmfa/fr/latest/instructions/special_contributions/other_specialcontributions/specialsocialsecuritycontribution.html", "label": { "fr": "ONSS : cotisation spéciale pour la sécurité sociale", "nl": "RSZ: bijzondere bijdrage voor de sociale zekerheid" } },
+    "double_pecule": { "url": "https://www.socialsecurity.be/employer/instructions/dmfa/fr/latest/instructions/special_contributions/other_specialcontributions/doubleholiday_privatesector.html", "label": { "fr": "ONSS : retenue sur le double pécule de vacances", "nl": "RSZ: inhouding op het dubbel vakantiegeld" } },
+    "rmmmg": { "url": "https://cnt-nar.be/fr/dossiers-thematiques/salaire-minimum", "label": { "fr": "CNT : salaire minimum (RMMMG)", "nl": "NAR: minimumloon (GGMMI)" } },
+    "inasti": { "url": "https://www.inasti.be/fr/faq/combien-de-cotisations-sociales-dois-je-payer", "label": { "fr": "INASTI : cotisations sociales des indépendants", "nl": "RSVZ: sociale bijdragen van zelfstandigen" } }
+  },
+  "onss": { "worker": 0.1307, "ouvrier_base": 1.08, "employer_base": 0.1988, "employer_moderation": 0.0512 },
+  "bonus": {
+    "employe": { "a_max": 127.54, "a_from": 2937.93, "a_to": 3403.62, "a_slope": 0.2739, "b_max": 171.99, "b_from": 2300.62, "b_to": 2937.93, "b_slope": 0.2699 },
+    "ouvrier": { "a_max": 137.74, "a_from": 2937.93, "a_to": 3403.62, "a_slope": 0.2958, "b_max": 185.75, "b_from": 2300.62, "b_to": 2937.93, "b_slope": 0.2915 },
+    "fiscal_a": 0.3314, "fiscal_b": 0.5254
+  },
+  "pp": {
+    "frais_rate": 0.30, "frais_max": 6070,
+    "bareme": [ { "upto": 16710, "rate": 0.2675 }, { "upto": 29500, "rate": 0.428 }, { "upto": 51050, "rate": 0.4815 }, { "upto": null, "rate": 0.535 } ],
+    "quotite_reduction": 2987.98, "quotite": 11170,
+    "conjoint_rate": 0.30, "conjoint_max": 13790,
+    "enfants": [0, 624, 1656, 4404, 7620, 11100, 14592, 18120, 21996], "enfant_sup": 3864,
+    "parent_isole": 624,
+    "groupe_rate": 0.30,
+    "communal_included": 0.07
+  },
+  "exceptionnel": [
+    { "upto": 10675, "pecule": 0, "autre": 0 },
+    { "upto": 13660, "pecule": 0.1917, "autre": 0.2322 },
+    { "upto": 17375, "pecule": 0.2120, "autre": 0.2523 },
+    { "upto": 20840, "pecule": 0.2625, "autre": 0.3028 },
+    { "upto": 23580, "pecule": 0.3130, "autre": 0.3533 },
+    { "upto": 26340, "pecule": 0.3433, "autre": 0.3836 },
+    { "upto": 31830, "pecule": 0.3634, "autre": 0.4038 },
+    { "upto": 34640, "pecule": 0.3937, "autre": 0.4341 },
+    { "upto": 45860, "pecule": 0.4239, "autre": 0.4644 },
+    { "upto": 59900, "pecule": 0.4744, "autre": 0.5148 },
+    { "upto": null, "pecule": 0.5350, "autre": 0.5350 }
+  ],
+  "csss": { "t0": 1095.09, "t1": 1945.38, "t2": 2190.18, "t3": 6038.82, "two_income_flat": 9.30, "rate1": 0.076, "base2": 18.60, "rate2": 0.011, "max_single": 51.64, "max_two": 60.94 },
+  "pecule": { "double_rate": 0.92, "double_onss_share": 0.85, "ouvrier_rate": 0.1538 },
+  "ipp": { "brackets": [ { "upto": 16720, "rate": 0.25 }, { "upto": 29510, "rate": 0.40 }, { "upto": 51070, "rate": 0.45 }, { "upto": null, "rate": 0.50 } ], "quotite": 11180, "communal_default": 0.07 },
+  "inasti": { "rate1": 0.205, "limit1": 75024.54, "rate2": 0.1416, "limit2": 110562.42, "min_income": 17374.08 },
+  "rmmmg": { "amount": 2189.81, "from": "2026-04-01", "hours_week": 38 },
+  "periods": { "monthly": 12, "annual": 1 }
+}

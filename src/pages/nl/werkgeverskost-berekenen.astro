@@ -1,0 +1,28 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { ex, P } from '../../lib/tables';
+import { employerCost } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const g = 3600; const e = employerCost(g); const r = ex(g);
+const rate = P.onss.employer_base + P.onss.employer_moderation;
+const rows = [2500, 3000, 3600, 4500, 6000].map((x) => { const c = employerCost(x); return [f.money(x, 0), f.money(c.contributions, 2), f.money(c.monthly, 2), f.money(c.annual, 0), f.money(ex(x).net, 2)]; });
+const faqs = [
+  { q: 'Hoeveel kost een werknemer in België?', a: `Voor een bediende in de privésector is de maandkost het brutoloon verhoogd met ongeveer ${f.pct(rate, 0)} basiswerkgeversbijdragen en loonmatiging. Bij ${f.money(g, 0)} bruto is dat ${f.money(e.monthly, 2)} per maand. Op jaarbasis, met eindejaarspremie en dubbel vakantiegeld, loopt de kost op tot ongeveer ${f.money(e.annual, 0)}.` },
+  { q: 'Wat is de structurele vermindering?', a: 'Dat is een forfaitaire vermindering van de werkgeversbijdragen voor werknemers met lage en middelgrote lonen, per kwartaal berekend door de RSZ. Ze verlaagt de werkelijke kost van lage lonen. De rekenmodule neemt ze niet op, omdat ze afhangt van het kwartaal, de arbeidstijd en de werkgeverscategorie.' },
+  { q: 'Zijn er werkgeversbijdragen op dubbel vakantiegeld?', a: 'Nee. Op het dubbel vakantiegeld van bedienden zijn geen werkgeversbijdragen verschuldigd. Er wordt wel een persoonlijke bijdrage van 13,07 % ingehouden op 85/92 van het bedrag. Daarom telt de rekenmodule het dubbel vakantiegeld zonder werkgeversbijdragen bij de jaarkost. Het vrijgestelde deel is 7/92 van het bedrag.' },
+];
+---
+<ToolPage lang={lang} id="cout" title="Werkgeverskost 2026 berekenen: bijdragen en jaarkost" h1="Werkgeverskost: wat een brutoloon in België kost"
+  description="Bereken de werkgeverskost van een bediende in België in 2026: 25 % basiswerkgeversbijdragen en loonmatiging, eindejaarspremie en dubbel vakantiegeld inbegrepen."
+  intro="Een brutoloon kost de werkgever meer. De rekenmodule telt de werkgeversbijdragen erbij en geeft de kost per maand en per jaar."
+  mode="cout" initialGross={g} faqs={faqs} related={['brutNet', 'onss', 'pecule', 'prime', 'independant', 'home']} sources={[S.onss, S.double_pecule, S.formule]}>
+  <p>De kost van een bediende voor een werkgever uit de privésector bestaat uit het brutoloon en de werkgeversbijdragen voor de sociale zekerheid. Sinds de taxshift bedraagt de basiswerkgeversbijdrage {f.pct(P.onss.employer_base, 2)} voor categorie 1, waarbij de loonmatiging komt, maximaal {f.pct(P.onss.employer_moderation, 2)}, samen {f.pct(rate, 0)}. Voor een loon van {f.money(g, 0)} bruto bedragen de werkgeversbijdragen {f.money(e.contributions, 2)} en de maandkost {f.money(e.monthly, 2)}. Op jaarbasis kost een bediende twaalf maandlonen, in de meeste paritaire comités een eindejaarspremie en een dubbel vakantiegeld van 92 % van het brutoloon, zonder werkgeversbijdragen: ongeveer {f.money(e.annual, 0)}. De bediende ontvangt intussen {f.money(r.net, 2)} netto per maand. De rekenmodule houdt geen rekening met de structurele vermindering, sectorale bijdragen, de arbeidsongevallenverzekering of de kost van extralegale voordelen. Voor een eerste raming bij een aanwerving of een loonsverhoging geeft ze wel meteen de orde van grootte van wat een brutoloon in werkelijkheid kost.</p>
+  <h2>Werkgeverskost per loonniveau</h2>
+  <ContentTable headers={['Bruto', 'Werkgeversbijdragen', 'Kost per maand', 'Kost per jaar', 'Netto werknemer']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <h2>Arbeiders en andere categorieën</h2>
+  <p>Voor arbeiders worden de bijdragen berekend op 108 % van het brutoloon, en betaalt de werkgever daarnaast een bijdrage voor de jaarlijkse vakantie aan de vakantiekas, die het vakantiegeld uitbetaalt. De kost ligt procentueel dus structureel hoger. De social profitsector en maatwerkbedrijven vallen onder andere bijdragecategorieën. Voor de vergelijking met het statuut van zelfstandige kan je terecht bij de <a href={route('independant', lang)}>belastingen van een zelfstandige</a>, en voor de inhoudingen aan werknemerskant bij de <a href={route('onss', lang)}>RSZ-bijdragen</a>.</p>
+</ToolPage>

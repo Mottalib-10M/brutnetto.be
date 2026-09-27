@@ -1,0 +1,26 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { grossForNet, employerCost } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const target = 2600; const need = grossForNet(target);
+const rows = [2000, 2300, 2600, 3000, 3500, 4000].map((n) => { const g = grossForNet(n); return [f.money(n, 0), f.money(g, 2), f.money(grossForNet(n, { situation: 'conjoint_sans' }), 2), f.money(employerCost(g).monthly, 2)]; });
+const faqs = [
+  { q: 'Quel brut faut-il pour 2 600 € net ?', a: `Environ ${f.money(need, 2)} brut par mois pour un employé isolé sans enfant en 2026. Avec un conjoint sans revenus, il suffit de ${f.money(grossForNet(target, { situation: 'conjoint_sans' }), 2)}. Le calcul inclut l’ONSS, le bonus à l’emploi, le précompte professionnel et la cotisation spéciale de sécurité sociale.` },
+  { q: 'Pourquoi le brut augmente-t-il plus vite que le net ?', a: 'Parce que chaque euro de salaire supplémentaire subit l’ONSS de 13,07 %, un précompte progressif et, pour les bas salaires, la perte du bonus à l’emploi. Au-delà de 3 400 € brut, 100 € net de plus demandent environ 230 € brut ; entre 2 400 et 2 900 € brut, où le bonus à l’emploi se retire, il en faut plus de 500.' },
+  { q: 'Faut-il négocier en brut ou en net ?', a: 'Les salaires se négocient et se contractualisent en brut en Belgique, car c’est le brut qui sert de base à l’ONSS, au pécule de vacances, au treizième mois et aux allocations. Connaître le brut correspondant à un net permet toutefois de vérifier qu’une offre couvre votre budget.' },
+];
+---
+<ToolPage lang={lang} id="netBrut" title="Net en brut 2026 : quel salaire brut pour un net donné" h1="Du net au brut : quel salaire brut demander ?"
+  description="Retrouvez le salaire brut nécessaire pour obtenir un net donné en Belgique en 2026, selon la situation familiale, avec le coût correspondant pour l’employeur."
+  intro="Indiquez le net mensuel souhaité. Le calculateur recherche le brut qui le produit, avec les mêmes règles que le calcul brut net."
+  mode="netBrut" faqs={faqs} related={['brutNet', 'home', 'cout', 'pp', 'bonus', 'horaire']} sources={[S.formule, S.onss, S.bonus]}>
+  <p>Aucune formule directe ne permet de passer du net au brut en Belgique, parce que le bonus à l’emploi, le précompte et la cotisation spéciale dépendent chacun du brut de manière non linéaire. Le calculateur procède donc par approximations successives : il calcule le net de nombreux salaires bruts et s’arrête quand le résultat correspond au net demandé, au centime près. Pour obtenir {f.money(target, 0)} net par mois, un employé isolé sans enfant a besoin d’environ {f.money(need, 2)} brut en 2026. Avec deux enfants à charge ou un conjoint sans revenus, le brut nécessaire est plus bas, car le précompte diminue. Cette recherche est utile avant un entretien d’embauche, pour vérifier une proposition salariale exprimée en brut, ou pour comparer une offre en Belgique avec un salaire perçu dans un autre pays. Le tableau ci-dessous donne aussi le coût pour l’employeur, qui paie en plus environ 25 % de cotisations patronales.</p>
+  <h2>Brut nécessaire pour un net mensuel</h2>
+  <ContentTable headers={['Net souhaité', 'Brut, isolé', 'Brut, conjoint sans revenus', 'Coût employeur, isolé']} align={['r', 'r', 'r', 'r']} rows={rows} />
+  <h2>Ce que le calcul ne prend pas en compte</h2>
+  <p>Le net visé est un net mensuel ordinaire, hors treizième mois et pécule de vacances. Les chèques-repas, l’indemnité de télétravail ou les frais de déplacement remboursés s’ajoutent au net sans être soumis aux mêmes retenues, dans les limites légales, et peuvent donc réduire le brut nécessaire pour un même pouvoir d’achat. Pour l’opération inverse, le <a href={route('brutNet', lang)}>calcul brut net</a> détaille chaque retenue, et le <a href={route('cout', lang)}>coût employeur</a> montre ce que représente le brut pour l’entreprise.</p>
+</ToolPage>

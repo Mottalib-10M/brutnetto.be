@@ -1,0 +1,28 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { ex, P } from '../../lib/tables';
+import { employerCost } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const g = 3600; const e = employerCost(g); const r = ex(g);
+const rate = P.onss.employer_base + P.onss.employer_moderation;
+const rows = [2500, 3000, 3600, 4500, 6000].map((x) => { const c = employerCost(x); return [f.money(x, 0), f.money(c.contributions, 2), f.money(c.monthly, 2), f.money(c.annual, 0), f.money(ex(x).net, 2)]; });
+const faqs = [
+  { q: 'Combien coûte un employé en Belgique ?', a: `Pour un employé du secteur privé, le coût mensuel est le brut majoré d’environ ${f.pct(rate, 0)} de cotisations patronales de base et de modération salariale. À ${f.money(g, 0)} brut, cela donne ${f.money(e.monthly, 2)} par mois. Sur un an, avec treizième mois et double pécule, le coût atteint environ ${f.money(e.annual, 0)}.` },
+  { q: 'Qu’est-ce que la réduction structurelle ?', a: 'C’est une réduction forfaitaire des cotisations patronales accordée pour les travailleurs à bas et moyens salaires, calculée trimestriellement par l’ONSS. Elle diminue le coût réel des bas salaires. Le calculateur ne l’inclut pas, car elle dépend du trimestre, du temps de travail et de la catégorie d’employeur.' },
+  { q: 'Le double pécule est-il soumis aux cotisations patronales ?', a: 'Non. Aucune cotisation patronale n’est due sur le double pécule de vacances des employés. Une cotisation personnelle de 13,07 % est retenue sur 85/92 du montant. C’est pourquoi le calculateur ajoute le double pécule au coût annuel sans majoration patronale.' },
+];
+---
+<ToolPage lang={lang} id="cout" title="Coût employeur 2026 : cotisations patronales et coût annuel" h1="Coût employeur : ce que coûte un salaire brut en Belgique"
+  description="Estimez le coût employeur d’un employé en Belgique en 2026 : 25 % de cotisations patronales de base et de modération salariale, treizième mois et double pécule."
+  intro="Un salaire brut coûte davantage à l’employeur. Le calculateur ajoute les cotisations patronales et donne le coût mensuel et annuel."
+  mode="cout" initialGross={g} faqs={faqs} related={['brutNet', 'onss', 'pecule', 'prime', 'independant', 'home']} sources={[S.onss, S.double_pecule, S.formule]}>
+  <p>Le coût d’un employé pour un employeur du secteur privé se compose du salaire brut et des cotisations patronales de sécurité sociale. Depuis le tax shift, la cotisation patronale de base est de {f.pct(P.onss.employer_base, 2)} pour la catégorie 1, à laquelle s’ajoute la modération salariale, au maximum {f.pct(P.onss.employer_moderation, 2)}, soit {f.pct(rate, 0)} au total. Pour un salaire de {f.money(g, 0)} brut, les cotisations patronales atteignent {f.money(e.contributions, 2)} et le coût mensuel {f.money(e.monthly, 2)}. Sur un an, un employé coûte douze mois de salaire, un treizième mois dans la plupart des commissions paritaires et un double pécule de vacances égal à 92 % du brut, sans cotisations patronales : environ {f.money(e.annual, 0)}. Pendant ce temps, l’employé reçoit {f.money(r.net, 2)} net par mois. Le calculateur ne tient pas compte de la réduction structurelle, des cotisations sectorielles, de l’assurance accident du travail ni du coût des avantages extra-légaux.</p>
+  <h2>Coût employeur par niveau de salaire</h2>
+  <ContentTable headers={['Brut', 'Cotisations patronales', 'Coût mensuel', 'Coût annuel', 'Net employé']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
+  <h2>Ouvriers et autres catégories</h2>
+  <p>Pour les ouvriers, les cotisations sont calculées sur 108 % du salaire brut et l’employeur verse en plus une cotisation pour les vacances annuelles à la caisse de vacances, qui paie le pécule. Le coût est donc structurellement plus élevé en pourcentage. Le secteur non marchand et les entreprises de travail adapté relèvent d’autres catégories de cotisations. Pour la comparaison avec un statut d’indépendant, consultez la page sur les <a href={route('independant', lang)}>impôts de l’indépendant</a>, et pour le détail des retenues côté salarié, les <a href={route('onss', lang)}>cotisations ONSS</a>.</p>
+</ToolPage>

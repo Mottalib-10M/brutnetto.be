@@ -1,0 +1,38 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, webPageSchema } from '../../lib/seo';
+import { P } from '../../lib/tables';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang);
+const title = 'Woordenlijst van de Belgische loonfiche: RSZ en voorheffing';
+const description = 'Eenvoudige uitleg van de termen op de Belgische loonfiche: RSZ, werkbonus, bedrijfsvoorheffing, sleutelformule, huwelijksquotiënt en dubbel vakantiegeld.';
+const terms: Array<[string, string, string?]> = [
+  ['Aanslagbiljet', 'Het document van de FOD Financiën dat de definitieve belasting vastlegt en vergelijkt met de ingehouden voorheffing.', 'baremes'],
+  ['Bedrijfsvoorheffing', 'Voorschot op de belasting dat de werkgever elke maand inhoudt.', 'pp'],
+  ['Belastbaar loon', 'Het brutoloon min de ingehouden persoonlijke sociale bijdragen.', 'brutNet'],
+  ['Belastingvrije som', `Deel van het inkomen dat niet belast wordt, ${f.money(P.ipp.quotite, 0)} voor de inkomsten 2026.`, 'baremes'],
+  ['Bijzondere bijdrage voor de sociale zekerheid', `Maandelijkse inhouding volgens barema, begrensd op ${f.money(P.csss.max_single, 2)} voor een alleenstaande.`, 'csss'],
+  ['Dubbel vakantiegeld', 'Bedrag gelijk aan 92 % van het bruto maandloon, één keer per jaar aan bedienden betaald.', 'pecule'],
+  ['Eindejaarspremie', 'Dertiende maand voorzien door veel paritaire comités, belast tegen een vast tarief.', 'prime'],
+  ['Enkel vakantiegeld', 'Het normale loon dat tijdens de vakantiedagen van een bediende wordt doorbetaald.', 'pecule'],
+  ['Fiscale werkbonus', 'Vermindering van de voorheffing gelijk aan een percentage van de toegekende sociale werkbonus.', 'bonus'],
+  ['Forfaitaire beroepskosten', `Aftrek van 30 % van het inkomen, begrensd op ${f.money(P.pp.frais_max, 0)} in de voorheffing.`, 'pp'],
+  ['Gemeentebelasting', 'Aanvullend percentage op de federale belasting, vastgelegd door elke gemeente.', 'baremes'],
+  ['GGMMI', `Gewaarborgd gemiddeld minimum maandinkomen, ${f.money(P.rmmmg.amount, 2)} sinds 1 april 2026.`, 'minimum'],
+  ['Huwelijksquotiënt', 'Toekenning van 30 % van het inkomen aan de partner zonder inkomen, om het tegen een lager tarief te belasten.', 'm-3800'],
+  ['Paritair comité', 'Orgaan dat voor een sector de minimumlonen en arbeidsvoorwaarden vastlegt.', 'minimum'],
+  ['RSZ', 'Rijksdienst voor Sociale Zekerheid; bij uitbreiding de bijdrage van 13,07 % op het loon.', 'onss'],
+  ['Sleutelformule', 'De tekst van de FOD Financiën die de exacte berekening van de bedrijfsvoorheffing vastlegt.', 'pp'],
+  ['Werkbonus', `Vermindering van de persoonlijke RSZ-bijdrage voor lage lonen, in twee luiken, tot ${f.money(P.bonus.employe.a_to, 2)} bruto.`, 'bonus'],
+  ['Werkgeversbijdrage', 'Het deel van de sociale zekerheid dat de werkgever bovenop het brutoloon betaalt.', 'cout'],
+];
+const jsonLd = [webPageSchema({ name: title, description, path: route('glossary', lang), lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Woordenlijst', path: route('glossary', lang) }])];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Woordenlijst' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Woordenlijst van loon en belasting</h1>
+    <p class="mt-3 text-lg text-navy-600">De termen van de loonfiche, de voorheffing en het aanslagbiljet, elk met een link naar de pagina die ze uitlegt.</p></header>
+  <dl class="prose prose-slate max-w-none">
+    {terms.map(([t, d, id]) => <><dt class="font-semibold text-navy-900">{id ? <a href={route(id, lang)}>{t}</a> : t}</dt><dd>{d}</dd></>)}
+  </dl>
+</PageLayout>

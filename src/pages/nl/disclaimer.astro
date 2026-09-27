@@ -1,0 +1,24 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema } from '../../lib/seo';
+const lang = 'nl';
+---
+<PageLayout title="Disclaimer en gebruiksvoorwaarden van BrutNetto.be" description="Disclaimer van BrutNetto.be: uitgever, hostingpartij, aard van de resultaten, beperking van aansprakelijkheid, hergebruik van de inhoud en de gratis widget." lang={lang} noindex={true} jsonLd={[breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Disclaimer', path: route('terms', lang) }])]} breadcrumbs={[{ label: 'Disclaimer' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Disclaimer en gebruiksvoorwaarden</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <h2>Uitgever</h2>
+    <LegalIdentity lang="nl" />
+    <h2>Hostingpartij</h2>
+    <LegalIdentity lang="nl" mode="hosting" />
+    <h2>Aard van de resultaten</h2>
+    <p>De rekenmodules geven ramingen op basis van de geldende officiële tarieven, nagekeken op de datum die op elke pagina staat. Ze zijn geen fiscaal, sociaal of juridisch advies en vervangen je loonfiche, je aanslagbiljet of een sociaal secretariaat niet. Je situatie kan onder regels vallen die niet zijn opgenomen; die staan in de <a href={route('method', lang)}>methodologie</a>.</p>
+    <h2>Aansprakelijkheid</h2>
+    <p>We houden de tarieven zorgvuldig bij en corrigeren gemelde fouten snel, maar we kunnen niet garanderen dat de site foutloos of altijd beschikbaar is. We zijn niet aansprakelijk voor beslissingen op basis van de ramingen. Niets in deze voorwaarden beperkt een aansprakelijkheid die wettelijk niet beperkt kan worden.</p>
+    <h2>Hergebruik</h2>
+    <p>Teksten, tabellen en code zijn auteursrechtelijk beschermd. Je mag korte fragmenten citeren met een link naar de pagina. De rekenmodule mag vrij worden ingesloten met de code op de <a href={route('widget', lang)}>widgetpagina</a>, op voorwaarde dat de bronlink zichtbaar blijft.</p>
+    <h2>Toepasselijk recht</h2>
+    <p>Deze voorwaarden vallen onder het Franse recht, het recht van de vestiging van de uitgever, onverminderd de dwingende consumentenregels van je land van verblijf.</p>
+  </div>
+</PageLayout>

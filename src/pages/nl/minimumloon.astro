@@ -1,0 +1,54 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { compute, employerCost } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const M = P.rmmmg; const r = compute({ gross: M.amount }); const h = M.amount * 12 / (M.hours_week * 52);
+const rows = [['Bediende, alleenstaande', compute({ gross: M.amount })], ['Bediende, 2 kinderen', compute({ gross: M.amount, children: 2 })], ['Bediende, partner zonder inkomen', compute({ gross: M.amount, situation: 'conjoint_sans' })], ['Arbeider, alleenstaande', compute({ gross: M.amount, status: 'ouvrier' })]].map(([l, x]: any) => [l, f.money(x.onssNet, 2), f.money(x.pp, 2), f.money(x.csss, 2), f.money(x.net, 2)]);
+const faqs = [
+  { q: 'Hoeveel bedraagt het minimumloon in België in 2026?', a: `Het gewaarborgd gemiddeld minimum maandinkomen bedraagt sinds 1 april 2026 ${f.money(M.amount, 2)} bruto per maand voor een voltijdse werknemer van 18 jaar of ouder, volgens de Nationale Arbeidsraad. Sinds april 2022 bestaan er geen verschillende bedragen meer volgens leeftijd of anciënniteit.` },
+  { q: 'Hoeveel is het minimumloon netto?', a: `Ongeveer ${f.money(r.net, 2)} netto per maand voor een alleenstaande bediende zonder kinderen. Op dit niveau neemt de werkbonus de RSZ-bijdrage weg en verlaagt hij de voorheffing sterk, zodat het nettoloon heel dicht bij het brutoloon ligt. De gezinssituatie kan het nog verhogen.` },
+  { q: 'Liggen de sectorale minimumlonen hoger?', a: 'Vaak wel. Elk paritair comité kan eigen minimumbarema’s vastleggen per functie, anciënniteit of categorie, die voor de werkgevers van de sector bindend zijn. Het interprofessionele minimum is een absolute bodem, die geldt wanneer de sector niets gunstigers voorziet. Ze worden per sector geïndexeerd.' },
+  { q: 'Stijgt het minimumloon nog?', a: 'Het volgt de automatische indexering van de lonen wanneer de afgevlakte gezondheidsindex de spilindex overschrijdt. Bijkomende verhogingen kunnen de sociale partners afspreken in een interprofessioneel akkoord, zoals de verhoging met 35 euro bruto op 1 april 2026. De Nationale Arbeidsraad publiceert de bedragen.' },
+  { q: 'Bestaat er een minimum uurloon?', a: `Niet als zodanig. Het minimum wordt per maand vastgelegd voor een voltijdse job. Voor een regeling van ${M.hours_week} uur per week komt het overeen met ongeveer ${f.money(h, 2)} per uur. Deeltijdse werknemers hebben recht op het minimum in verhouding tot hun arbeidsduur.` },
+  { q: 'Geldt het minimumloon ook voor uitzendkrachten?', a: 'Ja. Een uitzendkracht moet hetzelfde loon krijgen als een vaste werknemer van de gebruiker die dezelfde functie uitoefent, en nooit minder dan het minimum van zijn sector of het interprofessionele minimum. De berekening van het nettoloon is dezelfde als voor een gewone werknemer.' },
+  { q: 'Telt een eindejaarspremie mee voor het minimumloon?', a: 'Het gewaarborgd gemiddeld minimum maandinkomen is een gemiddelde. Sommige looncomponenten, zoals een eindejaarspremie, kunnen onder bepaalde voorwaarden meetellen om na te gaan of het minimum bereikt is. Sectorale minima worden meestal per maand beoordeeld, zonder premies. Het sociaal secretariaat kan de toepasselijke regels bevestigen.' },
+];
+---
+<Guide lang={lang} id="minimum" title="Minimumloon België 2026: GGMMI bruto en netto" h1="Minimumloon in België in 2026: bruto, netto en kost"
+  description="Het Belgische minimumloon (GGMMI) bedraagt 2 189,81 euro bruto sinds 1 april 2026. Hier vind je het netto volgens gezinssituatie, het uurloon en de kost."
+  intro="Het gewaarborgd gemiddeld minimum maandinkomen is de bodem van de lonen in België. Dit is het bedrag in 2026 en wat het netto betekent."
+  resume={`In België heet het interprofessionele minimumloon het gewaarborgd gemiddeld minimum maandinkomen, of GGMMI. Volgens de Nationale Arbeidsraad bedraagt het sinds 1 april 2026 ${f.money(M.amount, 2)} bruto per maand voor een voltijdse werknemer van 18 jaar of ouder, na een verhoging met 35 euro uit het interprofessioneel akkoord. Sinds april 2022 zijn er geen verschillende bedragen meer volgens leeftijd of anciënniteit. Voor een alleenstaande bediende levert dat loon ongeveer ${f.money(r.net, 2)} netto per maand op: de werkbonus neemt de RSZ-bijdrage van 13,07 % weg en verlaagt de bedrijfsvoorheffing sterk. Voor een regeling van ${M.hours_week} uur per week komt het minimum overeen met ongeveer ${f.money(h, 2)} per uur. Veel paritaire comités leggen hogere sectorale minima vast, die voorgaan op het interprofessionele minimum. Voor de werkgever kost een minimumloon ongeveer ${f.money(employerCost(M.amount).monthly, 2)} per maand vóór verminderingen van bijdragen.`}
+  faqs={faqs} related={['bonus', 'horaire', 'brutNet', 'onss', 'home', 'cout']} sources={[S.rmmmg, S.bonus, S.formule]}>
+  <h2>Het minimumloon netto volgens situatie</h2>
+  <ContentTable headers={['Situatie', 'RSZ na werkbonus', 'Voorheffing', 'Bijzondere bijdrage', 'Netto']} align={['l', 'r', 'r', 'r', 'r']} rows={rows} />
+  <p>Deze bedragen gelden voor een voltijdse job aan het minimumloon van {f.money(M.amount, 2)}. De RSZ is nul omdat de werkbonus, begrensd op de verschuldigde bijdrage, ze volledig wegneemt.</p>
+
+  <h2>Hoe het minimumloon wordt vastgelegd</h2>
+  <p>Het gewaarborgd gemiddeld minimum maandinkomen wordt niet bij wet vastgelegd, maar door collectieve arbeidsovereenkomsten gesloten in de Nationale Arbeidsraad, vooral cao nr. 43. Het geldt voor alle werkgevers uit de privésector, voor voltijdse werknemers van minstens 18 jaar. Het wordt automatisch geïndexeerd wanneer de lonen worden geïndexeerd, en de sociale partners kunnen bijkomende verhogingen afspreken, zoals de verhogingen met 35 euro bruto in april 2024 en april 2026.</p>
+
+  <h2>Sectorale minimumlonen</h2>
+  <p>In de meeste sectoren legt het paritair comité eigen barema’s vast, vaak per functiecategorie en anciënniteit. Die barema’s liggen bijna altijd hoger dan het interprofessionele minimum en zijn verplicht voor de werkgevers van de sector. Om het minimum voor een job te kennen, moet je dus het paritair comité van de werkgever bepalen en de barema’s ervan raadplegen. Het interprofessionele minimum blijft de absolute bodem.</p>
+
+  <h2>Deeltijds werk en uurloon</h2>
+  <p>Een deeltijdse werknemer heeft recht op het minimumloon in verhouding tot zijn arbeidsduur. Voor een halftijdse job is het minimum de helft van het maandbedrag. Om het minimum per uur uit te drukken, deel je het jaarbedrag door het aantal uren van een voltijdse job: {f.money(h, 2)} voor een regeling van {M.hours_week} uur. De <a href={route('horaire', lang)}>rekenmodule voor het uurloon</a> zet elk uurloon om naar een netto maandloon.</p>
+
+  <h2>Waarom het netto zo dicht bij het bruto ligt</h2>
+  <p>De werkbonus, de voorbije jaren versterkt, richt zich precies op lonen rond het minimum. Luik A en luik B samen overschrijden de verschuldigde RSZ-bijdrage op het niveau van het minimumloon; ze worden dus tot dat bedrag afgetopt. De fiscale werkbonus verlaagt daarna de voorheffing. Het doel is het verschil tussen het minimumloon en de sociale uitkeringen te vergroten, om werken aantrekkelijker te maken. De pagina over de <a href={route('bonus', lang)}>werkbonus</a> legt dat mechanisme uit.</p>
+
+  <h2>Kost voor de werkgever</h2>
+  <p>Aan het minimumloon betaalt de werkgever ongeveer {f.money(employerCost(M.amount).monthly, 2)} per maand met het basistarief van 25 %. In de praktijk verlaagt de structurele vermindering van de werkgeversbijdragen, die groter is voor lage lonen, dat bedrag aanzienlijk. De <a href={route('cout', lang)}>rekenmodule voor de werkgeverskost</a> geeft een raming zonder verminderingen.</p>
+  <h2>Minimumloon en uitkeringen</h2>
+  <p>Het verschil tussen het minimumloon en de sociale uitkeringen is een uitdrukkelijk doel van de recente hervormingen. Door de werkbonus te versterken en het minimum twee keer met 35 euro bruto te verhogen, wilden de sociale partners en de regering de overstap van een uitkering naar een job voordeliger maken. Voltijds ontvangt een werknemer aan het minimumloon een nettoloon van ongeveer {f.money(r.net, 0)}, waarbij het vakantiegeld en, naargelang de sector, een eindejaarspremie komen.</p>
+
+  <h2>Studenten en jongeren</h2>
+  <p>Het interprofessionele minimum geldt vanaf 18 jaar. Studenten met een studentenovereenkomst hebben recht op het loon dat hun sector voorziet, met een verlaagd bijdragestelsel binnen de grens van 650 uur per jaar. Voor jongeren onder 18 jaar kunnen sectorale barema’s lagere bedragen voorzien.</p>
+
+  <h2>Controle</h2>
+  <p>De sociale inspectie controleert of de minimumlonen worden nageleefd. Een werknemer die minder ontvangt dan het minimum van zijn sector, kan het verschil terugvorderen. De vakbond of het sociaal secretariaat van de werkgever kan helpen om het juiste barema te vinden.</p>
+  <p>De bedragen op deze pagina gelden voor een voltijdse werknemer in de privésector. Voor de openbare sector gelden eigen weddeschalen, en voor bijzondere contracten, zoals een individuele beroepsopleiding, gelden andere regels.</p>
+</Guide>

@@ -1,0 +1,27 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, webPageSchema } from '../../lib/seo';
+import { REVIEW_CYCLE_MONTHS } from '../../data/site-config';
+const lang = 'fr';
+const title = 'Politique éditoriale de BrutNetto.be : sources, corrections';
+const description = 'Comment BrutNetto.be choisit ses sources, vérifie chaque paramètre de précompte, d’ONSS et de bonus à l’emploi, date ses mises à jour et corrige les erreurs.';
+const jsonLd = [webPageSchema({ name: title, description, path: route('editorial', lang), lang }), breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }, { name: 'Politique éditoriale', path: route('editorial', lang) }])];
+---
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Politique éditoriale' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Politique éditoriale</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <h2>Sources</h2>
+    <p>Les taux et les règles proviennent uniquement de sources primaires : le SPF Finances, l’ONSS, le Conseil national du travail, l’INASTI et les textes qu’ils appliquent. Les articles de presse et les autres calculateurs ne servent jamais de source pour un chiffre. Chaque page indique les sources qu’elle utilise, et chaque paramètre du moteur porte l’adresse où il a été lu.</p>
+    <h2>Chiffres</h2>
+    <p>Les montants des pages sont calculés par le même moteur que les calculateurs, à partir du même fichier de paramètres, si bien qu’une correction met à jour toutes les pages à la fois. Des tests fondés sur les exemples officiels, dont celui du simulateur du SPF Finances, sont exécutés avant chaque publication.</p>
+    <h2>Mises à jour</h2>
+    <p>Chaque page est relue au moins tous les {REVIEW_CYCLE_MONTHS} mois, et tous les paramètres à la publication d’une nouvelle formule-clé, à chaque indexation et à chaque modification du bonus à l’emploi. La date en haut et en bas de chaque page est celle de la dernière vérification.</p>
+    <h2>Corrections</h2>
+    <p>Lorsqu’une erreur est trouvée ou signalée, nous la corrigeons, relançons les tests et datons la modification. Les corrections importantes sont mentionnées sur la page concernée. Les signalements peuvent être envoyés via la <a href={route('contact', lang)}>page de contact</a>.</p>
+    <h2>Indépendance</h2>
+    <p>Aucune entreprise, aucun secrétariat social ni aucune administration ne finance ou ne relit le contenu. La publicité éventuelle n’apparaît jamais dans un calculateur et n’influence jamais ce que nous écrivons.</p>
+    <h2>Outils</h2>
+    <p>Nous utilisons des outils logiciels, dont des modèles de langage, pour rédiger et relire les textes. Chaque chiffre est produit par le moteur testé, et chaque règle est vérifiée dans la source officielle avant publication.</p>
+  </div>
+</PageLayout>

@@ -1,0 +1,26 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { grossForNet, employerCost } from '../../lib/engine/be';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const target = 2600; const need = grossForNet(target);
+const rows = [2000, 2300, 2600, 3000, 3500, 4000].map((n) => { const g = grossForNet(n); return [f.money(n, 0), f.money(g, 2), f.money(grossForNet(n, { situation: 'conjoint_sans' }), 2), f.money(employerCost(g).monthly, 2)]; });
+const faqs = [
+  { q: 'Welk brutoloon heb je nodig voor 2 600 euro netto?', a: `Ongeveer ${f.money(need, 2)} bruto per maand voor een alleenstaande bediende zonder kinderen in 2026. Met een partner zonder inkomen volstaat ${f.money(grossForNet(target, { situation: 'conjoint_sans' }), 2)}. De berekening omvat de RSZ, de werkbonus, de bedrijfsvoorheffing en de bijzondere bijdrage voor de sociale zekerheid. Het gaat om een gemiddelde per maand.` },
+  { q: 'Waarom stijgt het brutoloon sneller dan het netto?', a: 'Omdat elke extra euro loon de RSZ van 13,07 %, een progressieve voorheffing en, bij lage lonen, het verlies van de werkbonus ondergaat. Boven 3 400 euro bruto vraagt 100 euro netto meer ongeveer 230 euro bruto; tussen 2 400 en 2 900 euro bruto, waar de werkbonus afneemt, is meer dan 500 euro nodig.' },
+  { q: 'Onderhandel je beter over bruto of netto?', a: 'Lonen worden in België in bruto onderhandeld en in de arbeidsovereenkomst opgenomen, omdat het brutoloon de basis is voor RSZ, vakantiegeld, eindejaarspremie en uitkeringen. Weten welk brutoloon bij een nettobedrag hoort, helpt wel om na te gaan of een aanbod je budget dekt.' },
+];
+---
+<ToolPage lang={lang} id="netBrut" title="Netto naar bruto 2026: welk brutoloon voor je netto" h1="Van netto naar bruto: welk brutoloon vraag je?"
+  description="Vind het brutoloon dat nodig is voor een bepaald nettoloon in België in 2026, volgens je gezinssituatie, met de bijbehorende kost voor de werkgever erbij."
+  intro="Vul het gewenste netto maandloon in. De rekenmodule zoekt het brutoloon dat het oplevert, met dezelfde regels als de bruto-nettoberekening."
+  mode="netBrut" faqs={faqs} related={['brutNet', 'home', 'cout', 'pp', 'bonus', 'horaire']} sources={[S.formule, S.onss, S.bonus]}>
+  <p>Er bestaat geen rechtstreekse formule om in België van netto naar bruto te gaan, omdat de werkbonus, de voorheffing en de bijzondere bijdrage elk op een niet-lineaire manier van het brutoloon afhangen. De rekenmodule werkt daarom met opeenvolgende benaderingen: ze berekent het nettoloon van veel brutolonen en stopt wanneer het resultaat tot op de cent overeenkomt met het gevraagde netto. Om {f.money(target, 0)} netto per maand te krijgen, heeft een alleenstaande bediende zonder kinderen in 2026 ongeveer {f.money(need, 2)} bruto nodig. Met twee kinderen ten laste of een partner zonder inkomen is het nodige brutoloon lager, omdat de voorheffing daalt. Die zoektocht is nuttig voor een sollicitatiegesprek, om een loonvoorstel in bruto na te gaan, of om een aanbod in België te vergelijken met een loon in een ander land. De tabel hieronder geeft ook de kost voor de werkgever, die daarbovenop ongeveer 25 % werkgeversbijdragen betaalt.</p>
+  <h2>Nodig brutoloon voor een netto maandloon</h2>
+  <ContentTable headers={['Gewenst netto', 'Bruto, alleenstaande', 'Bruto, partner zonder inkomen', 'Werkgeverskost, alleenstaande']} align={['r', 'r', 'r', 'r']} rows={rows} />
+  <h2>Wat de berekening niet meeneemt</h2>
+  <p>Het beoogde netto is een gewoon netto maandloon, zonder eindejaarspremie en vakantiegeld. Maaltijdcheques, een telewerkvergoeding of terugbetaalde verplaatsingskosten komen binnen de wettelijke grenzen bovenop het netto zonder dezelfde inhoudingen, en kunnen het nodige brutoloon voor dezelfde koopkracht dus verlagen. Voor de omgekeerde berekening toont <a href={route('brutNet', lang)}>bruto netto berekenen</a> elke inhouding, en de <a href={route('cout', lang)}>werkgeverskost</a> laat zien wat het brutoloon voor het bedrijf betekent.</p>
+</ToolPage>

@@ -1,0 +1,14 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema } from '../../lib/seo';
+const lang = 'nl';
+---
+<PageLayout title="Cookies op BrutNetto.be: wat er wordt geplaatst en waarom" description="Cookies op BrutNetto.be: geen voor de rekenmodules, je keuze als er ooit bezoekstatistieken worden ingeschakeld, en hoe je die keuze wijzigt of weer intrekt." lang={lang} noindex={true} jsonLd={[breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Cookies', path: route('cookies', lang) }])]} breadcrumbs={[{ label: 'Cookies' }]}>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Cookies</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <p>De rekenmodules gebruiken geen cookies. Je bedragen blijven in de pagina en, als je de deellink gebruikt, in de adresbalk.</p>
+    <p>Vandaag worden geen statistiek- of reclamecookies geplaatst. Worden bezoekstatistieken toegevoegd, dan wordt niets geladen vóór je toestemming, wordt je keuze in de lokale opslag van de browser bewaard onder de sleutel <code>consent-choice</code>, en kan je ze via een link onderaan elke pagina wijzigen.</p>
+    <p>Vragen: zie de <a href={route('privacy', lang)}>privacyverklaring</a>.</p>
+  </div>
+</PageLayout>
