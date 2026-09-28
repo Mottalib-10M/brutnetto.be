@@ -1,0 +1,69 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { compute } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'nl'; const f = fmt(lang); const S = src(lang);
+const W = P.salaires; const E = W.ses; const R = W.regions;
+const net = (g: number) => compute({ gross: g }).net;
+const groei = W.etp_annuel['2024'] / W.etp_annuel['2022'] - 1;
+const schatting = Math.round(E.moyen * (1 + groei) / 10) * 10;
+const gewesten = [['Vlaams Gewest', R.flandre], ['Waals Gewest', R.wallonie], ['Brussels Hoofdstedelijk Gewest', R.bruxelles]].map(([n, g]: any) => [n, f.money(g, 0), f.money(net(g), 0), f.pct(net(g) / g, 0)]);
+const spreiding = [['De 10 % laagst betaalden verdienen minder dan', E.d1], ['Mediaanloon', E.median], ['Gemiddeld loon', E.moyen], ['De 10 % best betaalden verdienen meer dan', E.d9]].map(([n, g]: any) => [n, f.money(g, 0), f.money(net(g), 0)]);
+const A = W.anciennete; const klassen = ['Minder dan 2 jaar', '2 tot 4 jaar', '5 tot 9 jaar', '10 tot 19 jaar', '20 jaar en meer'];
+const anc = klassen.map((b, i) => [b, f.money(A.flandre[i], 0), f.money(A.wallonie[i], 0), f.money(A.bruxelles[i], 0)]);
+const H = E.historique_moyen; const HM = E.historique_median;
+const hist = Object.keys(H).map((y) => [y, f.money((H as any)[y], 0), f.money((HM as any)[y], 0)]);
+const HR = W.historique;
+const histR = Object.keys(HR).map((y) => [y, f.money((HR as any)[y].flandre, 0), f.money((HR as any)[y].wallonie, 0), f.money((HR as any)[y].bruxelles, 0)]);
+const faqs = [
+  { q: 'Wat is het gemiddelde brutoloon in België?', a: `Volgens de Europese loonstructuurenquête van Eurostat verdiende een voltijdse werknemer in België in 2022 gemiddeld ${f.money(E.moyen, 0)} bruto per maand, in de industrie en de diensten buiten de openbare besturen. Statbel geeft voor datzelfde jaar ${f.money(R.flandre, 0)} in Vlaanderen, ${f.money(R.wallonie, 0)} in Wallonië en ${f.money(R.bruxelles, 0)} in Brussel.` },
+  { q: 'Hoeveel is het gemiddelde loon netto?', a: `Met de barema’s van 2026 levert een brutoloon van ${f.money(E.moyen, 0)} ongeveer ${f.money(net(E.moyen), 0)} netto per maand op voor een alleenstaande bediende zonder kinderen. De RSZ-bijdrage van 13,07 %, de bedrijfsvoorheffing en de bijzondere bijdrage voor de sociale zekerheid nemen samen iets meer dan een derde van het brutoloon weg. Kinderen ten laste verhogen het nettoloon.` },
+  { q: 'Wat is het verschil tussen gemiddeld loon en mediaanloon?', a: `Het gemiddelde telt alle lonen op en deelt door het aantal werknemers, waardoor enkele zeer hoge lonen het omhoog trekken. De mediaan deelt de werknemers in twee even grote helften. In België bedroeg die in 2022 ${f.money(E.median, 0)} bruto, ${f.money(E.moyen - E.median, 0)} minder dan het gemiddelde. De mediaan is het beste vergelijkingspunt voor uw eigen loon.` },
+  { q: 'Waarom zijn de meest recente cijfers van 2022?', a: 'De loonstructuurenquête, die de maandlonen per gewest, anciënniteit en beroep beschrijft, heeft een referentiejaar en verschijnt twee tot drie jaar later. De jaarcijfers van de nationale rekeningen zijn recenter, maar geven alleen een algemeen gemiddelde per voltijdequivalent, zonder uitsplitsing naar gewest of anciënniteit.' },
+  { q: 'Verdienen vrouwen minder dan mannen in België?', a: `Bij een voltijdse job is het verschil klein: ${f.money(E.hommes, 0)} bruto voor mannen en ${f.money(E.femmes, 0)} voor vrouwen in 2022 volgens Eurostat, en de mediaan van vrouwen ligt zelfs hoger. De totale loonkloof blijft wel bestaan, omdat vrouwen veel vaker deeltijds werken, wat deze voltijdse cijfers niet tonen.` },
+  { q: 'Zit de eindejaarspremie in het gemiddelde loon?', a: 'Nee. Het bruto maandloon van Statbel en Eurostat is het loon van een gewone maand, met de regelmatige premies, maar zonder jaarlijkse premies zoals de eindejaarspremie of het dubbel vakantiegeld. Over een volledig jaar ontvangt een bediende dus duidelijk meer dan twaalf keer dit bedrag.' },
+];
+---
+<Guide lang={lang} id="moyen" title="Gemiddeld loon in België: bruto, netto en mediaan per gewest" h1="Gemiddeld loon in België: bruto, netto, mediaan en gewesten"
+  description="Gemiddeld loon in België: 4 140 euro bruto per maand voltijds volgens Eurostat, mediaan 3 843 euro. Statbel-cijfers per gewest en het nettoloon in 2026."
+  intro="Hoeveel verdient een voltijdse werknemer in België? Het gemiddelde loon en het mediaanloon volgens Statbel en Eurostat, en wat ze netto opleveren met de barema’s van 2026."
+  resume={`Volgens de loonstructuurenquête van Eurostat verdiende een voltijdse werknemer in België in 2022 gemiddeld ${f.money(E.moyen, 0)} bruto per maand, het laatste jaar waarvoor gedetailleerde cijfers beschikbaar zijn. Het mediaanloon, dat de werknemers in twee even grote helften verdeelt, bedroeg ${f.money(E.median, 0)}. Statbel publiceert hetzelfde gemiddelde per gewest: ${f.money(R.flandre, 0)} in Vlaanderen, ${f.money(R.wallonie, 0)} in Wallonië en ${f.money(R.bruxelles, 0)} in Brussel. Met de barema’s van 2026 levert het gemiddelde loon ongeveer ${f.money(net(E.moyen), 0)} netto per maand op voor een alleenstaande bediende zonder kinderen, en het mediaanloon ongeveer ${f.money(net(E.median), 0)}. De eindejaarspremie en het dubbel vakantiegeld zitten niet in deze bedragen. Sinds 2022 volgden de lonen de automatische indexering: volgens de nationale rekeningen steeg het gemiddelde loon per voltijdequivalent met ${f.pct(groei, 1)} tussen 2022 en 2024.`}
+  faqs={faqs} related={['minimum', 'home', 'brutNet', 'pp', 'baremes', 'prime']} sources={[S.statbel_salaires, S.statbel_anciennete, S.eurostat_ses, S.eurostat_fte]}>
+  <h2>Het gemiddelde loon per gewest</h2>
+  <p>Statbel meet het gemiddelde bruto maandloon van voltijdse werknemers in elk van de drie gewesten. De tabel toont de cijfers van 2022 en het nettoloon dat ze vandaag opleveren, berekend met de sleutelformule van de bedrijfsvoorheffing van 2026 voor een alleenstaande bediende zonder kinderen.</p>
+  <ContentTable headers={['Gewest', 'Bruto per maand 2022', 'Netto met barema’s 2026', 'Nettoaandeel']} align={['l', 'r', 'r', 'r']} rows={gewesten} />
+  <p>Brussel springt eruit: hoofdkantoren, financiële instellingen, zakelijke dienstverlening en besturen bundelen er beter betaalde functies. Het verschil met Wallonië bedraagt {f.money(R.bruxelles - R.wallonie, 0)} bruto per maand. Vlaanderen zit daartussen, met een sterke industriële en logistieke basis. Deze gemiddelden beschrijven de banen die in elk gewest aanwezig zijn; ze betekenen niet dat dezelfde functie per gewest anders betaald wordt, want de meeste sectorale barema’s worden nationaal vastgelegd door de paritaire comités.</p>
+
+  <h2>Gemiddelde, mediaan en decielen</h2>
+  <p>Het gemiddelde is gevoelig voor hoge lonen. Om te weten waar u staat, zijn de mediaan en de decielen nuttiger. Eurostat publiceert ze voor België op basis van dezelfde enquête van 2022.</p>
+  <ContentTable headers={['Maatstaf (voltijds, 2022)', 'Bruto per maand', 'Netto met barema’s 2026']} align={['l', 'r', 'r']} rows={spreiding} />
+  <p>De helft van de werknemers verdiende minder dan {f.money(E.median, 0)} bruto per maand. Het verschil tussen gemiddelde en mediaan, {f.money(E.moyen - E.median, 0)}, is Europees gezien beperkt: België heeft een vrij compacte loonverdeling, omdat collectieve onderhandelingen bijna alle werknemers dekken en de automatische indexering alle lonen in dezelfde verhouding optrekt. Het eerste deciel van 2022, {f.money(E.d1, 0)}, ligt vandaag onder het minimumloon, omdat dat sindsdien geïndexeerd en verhoogd is. Het bedraagt {f.money(P.rmmmg.amount, 2)} sinds 1 april 2026, zoals de pagina over het <a href={route('minimum', lang)}>minimumloon</a> uitlegt.</p>
+
+  <h2>Van gemiddeld brutoloon naar netto</h2>
+  <p>Voor een alleenstaande bediende verloopt de berekening in drie stappen. De persoonlijke RSZ-bijdrage van 13,07 % wordt op het brutoloon ingehouden; bij het gemiddelde loon speelt de werkbonus niet meer. De bedrijfsvoorheffing wordt vervolgens berekend op het belastbaar loon volgens de sleutelformule van de FOD Financiën. Daarna volgt de bijzondere bijdrage voor de sociale zekerheid. Op een brutoloon van {f.money(E.moyen, 0)} geeft dat {f.money(compute({ gross: E.moyen }).onssNet, 2)} RSZ, {f.money(compute({ gross: E.moyen }).pp, 2)} bedrijfsvoorheffing en {f.money(compute({ gross: E.moyen }).csss, 2)} bijzondere bijdrage, of {f.money(net(E.moyen), 2)} netto. De <a href={route('home', lang)}>bruto netto rekenmodule</a> herhaalt de berekening met uw gezinssituatie, uw statuut als arbeider of bediende en uw kinderen ten laste.</p>
+  <p>De bedrijfsvoorheffing is slechts een voorschot op de personenbelasting. De definitieve belasting in de aangifte houdt rekening met de werkelijke aanvullende gemeentebelasting en met belastingverminderingen. Voor een alleenstaande werknemer zonder andere inkomsten is het verschil met de voorheffing meestal beperkt.</p>
+
+  <h2>Het gemiddelde loon volgens anciënniteit</h2>
+  <p>Anciënniteit weegt zwaar in België: veel sectorale en openbare barema’s voorzien automatische verhogingen met de dienstjaren. Statbel publiceert het gemiddelde bruto maandloon volgens de anciënniteit in de onderneming.</p>
+  <ContentTable headers={['Anciënniteit (2022)', 'Vlaanderen', 'Wallonië', 'Brussel']} align={['l', 'r', 'r', 'r']} rows={anc} />
+  <p>In Vlaanderen verdient een werknemer met twintig jaar anciënniteit gemiddeld {f.pct(A.flandre[4] / A.flandre[0] - 1, 0)} meer dan iemand die er minder dan twee jaar werkt. Dat komt niet alleen door de barema’s: wie lang bij een onderneming blijft, is ook vaker doorgegroeid naar beter betaalde functies. Nieuwe werknemers zijn bovendien jonger, en korte tewerkstellingen komen meer voor in sectoren die minder betalen.</p>
+
+  <h2>De evolutie sinds 2006</h2>
+  <ContentTable headers={['Jaar', 'Gemiddeld brutoloon', 'Mediaan brutoloon']} align={['l', 'r', 'r']} rows={hist} />
+  <p>Tussen 2018 en 2022 steeg het gemiddelde loon met {f.pct(H['2022'] / H['2018'] - 1, 1)}, vooral door de automatische indexering na de hoge inflatie van 2022. De gewestelijke reeks van Statbel bevestigt die beweging:</p>
+  <ContentTable headers={['Jaar', 'Vlaanderen', 'Wallonië', 'Brussel']} align={['l', 'r', 'r', 'r']} rows={histR} />
+
+  <h2>En in 2026?</h2>
+  <p>Voor 2024, 2025 of 2026 zijn nog geen gedetailleerde maandloonstatistieken gepubliceerd: de loonstructuurenquête heeft een referentiejaar en verschijnt later. De nationale rekeningen geven wel elk jaar een gemiddeld jaarloon per voltijdequivalent. Dat steeg van {f.money(W.etp_annuel['2022'], 0)} in 2022 tot {f.money(W.etp_annuel['2024'], 0)} in 2024, een stijging van {f.pct(groei, 1)}. Toegepast op het gemiddelde maandloon van 2022 geeft die groei een grootteorde van ongeveer {f.money(schatting, 0)} bruto per maand in 2024, of ongeveer {f.money(net(schatting), 0)} netto met de barema’s van 2026. Dat bedrag is een schatting, geen gepubliceerde statistiek; beide bronnen meten bovendien niet precies hetzelfde, omdat de nationale rekeningen alle premies van het jaar meetellen.</p>
+
+  <h2>Wat het gemiddelde loon niet zegt</h2>
+  <p>De cijfers gaan over voltijdse werknemers. Bijna een op de vier werknemers in België werkt deeltijds, veel vaker vrouwen, en hun maandloon ligt lager. Het gemiddelde loon van alle werknemers, deeltijders inbegrepen, was volgens Eurostat {f.money(E.tous_temps, 0)} bruto in 2022. Zelfstandigen, talrijk in België, zijn niet meegeteld. Extralegale voordelen zoals maaltijdcheques, een bedrijfswagen, een groepsverzekering of ecocheques maken geen deel uit van het brutoloon, terwijl ze in veel ondernemingen een belangrijk deel van de verloning vormen.</p>
+  <p>Twaalf maandlonen vormen bovendien niet het jaarinkomen. Een bediende krijgt daarnaast het dubbel vakantiegeld, ongeveer 92 % van een maandloon, en meestal een <a href={route('prime', lang)}>eindejaarspremie</a> van een maand. Over het jaar komt het gemiddelde loon van {f.money(E.moyen, 0)} dus neer op een bruto jaarloon van ongeveer {f.money(E.moyen * 13.92, 0)}.</p>
+
+  <h2>Uw eigen loon situeren</h2>
+  <p>Om uw eigen loon te vergelijken, kijkt u beter naar de mediaan dan naar het gemiddelde, en houdt u rekening met gewest, anciënniteit en sector. De barema’s van uw paritair comité geven het minimum voor uw functie; het werkelijke loon ligt vaak hoger. De <a href={route('brutNet', lang)}>gedetailleerde bruto netto berekening</a> toont wat elk loonniveau netto oplevert, en de pagina’s per bedrag, bijvoorbeeld <a href={route('m-4000', lang)}>4 000 euro bruto</a>, beschrijven de niveaus rond het gemiddelde.</p>
+</Guide>

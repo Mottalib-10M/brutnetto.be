@@ -8,6 +8,10 @@
 ## Rekenmodules (NL)
 - [Bruto netto](https://brutnetto.be/nl/), [bedrijfsvoorheffing](https://brutnetto.be/nl/bedrijfsvoorheffing-berekenen/), [netto bruto](https://brutnetto.be/nl/netto-bruto/), [uurloon](https://brutnetto.be/nl/uurloon-bruto-netto/), [vakantiegeld](https://brutnetto.be/nl/vakantiegeld-berekenen/), [eindejaarspremie](https://brutnetto.be/nl/eindejaarspremie/), [werkgeverskost](https://brutnetto.be/nl/werkgeverskost-berekenen/).
 
+## Repères de salaire / Loonreferenties
+- [Salaire minimum](https://brutnetto.be/fr/salaire-minimum/), [salaire moyen et médian, Statbel et Eurostat](https://brutnetto.be/fr/salaire-moyen/)
+- [Minimumloon](https://brutnetto.be/nl/minimumloon/), [gemiddeld loon en mediaanloon, Statbel en Eurostat](https://brutnetto.be/nl/gemiddeld-loon/)
+
 ## Méthode / Methodologie
 - https://brutnetto.be/fr/methodologie/
 - https://brutnetto.be/nl/methodologie/

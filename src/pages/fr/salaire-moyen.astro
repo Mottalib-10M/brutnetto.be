@@ -1,0 +1,69 @@
+---
+import Guide from '../../components/Guide.astro';
+import ContentTable from '../../components/ContentTable.astro';
+import { route } from '../../i18n/routes';
+import { compute } from '../../lib/engine/be';
+import { P } from '../../lib/tables';
+import { src } from '../../lib/sources';
+import { fmt } from '../../lib/format';
+const lang = 'fr'; const f = fmt(lang); const S = src(lang);
+const W = P.salaires; const E = W.ses; const R = W.regions;
+const net = (g: number) => compute({ gross: g }).net;
+const croissance = W.etp_annuel['2024'] / W.etp_annuel['2022'] - 1;
+const estime = Math.round(E.moyen * (1 + croissance) / 10) * 10;
+const regions = [['Région flamande', R.flandre], ['Région wallonne', R.wallonie], ['Région de Bruxelles-Capitale', R.bruxelles]].map(([n, g]: any) => [n, f.money(g, 0), f.money(net(g), 0), f.pct(net(g) / g, 0)]);
+const distrib = [['10 % les moins payés gagnent moins de', E.d1], ['Salaire médian', E.median], ['Salaire moyen', E.moyen], ['10 % les mieux payés gagnent plus de', E.d9]].map(([n, g]: any) => [n, f.money(g, 0), f.money(net(g), 0)]);
+const A = W.anciennete; const bands = ['Moins de 2 ans', 'De 2 à 4 ans', 'De 5 à 9 ans', 'De 10 à 19 ans', '20 ans et plus'];
+const anc = bands.map((b, i) => [b, f.money(A.flandre[i], 0), f.money(A.wallonie[i], 0), f.money(A.bruxelles[i], 0)]);
+const H = E.historique_moyen; const HM = E.historique_median;
+const hist = Object.keys(H).map((y) => [y, f.money((H as any)[y], 0), f.money((HM as any)[y], 0)]);
+const HR = W.historique;
+const histR = Object.keys(HR).map((y) => [y, f.money((HR as any)[y].flandre, 0), f.money((HR as any)[y].wallonie, 0), f.money((HR as any)[y].bruxelles, 0)]);
+const faqs = [
+  { q: 'Quel est le salaire moyen brut en Belgique ?', a: `Selon l’enquête européenne sur la structure des salaires publiée par Eurostat, un salarié à temps plein gagnait en moyenne ${f.money(E.moyen, 0)} brut par mois en 2022, dans l’industrie et les services privés et publics hors administration. Statbel donne ${f.money(R.flandre, 0)} en Flandre, ${f.money(R.wallonie, 0)} en Wallonie et ${f.money(R.bruxelles, 0)} à Bruxelles pour la même année.` },
+  { q: 'Combien fait le salaire moyen belge en net ?', a: `Avec les barèmes de 2026, un salaire brut de ${f.money(E.moyen, 0)} donne environ ${f.money(net(E.moyen), 0)} net par mois pour un employé isolé sans enfant. La cotisation ONSS de 13,07 %, le précompte professionnel et la cotisation spéciale de sécurité sociale absorbent un peu plus d’un tiers du brut. Des enfants à charge augmentent le net.` },
+  { q: 'Quelle différence entre salaire moyen et salaire médian ?', a: `Le salaire moyen additionne tous les salaires et les divise par le nombre de salariés : quelques très hauts salaires le tirent vers le haut. Le médian coupe la population en deux moitiés égales. En Belgique, il était de ${f.money(E.median, 0)} brut en 2022, soit ${f.money(E.moyen - E.median, 0)} de moins que la moyenne. C’est le meilleur repère pour savoir si l’on gagne plus que la plupart des salariés.` },
+  { q: 'Pourquoi les chiffres les plus récents datent-ils de 2022 ?', a: 'L’enquête sur la structure des salaires, qui détaille les salaires mensuels par région, ancienneté et profession, est réalisée sur une année de référence et publiée avec un délai de deux à trois ans. Les chiffres annuels de la comptabilité nationale sont plus récents, mais ne donnent qu’une moyenne globale par équivalent temps plein.' },
+  { q: 'Les femmes gagnent-elles moins que les hommes en Belgique ?', a: `À temps plein, l’écart est faible : ${f.money(E.hommes, 0)} brut pour les hommes et ${f.money(E.femmes, 0)} pour les femmes en 2022 selon Eurostat, et la médiane des femmes est même plus élevée. L’écart salarial total reste réel, parce que les femmes travaillent beaucoup plus souvent à temps partiel, ce que ces chiffres à temps plein ne montrent pas.` },
+  { q: 'Le salaire moyen comprend-il le treizième mois et le pécule ?', a: 'Non. Le salaire mensuel brut de Statbel et d’Eurostat est la rémunération d’un mois ordinaire, primes régulières comprises, mais sans les primes annuelles comme la prime de fin d’année ou le double pécule de vacances. Sur l’année, un employé perçoit donc nettement plus que douze fois ce montant.' },
+];
+---
+<Guide lang={lang} id="moyen" title="Salaire moyen en Belgique : brut, net et médian par région" h1="Salaire moyen en Belgique : brut, net, médiane et régions"
+  description="Salaire moyen belge : 4 140 € brut par mois à temps plein selon Eurostat, médiane 3 843 €. Chiffres Statbel par région et ancienneté, et le net en 2026."
+  intro="Combien gagne un salarié belge à temps plein ? Voici le salaire moyen et le salaire médian selon Statbel et Eurostat, et ce qu’ils donnent en net avec les barèmes de 2026."
+  resume={`Selon l’enquête sur la structure des salaires publiée par Eurostat, un salarié belge à temps plein gagnait en moyenne ${f.money(E.moyen, 0)} brut par mois en 2022, dernière année détaillée disponible. Le salaire médian, celui qui partage les salariés en deux moitiés égales, était de ${f.money(E.median, 0)}. Statbel publie la même moyenne par région : ${f.money(R.flandre, 0)} en Flandre, ${f.money(R.wallonie, 0)} en Wallonie et ${f.money(R.bruxelles, 0)} à Bruxelles. Avec les barèmes de 2026, le salaire moyen donne environ ${f.money(net(E.moyen), 0)} net par mois à un employé isolé sans enfant, et le salaire médian environ ${f.money(net(E.median), 0)}. Ces montants ne comprennent ni la prime de fin d’année ni le double pécule de vacances. Depuis 2022, les salaires ont suivi l’indexation automatique : la comptabilité nationale montre une hausse de ${f.pct(croissance, 1)} du salaire moyen par équivalent temps plein entre 2022 et 2024.`}
+  faqs={faqs} related={['minimum', 'home', 'brutNet', 'pp', 'baremes', 'prime']} sources={[S.statbel_salaires, S.statbel_anciennete, S.eurostat_ses, S.eurostat_fte]}>
+  <h2>Le salaire moyen par région</h2>
+  <p>Statbel mesure le salaire mensuel brut moyen des salariés à temps plein dans chacune des trois régions. Le tableau reprend les chiffres de 2022 et le net qu’ils donnent aujourd’hui, calculé avec la formule-clé du précompte professionnel de 2026 pour un employé isolé sans enfant.</p>
+  <ContentTable headers={['Région', 'Brut mensuel 2022', 'Net avec les barèmes 2026', 'Part nette']} align={['l', 'r', 'r', 'r']} rows={regions} />
+  <p>Bruxelles se détache nettement : les sièges d’entreprises, la finance, les services aux entreprises et les administrations y concentrent des fonctions mieux payées. L’écart avec la Wallonie atteint {f.money(R.bruxelles - R.wallonie, 0)} brut par mois. La Flandre se situe entre les deux, avec un tissu industriel et logistique important. Ces moyennes décrivent l’emploi présent dans chaque région ; elles ne disent pas qu’un même poste serait payé différemment selon la région, puisque la plupart des barèmes sectoriels sont fixés au niveau national par les commissions paritaires.</p>
+
+  <h2>Moyenne, médiane et déciles</h2>
+  <p>La moyenne est sensible aux hauts salaires. Pour savoir où l’on se situe, la médiane et les déciles sont plus parlants. Eurostat les publie pour la Belgique à partir de la même enquête de 2022.</p>
+  <ContentTable headers={['Repère (temps plein, 2022)', 'Brut mensuel', 'Net avec les barèmes 2026']} align={['l', 'r', 'r']} rows={distrib} />
+  <p>Un salarié sur deux gagnait moins de {f.money(E.median, 0)} brut par mois. L’écart entre la moyenne et la médiane, {f.money(E.moyen - E.median, 0)}, est modéré en comparaison européenne : la Belgique a une distribution des salaires relativement resserrée, parce que la négociation collective couvre presque tous les salariés et que l’indexation automatique relève tous les salaires dans la même proportion. Le premier décile de 2022, {f.money(E.d1, 0)}, est aujourd’hui inférieur au salaire minimum, parce que le revenu minimum a été indexé et relevé depuis. Il atteint {f.money(P.rmmmg.amount, 2)} depuis le 1er avril 2026, comme l’explique la page sur le <a href={route('minimum', lang)}>salaire minimum</a>.</p>
+
+  <h2>Du brut moyen au net</h2>
+  <p>Pour un employé isolé, le passage du brut au net suit trois étapes. La cotisation personnelle ONSS de 13,07 % est retenue sur le brut ; au niveau du salaire moyen, le bonus à l’emploi ne joue plus. Le précompte professionnel est ensuite calculé sur le salaire imposable selon la formule-clé du SPF Finances. La cotisation spéciale de sécurité sociale s’ajoute enfin. Sur un brut de {f.money(E.moyen, 0)}, cela donne {f.money(compute({ gross: E.moyen }).onssNet, 2)} d’ONSS, {f.money(compute({ gross: E.moyen }).pp, 2)} de précompte et {f.money(compute({ gross: E.moyen }).csss, 2)} de cotisation spéciale, soit {f.money(net(E.moyen), 2)} net. Le <a href={route('home', lang)}>calculateur brut net</a> refait le calcul avec votre situation familiale, votre statut d’ouvrier ou d’employé et vos enfants à charge.</p>
+  <p>Le précompte n’est qu’une avance sur l’impôt des personnes physiques. L’impôt final, calculé dans la déclaration, tient compte des additionnels communaux réels et des réductions d’impôt. Pour un salarié isolé sans autres revenus, la différence avec le précompte est en général limitée.</p>
+
+  <h2>Le salaire moyen selon l’ancienneté</h2>
+  <p>L’ancienneté pèse lourd en Belgique : beaucoup de barèmes sectoriels et publics prévoient des augmentations automatiques avec les années de service. Statbel publie le salaire mensuel brut moyen selon l’ancienneté dans l’entreprise.</p>
+  <ContentTable headers={['Ancienneté (2022)', 'Flandre', 'Wallonie', 'Bruxelles']} align={['l', 'r', 'r', 'r']} rows={anc} />
+  <p>En Flandre, un salarié avec vingt ans d’ancienneté gagne en moyenne {f.pct(A.flandre[4] / A.flandre[0] - 1, 0)} de plus qu’un salarié arrivé depuis moins de deux ans. L’effet ne vient pas seulement des barèmes : les salariés restés longtemps dans une entreprise ont aussi plus souvent progressé vers des fonctions mieux payées. Les nouveaux engagés sont par ailleurs plus jeunes, et les emplois de courte durée se concentrent dans des secteurs moins rémunérateurs.</p>
+
+  <h2>L’évolution depuis 2006</h2>
+  <ContentTable headers={['Année', 'Salaire moyen brut', 'Salaire médian brut']} align={['l', 'r', 'r']} rows={hist} />
+  <p>Entre 2018 et 2022, le salaire moyen a progressé de {f.pct(H['2022'] / H['2018'] - 1, 1)}, sous l’effet de l’indexation automatique qui a suivi la forte inflation de 2022. La série régionale de Statbel confirme ce mouvement :</p>
+  <ContentTable headers={['Année', 'Flandre', 'Wallonie', 'Bruxelles']} align={['l', 'r', 'r', 'r']} rows={histR} />
+
+  <h2>Et en 2026 ?</h2>
+  <p>Aucune statistique détaillée des salaires mensuels n’est encore publiée pour 2024, 2025 ou 2026 : l’enquête sur la structure des salaires porte sur une année de référence et paraît plus tard. La comptabilité nationale donne en revanche un salaire annuel moyen par équivalent temps plein chaque année. Il est passé de {f.money(W.etp_annuel['2022'], 0)} en 2022 à {f.money(W.etp_annuel['2024'], 0)} en 2024, soit {f.pct(croissance, 1)} de hausse. Appliquée au salaire mensuel moyen de 2022, cette progression donne un ordre de grandeur d’environ {f.money(estime, 0)} brut par mois en 2024, soit environ {f.money(net(estime), 0)} net avec les barèmes de 2026. Ce montant est une estimation, pas une statistique publiée ; les deux sources ne mesurent d’ailleurs pas exactement la même chose, puisque la comptabilité nationale inclut toutes les primes de l’année.</p>
+
+  <h2>Ce que le salaire moyen ne dit pas</h2>
+  <p>Les chiffres portent sur les salariés à temps plein. Près d’un salarié sur quatre travaille à temps partiel en Belgique, beaucoup plus souvent des femmes, et leur salaire mensuel est plus bas. Le salaire moyen de tous les salariés, temps partiels compris, était de {f.money(E.tous_temps, 0)} brut en 2022 selon Eurostat. Les indépendants, nombreux en Belgique, ne sont pas inclus. Les avantages extralégaux, comme les chèques-repas, la voiture de société, l’assurance groupe ou les éco-chèques, ne font pas partie du salaire brut, alors qu’ils représentent une part importante de la rémunération dans de nombreuses entreprises.</p>
+  <p>Enfin, les douze salaires mensuels ne font pas le revenu annuel. Un employé reçoit en plus le double pécule de vacances, environ 92 % d’un mois de salaire, et le plus souvent une <a href={route('prime', lang)}>prime de fin d’année</a> égale à un mois. Sur l’année, le salaire moyen de {f.money(E.moyen, 0)} représente donc un brut annuel proche de {f.money(E.moyen * 13.92, 0)}.</p>
+
+  <h2>Comment se situer</h2>
+  <p>Pour comparer son propre salaire, mieux vaut regarder la médiane que la moyenne, puis tenir compte de la région, de l’ancienneté et du secteur. Les barèmes de sa commission paritaire donnent le minimum applicable à sa fonction ; le salaire réel est souvent plus élevé. Le <a href={route('brutNet', lang)}>calcul détaillé du brut au net</a> montre ce que chaque niveau de salaire donne en net, et les pages par montant, par exemple <a href={route('m-4000', lang)}>4 000 € brut</a>, détaillent les niveaux proches de la moyenne.</p>
+</Guide>

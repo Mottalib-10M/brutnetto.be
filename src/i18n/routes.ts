@@ -17,6 +17,7 @@ export const ROUTES: RouteDef<Locale>[] = [
   r('independant', '/fr/independant-impots/', '/nl/zelfstandige-belastingen/'),
   r('baremes', '/fr/baremes-impot/', '/nl/belastingschijven/'),
   r('minimum', '/fr/salaire-minimum/', '/nl/minimumloon/'),
+  r('moyen', '/fr/salaire-moyen/', '/nl/gemiddeld-loon/'),
   r('bonus', '/fr/bonus-emploi/', '/nl/werkbonus/'),
   r('csss', '/fr/cotisation-speciale-securite-sociale/', '/nl/bijzondere-bijdrage-sociale-zekerheid/'),
   r('onss', '/fr/cotisations-onss/', '/nl/rsz-bijdragen/'),
