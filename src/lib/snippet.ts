@@ -5,7 +5,12 @@ const DESC_TAILS: Record<string, string[]> = {
 };
 const TITLE_TAILS: Record<string, string[]> = { fr: ['', ' | Belgique'], nl: ['', ' | België'] };
 function fit(core: string, tails: string[], lo: number, hi: number, what: string): string {
-  for (const t of tails) { const s = core + t; if (s.length >= lo && s.length <= hi) return s; }
+  for (const t of tails) {
+    // Pas de suffixe pays quand le titre le porte déjà (« Minimumloon België … | België »).
+    const word = t.replace(/^[\s|·–-]+/, '').toLowerCase();
+    if (word && core.toLowerCase().includes(word)) continue;
+    const s = core + t; if (s.length >= lo && s.length <= hi) return s;
+  }
   throw new Error(`${what} hors fenêtre ${lo}–${hi} (${core.length}) : « ${core} »`);
 }
 export const fitDescription = (d: string, lang = 'fr') => fit(d.trim(), DESC_TAILS[lang], 150, 160, 'Description');
