@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -26,6 +27,7 @@ const faqs = [
   intro="Deux barèmes coexistent : celui de l’impôt, utilisé dans la déclaration, et celui du précompte, utilisé chaque mois par l’employeur. Voici les deux pour 2026."
   resume={`En Belgique, l’impôt des personnes physiques sur les revenus 2026, déclarés en 2027, est calculé par tranches. Selon le SPF Finances, le taux est de 25 % jusqu’à ${f.money(I.brackets[0].upto ?? 0, 0)}, 40 % jusqu’à ${f.money(I.brackets[1].upto ?? 0, 0)}, 45 % jusqu’à ${f.money(I.brackets[2].upto ?? 0, 0)} et 50 % au-delà. Chaque contribuable dispose d’une quotité exemptée de base de ${f.money(I.quotite, 0)}, majorée pour les enfants et autres personnes à charge. À l’impôt fédéral s’ajoute la taxe communale, un pourcentage fixé par chaque commune, souvent autour de 7 %. Pendant l’année, l’employeur retient un précompte professionnel calculé avec un barème propre, celui de la formule-clé, dont les taux vont de 26,75 % à 53,50 % parce qu’ils incluent déjà 7 % de taxe communale. Pour un revenu imposable de ${f.money(40000, 0)} après frais professionnels, l’impôt estimé, taxe communale de 7 % comprise, est d’environ ${f.money(ipp(40000), 0)}. Le décompte final compare cet impôt au précompte retenu.`}
   faqs={faqs} related={['pp', 'brutNet', 'independant', 'csss', 'home', 'prime']} sources={[S.ipp_taux, S.formule, S.pp_calcul]}>
+  <MiniSim client:visible kind="pp" lang={lang} href={route('pp', lang)} />
   <h2>Tranches de l’impôt, revenus 2026</h2>
   <ContentTable headers={['Revenu imposable', 'Taux']} align={['l', 'r']} rows={tranches} />
   <p>Les montants sont indexés chaque année. La quotité exemptée de base, {f.money(I.quotite, 0)}, est imposée à 0 % : on calcule l’impôt sur tout le revenu, puis on en retire 25 % de la quotité.</p>

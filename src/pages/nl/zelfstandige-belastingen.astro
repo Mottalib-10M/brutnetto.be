@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -24,6 +25,7 @@ const faqs = [
   intro="Een zelfstandige krijgt geen loonfiche. Hij betaalt zelf zijn sociale bijdragen en zijn belasting. Dit is de raming voor 2026, en de vergelijking met een werknemer."
   resume={`Een zelfstandige in hoofdberoep in België betaalt twee heffingen op zijn winst. De eerste is de sociale bijdrage, betaald aan een sociaal verzekeringsfonds: volgens het RSVZ bedraagt ze ${f.pct(I.rate1, 1)} van het beroepsinkomen tot ${f.money(I.limit1, 2)} en ${f.pct(I.rate2, 2)} op de volgende schijf, tot ${f.money(I.limit2, 2)}, met een minimumbijdrage berekend op ${f.money(I.min_income, 2)}. De tweede is de personenbelasting, volgens dezelfde schijven als voor werknemers, van 25 tot 50 %, plus de gemeentebelasting. De sociale bijdragen zijn aftrekbaar en verlagen dus de belastbare basis. Voor een winst van ${f.money(60000, 0)} vóór bijdragen betaalt een alleenstaande ongeveer ${f.money(s.contributions, 0)} bijdragen en ${f.money(s.tax, 0)} belasting, en houdt hij ${f.money(s.net, 0)} over. De raming houdt geen rekening met de beheerskosten van het fonds, bijzondere fiscale aftrekken of verminderingen voor starters.`}
   faqs={faqs} related={['baremes', 'cout', 'brutNet', 'onss', 'home', 'pp']} sources={[S.inasti, S.ipp_taux, S.formule]}>
+  <MiniSim client:visible kind="indep" lang={lang} href={route('independant', lang)} />
   <h2>Bijdragen en belasting volgens winst</h2>
   <ContentTable headers={['Winst vóór bijdragen', 'Sociale bijdragen', 'Belasting (7 % gemeente)', 'Netto inkomen', 'Totale heffing']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
   <p>De berekening gaat uit van een alleenstaande zonder kinderen of bijzondere aftrek. De bijdragen worden berekend op het inkomen na bijdragen, zoals de administratie dat doet.</p>

@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -23,6 +24,7 @@ const faqs = [
   intro="Un indépendant ne reçoit pas de fiche de paie. Il paie lui-même ses cotisations sociales et son impôt. Voici l’estimation pour 2026, et la comparaison avec un salarié."
   resume={`Un indépendant à titre principal en Belgique paie deux prélèvements sur son bénéfice. Le premier est la cotisation sociale, versée à une caisse d’assurances sociales : selon l’INASTI, elle est de ${f.pct(I.rate1, 1)} du revenu professionnel jusqu’à ${f.money(I.limit1, 2)} et de ${f.pct(I.rate2, 2)} de la tranche suivante, jusqu’à ${f.money(I.limit2, 2)}, avec une cotisation minimale calculée sur ${f.money(I.min_income, 2)}. Le second est l’impôt des personnes physiques, selon les mêmes tranches que les salariés, de 25 à 50 %, plus la taxe communale. Les cotisations sociales sont déductibles et réduisent donc la base de l’impôt. Pour un bénéfice de ${f.money(60000, 0)} avant cotisations, un isolé paie environ ${f.money(s.contributions, 0)} de cotisations et ${f.money(s.tax, 0)} d’impôt, et conserve ${f.money(s.net, 0)}. L’estimation ne tient pas compte des frais de gestion de la caisse, des déductions fiscales particulières ni des réductions pour starters.`}
   faqs={faqs} related={['baremes', 'cout', 'brutNet', 'onss', 'home', 'pp']} sources={[S.inasti, S.ipp_taux, S.formule]}>
+  <MiniSim client:visible kind="indep" lang={lang} href={route('independant', lang)} />
   <h2>Cotisations et impôt selon le bénéfice</h2>
   <ContentTable headers={['Bénéfice avant cotisations', 'Cotisations sociales', 'Impôt (7 % communal)', 'Revenu net', 'Prélèvement total']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
   <p>Le calcul suppose un isolé sans enfant ni déduction particulière. Les cotisations sont calculées au point fixe, sur le revenu net de cotisations, comme le fait l’administration.</p>

@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -24,6 +25,7 @@ const faqs = [
   intro="Het gewaarborgd gemiddeld minimum maandinkomen is de bodem van de lonen in België. Dit is het bedrag in 2026 en wat het netto betekent."
   resume={`In België heet het interprofessionele minimumloon het gewaarborgd gemiddeld minimum maandinkomen, of GGMMI. Volgens de Nationale Arbeidsraad bedraagt het sinds 1 april 2026 ${f.money(M.amount, 2)} bruto per maand voor een voltijdse werknemer van 18 jaar of ouder, na een verhoging met 35 euro uit het interprofessioneel akkoord. Sinds april 2022 zijn er geen verschillende bedragen meer volgens leeftijd of anciënniteit. Voor een alleenstaande bediende levert dat loon ongeveer ${f.money(r.net, 2)} netto per maand op: de werkbonus neemt de RSZ-bijdrage van 13,07 % weg en verlaagt de bedrijfsvoorheffing sterk. Voor een regeling van ${M.hours_week} uur per week komt het minimum overeen met ongeveer ${f.money(h, 2)} per uur. Veel paritaire comités leggen hogere sectorale minima vast, die voorgaan op het interprofessionele minimum. Voor de werkgever kost een minimumloon ongeveer ${f.money(employerCost(M.amount).monthly, 2)} per maand vóór verminderingen van bijdragen.`}
   faqs={faqs} related={['bonus', 'horaire', 'brutNet', 'onss', 'home', 'cout']} sources={[S.rmmmg, S.bonus, S.formule]}>
+  <MiniSim client:visible kind="minimum" lang={lang} href={route('horaire', lang)} />
   <h2>Het minimumloon netto volgens situatie</h2>
   <ContentTable headers={['Situatie', 'RSZ na werkbonus', 'Voorheffing', 'Bijzondere bijdrage', 'Netto']} align={['l', 'r', 'r', 'r', 'r']} rows={rows} />
   <p>Deze bedragen gelden voor een voltijdse job aan het minimumloon van {f.money(M.amount, 2)}. De RSZ is nul omdat de werkbonus, begrensd op de verschuldigde bijdrage, ze volledig wegneemt.</p>

@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -23,6 +24,7 @@ const faqs = [
   intro="La sécurité sociale belge est financée par deux cotisations sur le salaire : celle du travailleur, retenue sur la fiche de paie, et celle de l’employeur, qui s’y ajoute."
   resume={`En Belgique, le salaire brut d’un travailleur du secteur privé supporte une cotisation personnelle de sécurité sociale de 13,07 %, retenue par l’employeur et versée à l’Office national de sécurité sociale. Elle se répartit entre les pensions, pour 7,50 %, les soins de santé et les indemnités, pour 4,70 %, et le chômage, pour 0,87 %. Pour un ouvrier, le taux est appliqué sur 108 % du salaire brut, afin de financer le pécule de vacances payé par la caisse de vacances. Les bas salaires bénéficient du bonus à l’emploi, qui réduit cette cotisation jusqu’à l’annuler au niveau du salaire minimum. L’employeur paie de son côté une cotisation patronale de base de ${f.pct(O.employer_base, 2)} et une modération salariale de ${f.pct(O.employer_moderation, 2)} au maximum, soit ${f.pct(rate, 0)} pour la catégorie 1 du secteur marchand, avant réduction structurelle. Pour un employé à ${f.money(3600, 0)} brut, la cotisation personnelle est de ${f.money(compute({ gross: 3600 }).onss, 2)} par mois et la cotisation patronale d’environ ${f.money(employerCost(3600).contributions, 2)}.`}
   faqs={faqs} related={['brutNet', 'bonus', 'cout', 'csss', 'pecule', 'home']} sources={[S.onss, S.bonus, S.double_pecule]}>
+  <MiniSim client:visible kind="onss" lang={lang} href={route('brutNet', lang)} />
   <h2>Cotisations mensuelles selon le salaire</h2>
   <ContentTable headers={['Brut', 'ONSS employé', 'Employé après bonus', 'ONSS ouvrier', 'Ouvrier après bonus', 'Part patronale employé']} align={['r', 'r', 'r', 'r', 'r', 'r']} rows={rows} />
   <p>La colonne après bonus montre la cotisation réellement retenue. Pour un ouvrier, la base de 108 % augmente la cotisation brute, mais le bonus est lui aussi majoré.</p>

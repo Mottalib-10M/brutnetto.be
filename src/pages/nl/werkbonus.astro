@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -25,6 +26,7 @@ const faqs = [
   intro="De werkbonus verhoogt het nettoloon van lage lonen. Zo werkt hij in 2026, met de bedragen die sinds september gelden."
   resume={`De sociale werkbonus is een vermindering van de persoonlijke socialezekerheidsbijdrage voor werknemers met een laag loon. Hij heeft twee luiken. Luik A, voor lage lonen, bedraagt ${f.money(E.a_max, 2)} per maand voor een voltijdse bediende tot een refertemaandloon van ${f.money(E.a_from, 2)}, en daalt daarna tot hij verdwijnt bij ${f.money(E.a_to, 2)}. Luik B, voor zeer lage lonen, bedraagt ${f.money(E.b_max, 2)} tot ${f.money(E.b_from, 2)} en verdwijnt bij ${f.money(E.b_to, 2)}. Die bedragen gelden sinds 1 september 2026. De bonus kan de verschuldigde bijdrage niet overschrijden; is dat wel het geval, dan wordt eerst luik B afgetopt. Arbeiders, aangegeven aan 108 %, krijgen hogere bedragen. De sociale werkbonus gaat samen met een fiscale werkbonus, die de bedrijfsvoorheffing verlaagt met ${f.pct(P.bonus.fiscal_a, 2)} van luik A en ${f.pct(P.bonus.fiscal_b, 2)} van luik B. Op het minimumloon nemen beide bonussen bijna de volledige RSZ-bijdrage en een groot deel van de voorheffing weg.`}
   faqs={faqs} related={['brutNet', 'onss', 'minimum', 'horaire', 'home', 'netBrut']} sources={[S.bonus, S.formule, S.rmmmg]}>
+  <MiniSim client:visible kind="bonus" lang={lang} href={route('brutNet', lang)} />
   <h2>Parameters sinds 1 september 2026</h2>
   <ContentTable headers={['Element', 'Bedrag of formule']} align={['l', 'l']} rows={params} />
   <p>S is het refertemaandloon voor een voltijdse job, aan 100 %. Het bekomen bedrag R wordt op de cent afgerond. Voor juli en augustus 2026 viel luik A vroeger weg, bij 3 336,98 euro, met een steilere helling.</p>

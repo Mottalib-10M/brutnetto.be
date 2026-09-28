@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -24,6 +25,7 @@ const faqs = [
   intro="De Belgische sociale zekerheid wordt gefinancierd door twee bijdragen op het loon: die van de werknemer, ingehouden op de loonfiche, en die van de werkgever, die erbovenop komt."
   resume={`In België draagt het brutoloon van een werknemer in de privésector een persoonlijke socialezekerheidsbijdrage van 13,07 %, die de werkgever inhoudt en aan de Rijksdienst voor Sociale Zekerheid doorstort. Ze wordt verdeeld over de pensioenen, voor 7,50 %, de geneeskundige verzorging en uitkeringen, voor 4,70 %, en de werkloosheid, voor 0,87 %. Voor een arbeider wordt het percentage toegepast op 108 % van het brutoloon, om het vakantiegeld te financieren dat de vakantiekas betaalt. Lage lonen genieten van de werkbonus, die deze bijdrage verlaagt tot ze op het niveau van het minimumloon verdwijnt. De werkgever betaalt van zijn kant een basisbijdrage van ${f.pct(O.employer_base, 2)} en een loonmatiging van maximaal ${f.pct(O.employer_moderation, 2)}, samen ${f.pct(rate, 0)} voor categorie 1 van de marktsector, vóór structurele vermindering. Voor een bediende met ${f.money(3600, 0)} bruto bedraagt de persoonlijke bijdrage ${f.money(compute({ gross: 3600 }).onss, 2)} per maand en de werkgeversbijdrage ongeveer ${f.money(employerCost(3600).contributions, 2)}.`}
   faqs={faqs} related={['brutNet', 'bonus', 'cout', 'csss', 'pecule', 'home']} sources={[S.onss, S.bonus, S.double_pecule]}>
+  <MiniSim client:visible kind="onss" lang={lang} href={route('brutNet', lang)} />
   <h2>Maandelijkse bijdragen volgens loon</h2>
   <ContentTable headers={['Bruto', 'RSZ bediende', 'Bediende na werkbonus', 'RSZ arbeider', 'Arbeider na werkbonus', 'Werkgeversbijdrage bediende']} align={['r', 'r', 'r', 'r', 'r', 'r']} rows={rows} />
   <p>De kolom na werkbonus toont de werkelijk ingehouden bijdrage. Voor een arbeider verhoogt de basis van 108 % de brutobijdrage, maar ook de werkbonus ligt hoger.</p>

@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -24,6 +25,7 @@ const faqs = [
   intro="La cotisation spéciale de sécurité sociale est la troisième retenue de la fiche de paie, après l’ONSS et le précompte. Voici comment elle est calculée."
   resume={`La cotisation spéciale de sécurité sociale est une contribution supplémentaire au financement de la sécurité sociale, introduite en 1994 et due par les ménages en fonction de leurs revenus. Pour les travailleurs salariés, l’employeur la retient chaque mois sur le salaire selon un barème qui dépend du salaire brut et de la situation du ménage. Rien n’est retenu jusqu’à ${f.money(C.t0, 2)} par mois. Ensuite, le montant augmente par paliers pour atteindre un maximum de ${f.money(C.max_single, 2)} par mois pour un isolé ou un ménage à un seul revenu, et de ${f.money(C.max_two, 2)} pour un ménage à deux revenus. Sur un salaire de ${f.money(3500, 0)}, un isolé paie ${f.money(csss(3500, false), 2)} par mois. Ces retenues sont une avance : la cotisation annuelle définitive est calculée par l’administration fiscale sur le revenu net imposable du ménage et régularisée dans l’avertissement-extrait de rôle, ce qui peut conduire à un supplément ou à un remboursement.`}
   faqs={faqs} related={['brutNet', 'onss', 'pp', 'baremes', 'home', 'netBrut']} sources={[S.csss, S.onss, S.formule]}>
+  <MiniSim client:visible kind="csss" lang={lang} href={route('brutNet', lang)} />
   <h2>Barème des retenues mensuelles</h2>
   <ContentTable headers={['Salaire brut mensuel', 'Isolé ou ménage à un revenu', 'Ménage à deux revenus']} align={['l', 'l', 'l']} rows={bar} />
   <p>Les seuils correspondent aux seuils trimestriels publiés par l’ONSS, divisés par trois. Le calculateur applique le barème au salaire brut du mois.</p>

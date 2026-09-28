@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -25,6 +26,7 @@ const faqs = [
   intro="De bijzondere bijdrage voor de sociale zekerheid is de derde inhouding op de loonfiche, na de RSZ en de voorheffing. Zo wordt ze berekend."
   resume={`De bijzondere bijdrage voor de sociale zekerheid is een aanvullende bijdrage aan de financiering van de sociale zekerheid, ingevoerd in 1994 en verschuldigd door de gezinnen volgens hun inkomen. Voor werknemers houdt de werkgever ze elke maand op het loon in volgens een barema dat afhangt van het brutoloon en de gezinssituatie. Tot ${f.money(C.t0, 2)} per maand wordt niets ingehouden. Daarna stijgt het bedrag per schijf tot een maximum van ${f.money(C.max_single, 2)} per maand voor een alleenstaande of een gezin met één inkomen, en ${f.money(C.max_two, 2)} voor een gezin met twee inkomens. Op een loon van ${f.money(3500, 0)} betaalt een alleenstaande ${f.money(csss(3500, false), 2)} per maand. Die inhoudingen zijn een voorschot: de definitieve jaarlijkse bijdrage wordt door de fiscale administratie berekend op het netto belastbaar inkomen van het gezin en geregulariseerd in het aanslagbiljet, wat tot een bijbetaling of een terugbetaling kan leiden.`}
   faqs={faqs} related={['brutNet', 'onss', 'pp', 'baremes', 'home', 'netBrut']} sources={[S.csss, S.onss, S.formule]}>
+  <MiniSim client:visible kind="csss" lang={lang} href={route('brutNet', lang)} />
   <h2>Barema van de maandelijkse inhoudingen</h2>
   <ContentTable headers={['Bruto maandloon', 'Alleenstaande of gezin met één inkomen', 'Gezin met twee inkomens']} align={['l', 'l', 'l']} rows={bar} />
   <p>De grenzen stemmen overeen met de kwartaalgrenzen die de RSZ publiceert, gedeeld door drie. De rekenmodule past het barema toe op het brutoloon van de maand.</p>

@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -27,6 +28,7 @@ const faqs = [
   intro="Er bestaan twee barema’s: dat van de belasting, gebruikt in de aangifte, en dat van de voorheffing, dat de werkgever elke maand gebruikt. Dit zijn ze allebei voor 2026."
   resume={`In België wordt de personenbelasting op de inkomsten 2026, aangegeven in 2027, per schijf berekend. Volgens de FOD Financiën bedraagt het tarief 25 % tot ${f.money(I.brackets[0].upto ?? 0, 0)}, 40 % tot ${f.money(I.brackets[1].upto ?? 0, 0)}, 45 % tot ${f.money(I.brackets[2].upto ?? 0, 0)} en 50 % daarboven. Elke belastingplichtige heeft een basis belastingvrije som van ${f.money(I.quotite, 0)}, verhoogd voor kinderen en andere personen ten laste. Bij de federale belasting komt de gemeentebelasting, een percentage dat elke gemeente zelf vastlegt, vaak rond 7 %. Tijdens het jaar houdt de werkgever een bedrijfsvoorheffing in volgens een eigen barema, dat van de sleutelformule, met tarieven van 26,75 % tot 53,50 %, omdat die al 7 % gemeentebelasting bevatten. Voor een belastbaar inkomen van ${f.money(40000, 0)} na beroepskosten bedraagt de geraamde belasting, inclusief 7 % gemeentebelasting, ongeveer ${f.money(ipp(40000), 0)}. De eindafrekening vergelijkt die belasting met de ingehouden voorheffing.`}
   faqs={faqs} related={['pp', 'brutNet', 'independant', 'csss', 'home', 'prime']} sources={[S.ipp_taux, S.formule, S.pp_calcul]}>
+  <MiniSim client:visible kind="pp" lang={lang} href={route('pp', lang)} />
   <h2>Belastingschijven, inkomsten 2026</h2>
   <ContentTable headers={['Belastbaar inkomen', 'Tarief']} align={['l', 'r']} rows={tranches} />
   <p>De bedragen worden elk jaar geïndexeerd. De basis belastingvrije som, {f.money(I.quotite, 0)}, wordt tegen 0 % belast: de belasting wordt op het volledige inkomen berekend, waarna 25 % van die som wordt afgetrokken.</p>

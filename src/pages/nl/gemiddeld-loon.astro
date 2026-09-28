@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -33,6 +34,7 @@ const faqs = [
   intro="Hoeveel verdient een voltijdse werknemer in België? Het gemiddelde loon en het mediaanloon volgens Statbel en Eurostat, en wat ze netto opleveren met de barema’s van 2026."
   resume={`Volgens de loonstructuurenquête van Eurostat verdiende een voltijdse werknemer in België in 2022 gemiddeld ${f.money(E.moyen, 0)} bruto per maand, het laatste jaar waarvoor gedetailleerde cijfers beschikbaar zijn. Het mediaanloon, dat de werknemers in twee even grote helften verdeelt, bedroeg ${f.money(E.median, 0)}. Statbel publiceert hetzelfde gemiddelde per gewest: ${f.money(R.flandre, 0)} in Vlaanderen, ${f.money(R.wallonie, 0)} in Wallonië en ${f.money(R.bruxelles, 0)} in Brussel. Met de barema’s van 2026 levert het gemiddelde loon ongeveer ${f.money(net(E.moyen), 0)} netto per maand op voor een alleenstaande bediende zonder kinderen, en het mediaanloon ongeveer ${f.money(net(E.median), 0)}. De eindejaarspremie en het dubbel vakantiegeld zitten niet in deze bedragen. Sinds 2022 volgden de lonen de automatische indexering: volgens de nationale rekeningen steeg het gemiddelde loon per voltijdequivalent met ${f.pct(groei, 1)} tussen 2022 en 2024.`}
   faqs={faqs} related={['minimum', 'home', 'brutNet', 'pp', 'baremes', 'prime']} sources={[S.statbel_salaires, S.statbel_anciennete, S.eurostat_ses, S.eurostat_fte]}>
+  <MiniSim client:visible kind="moyen" lang={lang} href={route('brutNet', lang)} />
   <h2>Het gemiddelde loon per gewest</h2>
   <p>Statbel meet het gemiddelde bruto maandloon van voltijdse werknemers in elk van de drie gewesten. De tabel toont de cijfers van 2022 en het nettoloon dat ze vandaag opleveren, berekend met de sleutelformule van de bedrijfsvoorheffing van 2026 voor een alleenstaande bediende zonder kinderen.</p>
   <ContentTable headers={['Gewest', 'Bruto per maand 2022', 'Netto met barema’s 2026', 'Nettoaandeel']} align={['l', 'r', 'r', 'r']} rows={gewesten} />

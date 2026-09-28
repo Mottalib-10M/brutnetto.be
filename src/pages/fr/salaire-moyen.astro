@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -33,6 +34,7 @@ const faqs = [
   intro="Combien gagne un salarié belge à temps plein ? Voici le salaire moyen et le salaire médian selon Statbel et Eurostat, et ce qu’ils donnent en net avec les barèmes de 2026."
   resume={`Selon l’enquête sur la structure des salaires publiée par Eurostat, un salarié belge à temps plein gagnait en moyenne ${f.money(E.moyen, 0)} brut par mois en 2022, dernière année détaillée disponible. Le salaire médian, celui qui partage les salariés en deux moitiés égales, était de ${f.money(E.median, 0)}. Statbel publie la même moyenne par région : ${f.money(R.flandre, 0)} en Flandre, ${f.money(R.wallonie, 0)} en Wallonie et ${f.money(R.bruxelles, 0)} à Bruxelles. Avec les barèmes de 2026, le salaire moyen donne environ ${f.money(net(E.moyen), 0)} net par mois à un employé isolé sans enfant, et le salaire médian environ ${f.money(net(E.median), 0)}. Ces montants ne comprennent ni la prime de fin d’année ni le double pécule de vacances. Depuis 2022, les salaires ont suivi l’indexation automatique : la comptabilité nationale montre une hausse de ${f.pct(croissance, 1)} du salaire moyen par équivalent temps plein entre 2022 et 2024.`}
   faqs={faqs} related={['minimum', 'home', 'brutNet', 'pp', 'baremes', 'prime']} sources={[S.statbel_salaires, S.statbel_anciennete, S.eurostat_ses, S.eurostat_fte]}>
+  <MiniSim client:visible kind="moyen" lang={lang} href={route('brutNet', lang)} />
   <h2>Le salaire moyen par région</h2>
   <p>Statbel mesure le salaire mensuel brut moyen des salariés à temps plein dans chacune des trois régions. Le tableau reprend les chiffres de 2022 et le net qu’ils donnent aujourd’hui, calculé avec la formule-clé du précompte professionnel de 2026 pour un employé isolé sans enfant.</p>
   <ContentTable headers={['Région', 'Brut mensuel 2022', 'Net avec les barèmes 2026', 'Part nette']} align={['l', 'r', 'r', 'r']} rows={regions} />

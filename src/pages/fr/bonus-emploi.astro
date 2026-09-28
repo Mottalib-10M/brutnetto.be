@@ -1,4 +1,5 @@
 ---
+import MiniSim from '../../components/calc/MiniSim';
 import Guide from '../../components/Guide.astro';
 import ContentTable from '../../components/ContentTable.astro';
 import { route } from '../../i18n/routes';
@@ -23,6 +24,7 @@ const faqs = [
   intro="Le bonus à l’emploi augmente le salaire net des bas salaires. Voici comment il fonctionne en 2026, avec les montants en vigueur depuis septembre."
   resume={`Le bonus à l’emploi social est une réduction de la cotisation personnelle de sécurité sociale pour les travailleurs à bas salaire. Il comporte deux volets. Le volet A, pour les bas salaires, vaut ${f.money(E.a_max, 2)} par mois pour un employé à temps plein jusqu’à un salaire de référence de ${f.money(E.a_from, 2)}, puis diminue jusqu’à disparaître à ${f.money(E.a_to, 2)}. Le volet B, pour les très bas salaires, vaut ${f.money(E.b_max, 2)} jusqu’à ${f.money(E.b_from, 2)} et disparaît à ${f.money(E.b_to, 2)}. Ces montants s’appliquent depuis le 1er septembre 2026. Le bonus ne peut pas dépasser la cotisation due ; si c’est le cas, il est écrêté d’abord sur le volet B. Les ouvriers, déclarés à 108 %, bénéficient de montants plus élevés. Le bonus social s’accompagne d’un bonus fiscal, qui réduit le précompte professionnel de ${f.pct(P.bonus.fiscal_a, 2)} du volet A et ${f.pct(P.bonus.fiscal_b, 2)} du volet B. Au salaire minimum, les deux bonus effacent presque toute la cotisation ONSS et une partie importante du précompte.`}
   faqs={faqs} related={['brutNet', 'onss', 'minimum', 'horaire', 'home', 'netBrut']} sources={[S.bonus, S.formule, S.rmmmg]}>
+  <MiniSim client:visible kind="bonus" lang={lang} href={route('brutNet', lang)} />
   <h2>Paramètres depuis le 1er septembre 2026</h2>
   <ContentTable headers={['Élément', 'Montant ou formule']} align={['l', 'l']} rows={params} />
   <p>S est le salaire mensuel de référence à temps plein, à 100 %. Le montant R obtenu est arrondi au cent. Pour juillet et août 2026, le volet A s’éteignait plus tôt, à 3 336,98 €, avec une pente plus forte.</p>
