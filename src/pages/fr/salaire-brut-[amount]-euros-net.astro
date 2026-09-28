@@ -6,6 +6,7 @@ import { monthlyAngle } from '../../lib/amount-angles';
 import { compute, type Input } from '../../lib/engine/be';
 import { src } from '../../lib/sources';
 import { fmt } from '../../lib/format';
+import { position } from '../../lib/position';
 const lang = 'fr';
 const f = fmt(lang);
 export function getStaticPaths() { return MONTHLY.map((a) => ({ params: { amount: String(a) } })); }
@@ -19,4 +20,5 @@ const S = src(lang);
 <AmountPage lang={lang} id={`m-${amount}`} crumb={monthlyLabel(amount, lang)} angle={monthlyAngle(amount, lang)} gross={amount}
   table={{ caption: `${f.money(amount, 0)} brut selon la situation familiale`, headers: ['Situation', 'Précompte', 'Cotisation spéciale', 'Net mensuel'], rows }}
   neighbours={[...near.map((n) => ({ href: route(`m-${n}`, lang), name: monthlyLabel(n, lang) })), { href: route('brutNet', lang), name: 'Calcul brut net' }, { href: route('bonus', lang), name: 'Bonus à l’emploi' }]}
-  sources={[S.formule, S.onss, S.bonus]} />
+  position={{ text: position(amount, lang), href: route('moyen', lang), label: 'Salaire moyen et médian en Belgique' }}
+  sources={[S.formule, S.onss, S.bonus, S.eurostat_ses]} />

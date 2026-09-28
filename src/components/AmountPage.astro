@@ -10,8 +10,8 @@ import { webApplicationSchema, webPageSchema, faqSchema, breadcrumbSchema } from
 import { AUTHOR_NAME } from '../data/site-config';
 import type { Angle } from '../lib/amount-angles';
 import { fitDescription, fitTitle } from '../lib/snippet';
-interface Props { lang: Locale; id: string; crumb: string; angle: Angle; gross: number; table: { caption: string; headers: string[]; rows: string[][] }; neighbours: Array<{ href: string; name: string }>; sources: Array<{ name: string; url: string }> }
-const { lang, id, crumb, angle: A, gross, table, neighbours, sources } = Astro.props;
+interface Props { lang: Locale; id: string; crumb: string; angle: Angle; gross: number; table: { caption: string; headers: string[]; rows: string[][] }; neighbours: Array<{ href: string; name: string }>; position?: { text: string; href: string; label: string }; sources: Array<{ name: string; url: string }> }
+const { lang, id, crumb, angle: A, gross, table, neighbours, position, sources } = Astro.props;
 const ui = t(lang); const path = route(id, lang);
 const title = fitTitle(A.title, lang); const description = fitDescription(A.description, lang);
 const jsonLd = [webApplicationSchema({ name: A.h1, description, path, lang }), webPageSchema({ name: A.h1, description, path, lang }), faqSchema(A.faqs, lang), breadcrumbSchema([{ name: ui.breadcrumbHome, path: route('home', lang) }, { name: crumb, path }])];
@@ -36,6 +36,7 @@ const note = lang === 'fr'
     <h2>{table.caption}</h2>
     <ContentTable headers={table.headers} align={table.headers.map((_, i) => (i === 0 ? 'l' : 'r'))} rows={table.rows} />
     <p data-chrome>{note}</p>
+    {position && <p data-chrome>{position.text} <a href={position.href}>{position.label}</a>.</p>}
     <nav data-chrome aria-label={lang === 'fr' ? 'Salaires proches' : 'Lonen in de buurt'}><p class="text-sm">{lang === 'fr' ? 'À proximité' : 'In de buurt'} : {neighbours.slice(0, 4).map((n, i) => <>{i > 0 && ' · '}<a href={n.href}>{n.name}</a></>)}</p></nav>
   </section>
 </PageLayout>

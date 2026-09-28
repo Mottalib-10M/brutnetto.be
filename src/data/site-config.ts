@@ -8,7 +8,7 @@ export const CURRENCY = 'EUR';
 export const YEAR = 2026;
 /** Année de création du site — signal d'ancienneté (RECETTE §8.0). */
 export const SITE_FOUNDED = '2026';
-export const LAST_UPDATED = '2026-09-27';
+export const LAST_UPDATED = '2026-09-28';
 export const AUTHOR_NAME = 'Radif Partners';
 export const AUTHOR_ROLE: Record<string, string> = {"fr": "Éditeur de calculateurs de salaire et de guides pratiques · précompte professionnel, ONSS et bonus à l'emploi", "nl": "Uitgever van loonberekeningen en praktische gidsen · bedrijfsvoorheffing, RSZ en werkbonus"};
 export const AUTHOR_DESC: Record<string, string> = {"fr": "Radif Partners publie des calculateurs de salaire gratuits et des guides pratiques. Chaque taux de ce site provient du SPF Finances, de l'ONSS, du CNT ou de l'INASTI, avec la source et la date de vérification sur la page.", "nl": "Radif Partners publiceert gratis loonberekeningen en praktische gidsen. Elk tarief op deze site komt van de FOD Financiën, de RSZ, de NAR of het RSVZ, met de bron en de controledatum op de pagina."};
