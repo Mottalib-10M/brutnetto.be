@@ -4,11 +4,13 @@ import { route } from '../../i18n/routes';
 import { breadcrumbSchema } from '../../lib/seo';
 const lang = 'fr';
 ---
-<PageLayout title="Cookies sur BrutNetto.be : ce qui est déposé et pourquoi" description="Cookies sur BrutNetto.be : aucun pour les calculateurs, votre choix si une mesure d’audience est un jour activée, et comment le modifier ou le retirer ensuite." lang={lang} noindex={true} jsonLd={[breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }, { name: 'Cookies', path: route('cookies', lang) }])]} breadcrumbs={[{ label: 'Cookies' }]}>
+<PageLayout title="Cookies sur BrutNetto.be : ce qui est déposé et pourquoi" description="Cookies sur BrutNetto.be : aucun. Le calcul du salaire net belge se fait dans votre navigateur, sans traceur ni mesure d’audience, et rien n’est gardé sur l’appareil." lang={lang} noindex={true} jsonLd={[breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }, { name: 'Cookies', path: route('cookies', lang) }])]} breadcrumbs={[{ label: 'Cookies' }]}>
   <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Cookies</h1></header>
   <div class="prose prose-slate max-w-none">
-    <p>Les calculateurs n’utilisent aucun cookie. Vos montants restent dans la page et, si vous utilisez le lien de partage, dans la barre d’adresse.</p>
-    <p>Aucun cookie de mesure d’audience ou de publicité n’est déposé aujourd’hui. Si une mesure d’audience est ajoutée, rien ne sera chargé avant votre accord, votre choix sera conservé dans le stockage local du navigateur sous la clé <code>consent-choice</code>, et un lien en bas de chaque page permettra de le modifier.</p>
+    <h2>Aucun cookie déposé</h2>
+    <p>BrutNetto.be ne dépose aucun cookie, sur aucune page. Le salaire brut, le statut d’employé ou d’ouvrier, la situation familiale et les autres montants saisis dans les calculateurs restent dans la page ouverte : rien n’est gardé sur votre appareil, ni dans un cookie ni dans le stockage du navigateur. Si vous utilisez le lien de partage, vos montants figurent seulement dans la barre d’adresse.</p>
+    <h2>Aucun outil de mesure</h2>
+    <p>Le site ne charge aucun outil de mesure d’audience, aucune publicité et aucun traceur, et l’éditeur n’enregistre aucune donnée personnelle sur vous. Il n’y a donc pas de bandeau cookies : il n’y a rien à accepter.</p>
     <p>Questions : voir la <a href={route('privacy', lang)}>politique de confidentialité</a>.</p>
   </div>
 </PageLayout>

@@ -59,13 +59,13 @@ const otherLocales = LOCALES.filter((l) => l !== lang);
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     {jsonLd.map((ld) => <script type="application/ld+json" set:html={ld} />)}
-    {GA4_ID && (<>
+    {GA4_ID && CONSENT_MODE !== 'none' && (<>
       <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;(function(){var d='${CONSENT_MODE === 'opt-in' ? 'denied' : 'granted'}';var c=null;try{c=localStorage.getItem('consent-choice');}catch(e){}var v=(c==='granted'||(c===null&&d==='granted'))?'granted':'denied';gtag('consent','default',{ad_storage:v,analytics_storage:v,ad_user_data:v,ad_personalization:v,functionality_storage:'granted',security_storage:'granted',wait_for_update:500});})();`} />
       <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}></script>
       <script is:inline set:html={`gtag('js',new Date());gtag('config','${GA4_ID}',{anonymize_ip:true});`} />
     </>)}
   </head>
-  <body class="min-h-screen bg-white text-navy-900 antialiased">
+  <body class="min-h-screen bg-white text-navy-900 antialiased" data-clarity-mask="true">
     <a href="#main-content" class="skip-link">{ui.skipToContent}</a>
     <header>
     <nav class="fixed top-0 z-50 w-full border-b border-navy-200 bg-white" aria-label={ui.mainNav}>
@@ -129,7 +129,7 @@ const otherLocales = LOCALES.filter((l) => l !== lang);
             <p>{ui.footerBrowser}</p>
             <p>{ui.asOf} {YEAR}, {ui.lastUpdated} <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, LANG_TAGS[lang])}</time></p>
             <p>&copy; {new Date().getFullYear()} {SITE_NAMES[lang]}. {ui.footerDisclaimer}</p>
-            {GA4_ID && <p><button type="button" data-consent-manage class="underline hover:text-navy-900">{consentStrings(lang).manage}</button></p>}
+            {GA4_ID && CONSENT_MODE !== 'none' && <p><button type="button" data-consent-manage class="underline hover:text-navy-900">{consentStrings(lang).manage}</button></p>}
           </div>
         </div>
       </div>
@@ -146,6 +146,6 @@ const otherLocales = LOCALES.filter((l) => l !== lang);
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
       document.addEventListener('click', (e) => { if (!(e.target as HTMLElement).closest('.nav-dropdown')) closeAll(); });
     </script>
-    <ConsentBanner lang={lang} />
+    {CONSENT_MODE !== 'none' && <ConsentBanner lang={lang} />}
   </body>
 </html>

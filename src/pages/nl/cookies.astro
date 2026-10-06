@@ -4,11 +4,13 @@ import { route } from '../../i18n/routes';
 import { breadcrumbSchema } from '../../lib/seo';
 const lang = 'nl';
 ---
-<PageLayout title="Cookies op BrutNetto.be: wat er wordt geplaatst en waarom" description="Cookies op BrutNetto.be: geen voor de rekenmodules, je keuze als er ooit bezoekstatistieken worden ingeschakeld, en hoe je die keuze wijzigt of weer intrekt." lang={lang} noindex={true} jsonLd={[breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Cookies', path: route('cookies', lang) }])]} breadcrumbs={[{ label: 'Cookies' }]}>
+<PageLayout title="Cookies op BrutNetto.be: wat er wordt geplaatst en waarom" description="Cookies op BrutNetto.be: geen enkele. Je Belgisch nettoloon wordt in je browser berekend, zonder tracker of bezoekstatistieken, en er blijft niets op je toestel." lang={lang} noindex={true} jsonLd={[breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Cookies', path: route('cookies', lang) }])]} breadcrumbs={[{ label: 'Cookies' }]}>
   <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Cookies</h1></header>
   <div class="prose prose-slate max-w-none">
-    <p>De rekenmodules gebruiken geen cookies. Je bedragen blijven in de pagina en, als je de deellink gebruikt, in de adresbalk.</p>
-    <p>Vandaag worden geen statistiek- of reclamecookies geplaatst. Worden bezoekstatistieken toegevoegd, dan wordt niets geladen vóór je toestemming, wordt je keuze in de lokale opslag van de browser bewaard onder de sleutel <code>consent-choice</code>, en kan je ze via een link onderaan elke pagina wijzigen.</p>
+    <h2>Geen cookies</h2>
+    <p>BrutNetto.be plaatst geen enkele cookie, op geen enkele pagina. Het brutoloon, het statuut van bediende of arbeider, de gezinssituatie en de andere bedragen die je in de rekenmodules invult, blijven in de geopende pagina: er wordt niets op je toestel bewaard, niet in een cookie en niet in de opslag van de browser. Gebruik je de deellink, dan staan je bedragen alleen in de adresbalk.</p>
+    <h2>Geen meetinstrumenten</h2>
+    <p>De site laadt geen bezoekstatistieken, geen reclame en geen trackers, en de uitgever registreert geen persoonsgegevens over jou. Daarom is er ook geen cookiebanner: er valt niets te aanvaarden.</p>
     <p>Vragen: zie de <a href={route('privacy', lang)}>privacyverklaring</a>.</p>
   </div>
 </PageLayout>

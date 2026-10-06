@@ -21,9 +21,9 @@ export const THEME_COLOR = '#B3121F';
 export const LOGO_SYMBOL = '€';
 export const BING_VERIFY_CODE = '';
 export const GOOGLE_VERIFY_CODE = '';
-/** Régime de consentement : 'opt-in' = rien avant l'accord (UE, Suisse) ;
- *  'notice' = mesure d'audience active avec information préalable et retrait (CA, AU). */
-export const CONSENT_MODE: 'opt-in' | 'notice' = 'opt-in';
+/** Régime de consentement. 'none' (règle du 2026-10-06, RECETTE §15.6) : aucun bandeau,
+ *  aucun cookie, aucun GA4. Les anciens régimes 'opt-in' / 'notice' ne sont plus utilisés. */
+export const CONSENT_MODE: 'opt-in' | 'notice' | 'none' = 'none';
 export const GA4_ID = '';
 export const INDEXNOW_KEY = '5e8a1c3f7b2d4a69c0e4f1b8d3a7c2e5';
 
