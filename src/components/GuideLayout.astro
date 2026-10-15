@@ -13,7 +13,7 @@ const path = route(id, lang);
 const jsonLd = [articleSchema({ title: h1, description, path, lang }), webPageSchema({ name: h1, description, path, lang }), breadcrumbSchema([{ name: t(lang).breadcrumbHome, path: route('home', lang) }, { name: breadcrumbLabel, path }])];
 if (faqs.length) jsonLd.push(faqSchema(faqs, lang));
 ---
-<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} faqs={faqs} related={related} sources={sources} breadcrumbs={[{ label: breadcrumbLabel }]} noindex={noindex} showAuthor={showAuthor}>
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} faqs={faqs} related={related} sources={sources} breadcrumbs={[{ label: breadcrumbLabel }]} noindex={noindex} showAuthor={showAuthor} dateEnHaut>
   <article>
     <header class="mb-8"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">{h1}</h1>{intro && <p class="mt-3 text-lg text-navy-600">{intro}</p>}
       <p class="mt-4 text-sm text-navy-500">{ui.reviewedBy} <a href={route('about', lang)} class="text-accent-600 hover:underline">{AUTHOR_NAME}</a> · <a href={route('editorial', lang)} class="text-accent-600 hover:underline">{ui.editorialPolicy}</a></p></header>

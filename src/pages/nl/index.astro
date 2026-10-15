@@ -35,7 +35,7 @@ const jsonLd = [webApplicationSchema({ name: `Bruto netto berekenen ${YEAR}`, de
   <header class="mb-6">
     <h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Bruto netto {YEAR}: bereken je nettoloon in België</h1>
     <p class="mt-3 text-lg text-navy-600">Vul je bruto maandloon, je statuut en je gezinssituatie in. Je krijgt de RSZ-bijdrage, de werkbonus, de bedrijfsvoorheffing, de bijzondere bijdrage voor de sociale zekerheid en je nettoloon, lijn per lijn zoals op een loonfiche.</p>
-    <p class="mt-3"><span class="inline-block rounded-full border border-navy-200 bg-white px-3 py-1 text-xs font-medium text-navy-600">Sleutelformule FOD Financiën {YEAR} · nagekeken op <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, LANG_TAGS[lang])}</time> door {AUTHOR_NAME}</span></p>
+    <p class="mt-3"><span class="inline-block rounded-full border border-navy-200 bg-white px-3 py-1 text-xs font-medium text-navy-600">Sleutelformule FOD Financiën {YEAR}</span></p>
   </header>
   <BeCalculator client:load mode="brutNet" lang={lang} methodHref={route('method', lang)} />
   <AdSlot slot="home-1" />
