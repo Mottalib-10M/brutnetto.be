@@ -63,7 +63,7 @@ const jsonLd = [webApplicationSchema({ name: `Bruto netto berekenen ${YEAR}`, de
       ['Forfaitaire beroepskosten (voorheffing)', `30 %, maximum ${f.money(P.pp.frais_max, 0)} per jaar`],
       ['Barema van de voorheffing', '26,75 % tot 53,50 % (7 % gemeentebelasting inbegrepen)'],
       ['Belastingvrije som (voorheffing)', `${f.money(P.pp.quotite, 0)}`],
-      ['Bijzondere bijdrage, maandmaximum', `${f.money(P.csss.max_single, 2)} (alleenstaande) · ${f.money(P.csss.max_two, 2)} (twee inkomens)`],
+      ['Bijzondere bijdrage, maandmaximum', `${f.money(P.csss.max_single, 2)} (alleenstaande of partner zonder inkomen) · ${f.money(P.csss.max_two, 2)} (partner met inkomen)`],
       ['Minimumloon (GGMMI) sinds 1 april 2026', f.money(P.rmmmg.amount, 2)],
     ]} />
 

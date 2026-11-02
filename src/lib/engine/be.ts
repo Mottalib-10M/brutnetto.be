@@ -57,15 +57,28 @@ export function ppBase(imposable: number, o: { situation?: Situation; children?:
   return { annual, frais, net, base, reductions: Math.min(red, base), annualTax, monthly: r2(annualTax / 12) };
 }
 
-/** Cotisation spéciale de sécurité sociale, retenue mensuelle. */
-export function csss(gross: number, twoIncomes: boolean): number {
-  const C = P.csss; const S = gross;
-  if (S <= C.t0) return 0;
-  if (S <= C.t1) return twoIncomes ? C.two_income_flat : 0;
-  if (S <= C.t2) { const v = r2(C.rate1 * (S - C.t1)); return twoIncomes ? Math.max(v, C.two_income_flat) : v; }
-  const cap = twoIncomes ? C.max_two : C.max_single;
-  if (S <= C.t3) return Math.min(r2(C.base2 + C.rate2 * (S - C.t2)), cap);
-  return cap;
+/**
+ * Cotisation spéciale de sécurité sociale, retenue mensuelle : ONSS, instructions 2026/3, règles du 1er avril 2022.
+ * Imposition individuelle (isolé) ou imposition commune (conjoint avec ou sans revenus professionnels).
+ * Base : brut du mois, porté à 108 % pour un ouvrier.
+ */
+export function csss(gross: number, situation: Situation = 'isole', status: Status = 'employe'): number {
+  const C = P.csss;
+  const S = r2(gross * (status === 'ouvrier' ? P.onss.ouvrier_base : 1));
+  if (situation === 'isole') {
+    const I = C.isole;
+    if (S <= C.t1) return 0;
+    if (S <= C.t2) return r2(I.rate1 * (S - C.t1));
+    if (S <= I.t_a) return r2(I.base2 + I.rate2 * (S - C.t2));
+    if (S <= I.t_b) return r2(I.base3 + I.rate3 * (S - I.t_a));
+    if (S <= C.t3) return r2(I.base4 + I.rate4 * (S - I.t_b));
+    return C.max_single;
+  }
+  const J = C.commun; const two = situation === 'conjoint_revenus';
+  if (S < C.t0) return 0;
+  if (S <= C.t1) return two ? C.two_income_flat : 0;
+  if (S <= C.t2) { const v = r2(J.rate1 * (S - C.t1)); return two ? Math.max(v, C.two_income_flat) : v; }
+  return Math.min(r2(J.base2 + J.rate2 * (S - C.t2)), two ? C.max_two : C.max_sans);
 }
 
 export function compute(i: Input) {
@@ -81,7 +94,7 @@ export function compute(i: Input) {
   const groupe = r2(Math.max(0, i.groupInsurance ?? 0) * P.pp.groupe_rate);
   const fiscalBonus = r2(r2(a * P.bonus.fiscal_a) + r2(b * P.bonus.fiscal_b));
   const pp = Math.max(0, r2(base.monthly - groupe - fiscalBonus));
-  const cs = csss(gross, situation === 'conjoint_revenus');
+  const cs = csss(gross, situation, status);
   const net = r2(gross - onssNet - pp - cs - Math.max(0, i.groupInsurance ?? 0));
   return { gross, status, situation, onss, bonusA: a, bonusB: b, bonus, onssNet, imposable, ppBase: base, fiscalBonus, pp, csss: cs, net, rate: gross > 0 ? 1 - net / gross : 0 };
 }

@@ -63,7 +63,7 @@ const jsonLd = [webApplicationSchema({ name: `Calcul salaire brut net ${YEAR}`, 
       ['Frais professionnels forfaitaires (précompte)', `30 %, maximum ${f.money(P.pp.frais_max, 0)} par an`],
       ['Barème du précompte', '26,75 % à 53,50 % (7 % de taxe communale inclus)'],
       ['Quotité exemptée (précompte)', `${f.money(P.pp.quotite, 0)}`],
-      ['Cotisation spéciale, maximum mensuel', `${f.money(P.csss.max_single, 2)} (isolé) · ${f.money(P.csss.max_two, 2)} (deux revenus)`],
+      ['Cotisation spéciale, maximum mensuel', `${f.money(P.csss.max_single, 2)} (isolé ou conjoint sans revenus) · ${f.money(P.csss.max_two, 2)} (conjoint avec revenus)`],
       ['Salaire minimum (RMMMG) depuis le 1er avril 2026', f.money(P.rmmmg.amount, 2)],
     ]} />
 
