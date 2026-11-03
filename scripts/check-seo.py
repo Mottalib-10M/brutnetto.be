@@ -48,16 +48,22 @@ if _candidats:
 else:
     sortie = '' if os.path.isfile(f'{site}/index.html') else 'dist'
 verbose = '--verbose' in sys.argv
-PRIMAIRES = None  # renseigne plus bas, une fois `_sources_primaires` definie
+PRIMAIRES = []  # renseigne plus bas (sources_officielles.primaires_du_site)
 
 # Pages de service : pas de cible de longueur (plan §2.2, lignes 5 à 8).
 SERVICE = re.compile(
-    r'/[a-z-]*(faq|questions|preguntas|veelgestelde|haeufige|about|a-propos|ueber-uns|over-ons|'
+    # Finnois (fi-laskurit, 2026-10-05)
+    r'/[a-z-]*(tietoa|laskentatapa|yhteystiedot|toimitusperiaatteet|tietosuoja|kayttoehdot|evasteet|upota-laskuri|faq|questions|preguntas|veelgestelde|haeufige|about|a-propos|ueber-uns|over-ons|'
     r'sobre-nosotros|sobre(?=/|$)|methodology|methodik|methodologie|methode|metodologia|method|widget|'
     # pages légales : ni cible de longueur ni sources officielles (même liste que check-trame)
     # « disclaimer » : page de confiance comme les mentions légales. Lui imposer
     # 2 000 mots pousserait à diluer un avertissement, qui vaut par sa brièveté
     # (taxfreesalaries.com, 2026-09-25).
+    # Italien : mêmes pages de service que check-trame, qui les reconnaissait déjà ;
+    # check-seo reprochait à « chi siamo » ses 300 mots (lohnnetto.ch, 2026-10-03).
+    # « metodo » (it) : même page de confiance que /method/, qui l'était déjà ; check-trame
+    # la reconnaissait, check-seo lui demandait 1 200 mots (it-calendario-ponti, 2026-10-28).
+    r'chi-siamo|contatti|metodo(?=/|$)|glossario|note-legali|protezione-dati|domande-frequenti|glosario|o-nas|regulamin|polityka-prywatnosci|polityka-redakcyjna|slownik|'
     r'impressum|mentions|aviso|colofon|legal|privacy|datenschutz|confidentialite|privacidad|'
     r'disclaimer|haftungsausschluss|'
     # « cgu » : abréviation française de conditions générales d'utilisation, page de service
@@ -90,7 +96,11 @@ SERVICE = re.compile(
     # (lonnetterskatt.no, 2026-09-27).
     r'ordliste|ordbog|metode|redaksjonell|redaktionel|personvern|privatliv|vilkar|vilkaar|'
     r'informasjonskapsler|om-os|woordenlijst|redactie|'
-    r'atualizacoes|nyheter|updates|glossar|glossario|glossaire|glossary|ordlista)',
+    r'atualizacoes|nyheter|updates|glossar|glossario|glossaire|glossary|ordlista|'
+    # Turc et indonésien : mêmes pages de service que check-trame (tr-bayram, id-kalender,
+    # 2026-10-28 ; tr-bayram avait allongé « yontem » et « hakkimizda » pour passer).
+    r'yasal-bilgiler|gizlilik|cerezler|hakkimizda|yontem(?=/|$)|iletisim|yayin-ilkeleri|kullanim-kosullari|'
+    r'tentang-kami|privasi|kebijakan-privasi|ketentuan|syarat-ketentuan|kontak|kebijakan-redaksi)',
     re.I)
 # Page de longue traîne « par montant » (ou par ancienneté, cf. AU) : un segment
 # d'URL portant un nombre. Les millésimes (2024-2030) sont exclus, sinon un slug
@@ -112,88 +122,15 @@ AMOUNT = re.compile(
 # la cible n'est pas un défaut, seul le contenu trop mince en est un.
 TARGETS = {'pilier': 2000, 'guide': 1200, 'montant': 500, 'index': 800, 'outil': 500}
 
-# Domaines officiels reconnus pour la section Sources de la page pilier.
-OFFICIAL = re.compile(
-    r'https?://[a-z0-9.-]*(?:'
-    # génériques
-    r'\.gov(?:\.[a-z]{2})?(?:/|\b)|\.gouv\.|\.govt\.nz|europa\.eu|'
-    # organisations intergouvernementales de métrologie et de normalisation
-    r'bipm\.org|oiml\.org|'
-    # France
-    r'service-public\.|legifrance|unedic\.org|urssaf\.|impots\.gouv|francetravail\.'
-    r'|ameli\.fr|insee\.fr|anil\.org|lassuranceretraite\.fr|agirc-arrco\.fr|info-retraite\.fr|'
-    # caisses de retraite étrangères
-    r'deutsche-rentenversicherung\.de|pensionsmyndigheten\.se|nav\.no|nenkin\.go\.jp|nps\.or\.kr|'
-    # Allemagne / Autriche
-    r'arbeitsagentur\.de|gesetze-im-internet\.de|bundesfinanzministerium\.de'
-    r'|bundesregierung\.de|\.bund\.de|destatis\.de|sozialversicherung\.at|'
-    # bafin.de est l'autorite federale de surveillance financiere, au meme titre
-    # que l'ACPR et l'AMF deja listees ; bmas.de et bmfsfj.de sont des ministeres
-    # federaux ; familienportal.de est edite par le BMFSFJ et minijob-zentrale.de
-    # par la Knappschaft-Bahn-See, organisme officiel des minijobs
-    # (bruttonettorechnen.de, 2026-09-27).
-    r'bafin\.de|bmas\.de|bmfsfj\.de|familienportal\.de|minijob-zentrale\.de|'
-    # Suisse
-    r'admin\.ch|ahv-iv\.ch|estv|seco\.admin|bsv\.admin|'
-    # Pays-Bas / Belgique
-    r'uwv\.nl|rijksoverheid\.nl|belastingdienst\.nl|wetten\.overheid\.nl|socialsecurity\.be|'
-    # Espagne / Portugal / Italie
-    r'\.public\.lu|statec\.lu|adem\.lu|'
-    r'sepe\.es|boe\.es|seg-social\.es|agenciatributaria\.es|tesoro\.es|cnmv\.es|bde\.es|ine\.es|\.gob\.es|'
-    # banques centrales et autorités de marché
-    r'banque-france\.fr|bundesbank\.de|dnb\.nl|riksbank\.se|norges-bank\.no|amf-france\.org|acpr\.banque-france\.fr|'
-    # Portugal : l'INE est l'institut national de statistique, au meme titre que
-    # insee.fr et ine.es deja listes ; bportugal.pt est la banque centrale.
-    r'seg-social\.pt|portaldasfinancas|ine\.pt|bportugal\.pt|dgert\.gov|act\.gov\.pt'
-    r'|inps\.it|gazzettaufficiale\.it|agenziaentrate\.'
-    # Canada
-    r'|canada\.ca|justice\.gc\.ca|services\.gc\.ca|statcan\.gc\.ca|cra-arc\.'
-    # Australie / NZ
-    r'|fairwork\.gov\.au|ato\.gov\.au|servicesaustralia\.gov\.au|ird\.govt\.nz|'
-    # Irlande / Nordiques / Singapour / Maroc
-    r'citizensinformation\.ie|revenue\.ie|welfare\.ie|skatteetaten\.no|nav\.no'
-    r'|skat\.dk|borger\.dk|skatteverket\.se|iras\.gov\.sg|cnss\.ma|finances\.gov\.ma'
-    # Golfe : u.ae est le portail officiel du gouvernement fédéral des Émirats,
-    # au même titre que service-public.fr, mais son domaine ne contient pas « gov ».
-    r'|u\.ae/|mohre\.gov\.ae|dha\.gov\.ae|doh\.gov\.ae|mohap\.gov\.ae'
-    r')[a-z0-9./_?=&#-]*', re.I)
-
-# La liste ci-dessus est celle des administrations : elle suppose que le sujet du
-# site releve d'une autorite publique, ce qui est vrai d'un bareme fiscal et faux
-# d'un intitule de poste ou d'une pratique professionnelle. Un site dont le sujet
-# n'a pas de regulateur ne peut pas satisfaire le §7 avec cette liste, et le
-# contourner reviendrait a supprimer la regle pour tout le monde.
-#
-# Un site declare donc ses propres sources primaires dans
-# `scripts/sources-primaires.txt` : un motif de domaine par ligne, chacun precede
-# d'une ligne de commentaire disant pourquoi ce domaine fait autorite sur ce
-# sujet. Le commentaire est obligatoire — sans lui, la liste redevient un moyen
-# de faire taire le controle.
-def _sources_primaires(racine):
-    chemin = os.path.join(racine, 'scripts', 'sources-primaires.txt')
-    if not os.path.isfile(chemin):
-        return None
-    motifs, justifie = [], False
-    for ligne in open(chemin, encoding='utf-8'):
-        ligne = ligne.strip()
-        if not ligne:
-            justifie = False
-            continue
-        if ligne.startswith('#'):
-            justifie = True
-            continue
-        if not justifie:
-            raise SystemExit(
-                f"{chemin} : « {ligne} » n'est precede d'aucun commentaire. "
-                "Chaque domaine declare doit dire pourquoi il fait autorite sur ce sujet.")
-        motifs.append(re.escape(ligne))
-        justifie = False
-    if not motifs:
-        return None
-    return re.compile(r'https?://[a-z0-9.-]*(?:' + '|'.join(motifs) + r')[a-z0-9./_?=&#-]*', re.I)
-
-
-PRIMAIRES = _sources_primaires(site)
+# Sources officielles de la page pilier (RECETTE §7, §26 du 2026-10-16) : la liste est
+# partagée avec check-regles.py — sources_officielles.py + sources-officielles.txt, à côté
+# de ce script. Libellés publics (gov, gouv, gob, govt, gv), suffixes publics (gc.ca, admin.ch,
+# bund.de, europa.eu…), liste par pays, et sources propres au site dans
+# `scripts/sources-primaires.txt` (un domaine par ligne, chacun précédé d'une ligne de
+# commentaire qui dit pourquoi il fait autorité — sans lui, le contrôle s'arrête).
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import sources_officielles
+PRIMAIRES = sources_officielles.primaires_du_site(site, strict=True)
 
 # La regle « le titre ne s'ouvre pas sur le pays » vise « France Salaire
 # Calculateur ». Elle se trompe quand l'adjectif de nationalite fait partie d'un
@@ -227,16 +164,7 @@ def _titres_exceptions(racine):
 EXCEPTIONS_TITRE = _titres_exceptions(site)
 
 
-# Noms de pays : ils ne doivent PAS ouvrir un titre (le terme-clé passe avant). L’adjectif compte aussi
-# (« Schweizer Lohnrechner » vaut « Schweiz »), cf. RECETTE-SITE.md §11.
-COUNTRY = ['Australia', 'Canada', 'Schweiz', 'Schweizer', 'Suisse', 'Nederland',
-           'España', 'France', 'Deutschland', 'Italia', 'Portugal', 'Ireland',
-           'Danmark', 'Norge', 'Singapore', 'New Zealand', 'México', 'Maroc']
-# Premiers mots interdits en tête de titre (toutes langues du portefeuille).
-# L'italien et le portugais manquaient : 21 titres de calcolalordonetto.it
-# s'ouvraient sur « Calcolo » sans que le controle le signale, alors que le
-# mot utile — IRPEF, TFR, Tredicesima — venait en deuxieme position (2026-09-25).
-GENERIC_START = re.compile(r"^(¿|simulateur\b|calculateur\b|calcul\b|calculez\b|calculer\b|calculadora\b|calcula\b|calcolo\b|calcolare\b|calcola\b|cálculo\b|calculo\b|calculator\b|calculate\b|rechner\b|berechnen\b|bereken\b|rekentool\b|à propos\b|über uns\b|sobre nosotros\b|over ons\b|about\b|méthodologie\b|methodology\b|methodik\b|metodología\b|methode\b|faq\b|questions fréquentes\b|preguntas frecuentes\b|veelgestelde vragen\b|häufige fragen\b|combien\b|comment\b|quel\b|quelle\b|how\b|what\b|when\b|wie\b|was\b|wer\b|cuánto\b|cómo\b|qué\b|hoe\b|wat\b)")
+from snippets_regles import COUNTRY, GENERIC_START  # listes partagees avec check-snippets.py
 
 
 # §21 : citabilite par les assistants. Un paragraphe cite doit se suffire a
@@ -321,7 +249,11 @@ for f in _fichiers:
         continue
     path = '/' + os.path.relpath(os.path.dirname(f), f'{site}/{sortie}').replace(os.sep, '/').strip('/') + '/'
     if path in ('//', '/./'):
-        continue                                  # racine : redirection de langue
+        # Racine : on ne la saute que si c'est une redirection de langue. Un site sans
+        # préfixe (plantcare101.com, 2026-10-04) a sa vraie page d'accueil ici.
+        if re.search(r'http-equiv=["\']refresh["\']', doc, re.I):
+            continue
+        path = '/'
     # Une page de redirection n'est pas une page : elle ne porte ni texte ni
     # sources, et son canonique designe la page d'arrivee. La compter revenait a
     # reprocher a rightetf.com une page pilier de 33 mots (2026-09-26).
@@ -354,9 +286,7 @@ for f in _fichiers:
         flags.append(f'titre ouvert par un mot générique « {t.split()[0]} » : le terme-clé passe avant')
     # E-E-A-T : la page pilier cite au moins trois textes officiels.
     if k == 'pilier':
-        n_src = len({m.group(0) for m in OFFICIAL.finditer(doc)})
-        if PRIMAIRES is not None:
-            n_src += len({m.group(0) for m in PRIMAIRES.finditer(doc)})
+        n_src = len(sources_officielles.urls_officielles(doc, PRIMAIRES))
         if n_src < 3:
             flags.append(f'{n_src} source(s) officielle(s) < 3')
     # Une page parente est un index a toute profondeur, pas seulement a la racine :

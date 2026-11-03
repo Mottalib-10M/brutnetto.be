@@ -89,6 +89,7 @@ const toutes = await sitemapUrls(base);
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await ctx.newPage();
+page.setDefaultTimeout(5000); // une action bloquée ne doit jamais garder le verrou Playwright (2026-10-22)
 
 const pages = [];
 for (const u of toutes) {

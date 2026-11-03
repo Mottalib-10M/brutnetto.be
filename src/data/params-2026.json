@@ -1,98 +1,112 @@
 {
- "_lisezmoi": "Tous les paramètres légaux vivent ici (RECETTE-SITE.md §4). Précompte : formule-clé SPF Finances ESS-SR/2025-0928, rémunérations payées à partir du 1er janvier 2026. Bonus à l'emploi : montants ONSS applicables à partir du 1er septembre 2026. Montants lus sur la source citée à la date retrieved_at.",
+ "_lisezmoi": "Tous les paramètres légaux vivent ici (RECETTE-SITE.md §4). Précompte : formule-clé SPF Finances ESS-SR/2025-0928, rémunérations payées à partir du 1er janvier 2026 ; texte lu le 2026-09-28, non relu le 2026-11-03 (Fisconet ne sert le document qu'à un navigateur exécutant JavaScript), statut « a-verifier ». Bonus à l'emploi : montants ONSS applicables à partir du 1er septembre 2026. La date de lecture de chaque source est dans sources.<clé>.read_on.",
  "year": 2026,
- "retrieved_at": "2026-09-28",
+ "retrieved_at": "2026-11-03",
  "sources": {
   "formule": {
-   "url": "https://eservices.minfin.fgov.be/myminfin-web/pages/public/fisconet/document/389035ca-432e-422b-859d-2d32fbdaa4cf",
+   "url": "https://www.minfin.fgov.be/myminfin-web/pages/public/fisconet/document/389035ca-432e-422b-859d-2d32fbdaa4cf",
    "label": {
     "fr": "SPF Finances : formule-clé du précompte professionnel à partir du 1er janvier 2026",
     "nl": "FOD Financiën: sleutelformule bedrijfsvoorheffing vanaf 1 januari 2026"
-   }
+   },
+   "read_on": "2026-09-28",
+   "status": "a-verifier"
   },
   "pp_calcul": {
    "url": "https://finances.belgium.be/fr/entreprises/personnel_et_remuneration/precompte_professionnel/calcul",
    "label": {
     "fr": "SPF Finances : calcul du précompte professionnel",
     "nl": "FOD Financiën: berekening van de bedrijfsvoorheffing"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "ipp_taux": {
    "url": "https://fin.belgium.be/fr/particuliers/declaration-impot/revenus/taux-imposition",
    "label": {
     "fr": "SPF Finances : taux d'imposition à l'impôt des personnes physiques",
     "nl": "FOD Financiën: aanslagvoeten personenbelasting"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "onss": {
    "url": "https://www.socialsecurity.be/employer/instructions/dmfa/fr/latest/instructions/socialsecuritycontributions/contributions.html",
    "label": {
     "fr": "ONSS : cotisations de sécurité sociale",
     "nl": "RSZ: socialezekerheidsbijdragen"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "bonus": {
    "url": "https://www.socialsecurity.be/employer/instructions/dmfa/fr/latest/instructions/deductions/workers_reductions/workbonus.html",
    "label": {
     "fr": "ONSS : bonus à l'emploi, montants à partir du 1er septembre 2026",
     "nl": "RSZ: werkbonus, bedragen vanaf 1 september 2026"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "csss": {
    "url": "https://www.socialsecurity.be/employer/instructions/dmfa/fr/latest/instructions/special_contributions/other_specialcontributions/specialsocialsecuritycontribution.html",
    "label": {
     "fr": "ONSS : cotisation spéciale pour la sécurité sociale",
     "nl": "RSZ: bijzondere bijdrage voor de sociale zekerheid"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "double_pecule": {
    "url": "https://www.socialsecurity.be/employer/instructions/dmfa/fr/latest/instructions/special_contributions/other_specialcontributions/doubleholiday_privatesector.html",
    "label": {
     "fr": "ONSS : retenue sur le double pécule de vacances",
     "nl": "RSZ: inhouding op het dubbel vakantiegeld"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "rmmmg": {
    "url": "https://cnt-nar.be/fr/dossiers-thematiques/salaire-minimum",
    "label": {
     "fr": "CNT : salaire minimum (RMMMG)",
     "nl": "NAR: minimumloon (GGMMI)"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "inasti": {
    "url": "https://www.inasti.be/fr/faq/combien-de-cotisations-sociales-dois-je-payer",
    "label": {
     "fr": "INASTI : cotisations sociales des indépendants",
     "nl": "RSVZ: sociale bijdragen van zelfstandigen"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "statbel_salaires": {
    "url": "https://bestat.statbel.fgov.be/bestat/crosstable.xhtml?view=563d857c-c9b3-43b2-8a00-1c0e40e8dffd",
    "label": {
     "fr": "Statbel (be.STAT) : salaires mensuels bruts moyens des salariés à temps plein",
     "nl": "Statbel (be.STAT): gemiddelde bruto maandlonen van voltijdse werknemers"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "statbel_anciennete": {
    "url": "https://bestat.statbel.fgov.be/bestat/crosstable.xhtml?view=5b991e19-5c43-4269-a4e2-4a4cb3c26d12",
    "label": {
     "fr": "Statbel (be.STAT) : salaires mensuels bruts moyens selon l'ancienneté",
     "nl": "Statbel (be.STAT): gemiddelde bruto maandlonen volgens anciënniteit"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "eurostat_ses": {
    "url": "https://ec.europa.eu/eurostat/databrowser/view/earn_ses_monthly/default/table?lang=fr",
    "label": {
     "fr": "Eurostat : enquête sur la structure des salaires 2022, gains mensuels",
     "nl": "Eurostat: loonstructuurenquête 2022, maandverdiensten"
-   }
+   },
+   "read_on": "2026-11-03"
   },
   "eurostat_fte": {
    "url": "https://ec.europa.eu/eurostat/databrowser/view/nama_10_fte/default/table?lang=fr",
    "label": {
     "fr": "Eurostat : salaire annuel moyen par équivalent temps plein",
     "nl": "Eurostat: gemiddeld jaarloon per voltijdequivalent"
-   }
+   },
+   "read_on": "2026-11-03"
   }
  },
  "onss": {
@@ -224,7 +238,7 @@
   }
  ],
  "csss": {
-  "_source": "ONSS, instructions 2026/3, règles en vigueur depuis le 1er avril 2022, lues le 2026-11-02. Montants trimestriels divisés par trois (30,99 = 10,33 × 3 ; 182,82 = 60,94 × 3 ; 154,92 = 51,64 × 3 ; 15,45 = 5,15 × 3).",
+  "_source": "ONSS, instructions 2026/3, règles en vigueur depuis le 1er avril 2022, relues le 2026-11-03. Montants trimestriels divisés par trois (30,99 = 10,33 × 3 ; 182,82 = 60,94 × 3 ; 154,92 = 51,64 × 3 ; 15,45 = 5,15 × 3).",
   "t0": 1095.1,
   "t1": 1945.38,
   "t2": 2190.18,
@@ -294,7 +308,7 @@
   "annual": 1
  },
  "salaires": {
-  "_source": "Statbel via l'API be.STAT (vues 563d857c, 5b991e19, a7a748a8), Eurostat earn_ses_monthly (BE, 2022, B-S hors O, temps plein) et nama_10_fte (EUR). Lus le 2026-09-28.",
+  "_source": "Statbel via l'API be.STAT (vues 563d857c et 5b991e19, relues le 2026-11-03 ; a7a748a8 est la vue néerlandaise de la première), Eurostat earn_ses_monthly (BE, 2022, B-S hors O, temps plein ; manuels = OC7-9) et nama_10_fte (EUR), relus le 2026-11-03 par l'API de diffusion.",
   "annee": 2022,
   "regions": {
    "flandre": 4028,

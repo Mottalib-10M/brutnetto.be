@@ -25,7 +25,28 @@ import { createRequire } from 'node:module';
 import { execSync } from 'node:child_process';
 const require = createRequire(import.meta.url);
 const { chromium } = require(join(execSync('npm root -g').toString().trim(), 'playwright'));
+// Corps de la fonction estCode(i), partagé avec le test (node check-nombres.mjs --test).
+const EST_CODE = `
+  const ac = (i.getAttribute('autocomplete') || '').toLowerCase();
+  if (/(^|\\s)(postal-code|tel|tel-national|cc-number|cc-csc|one-time-code|bday-year)(\\s|$)/.test(ac)) return true;
+  if (/^(cp|cap)$/i.test(i.id || '') || /^(cp|cap)$/i.test(i.name || '')) return true;   // CP, CAP italien : seulement en identifiant
+  const lab = i.id && document.querySelector('label[for="' + CSS.escape(i.id) + '"]');
+  const nom = [i.id, i.name, i.getAttribute('aria-label'), i.placeholder, lab && lab.textContent].join(' ').toLowerCase();
+  return /\\b(plz|postleitzahl|postal|postcode|post code|zip|zipcode|code postal|codepostal|código postal|codigo postal|postinumero|postnummer|postnr)\\b/.test(nom);
+`;
 const dir = process.argv[2];
+if (dir === '--test') {   // non-régression : node check-nombres.mjs --test
+  const br = await chromium.launch(); const pg = await br.newPage();
+  await pg.setContent(`<html lang="de"><body>
+    <input id="a" autocomplete="postal-code" value="10115"><label for="b">PLZ</label><input id="b" value="80331">
+    <input name="zip" value="90210"><input id="brutto" value="45000"><input id="c" value="1.500,125">
+    <input id="d" inputmode="numeric" value="12.000"></body></html>`);
+  const fautes = await pg.evaluate((src) => { const estCode = new Function('i', src);
+    return [...document.querySelectorAll('input')].filter((i) => !estCode(i) && (/^\d{5,}$/.test(i.value) || /,\d{3,}/.test(i.value))).map((i) => i.id || i.name); }, EST_CODE);
+  await br.close();
+  const ok = JSON.stringify(fautes) === JSON.stringify(['brutto', 'c']);
+  console.log('check-nombres --test :', ok ? 'OK' : 'ÉCHEC ' + JSON.stringify(fautes)); process.exit(ok ? 0 : 1);
+}
 // Astro sort dans `dist/`, Next dans `out/`, et un site ecrit a la main est servi
 // depuis la racine du depot.
 const root = ['dist', 'out'].map((d) => resolve(dir, d)).find(existsSync)
@@ -64,13 +85,17 @@ for (const u of [...urls].slice(0, 40)) {
       // les feuilles de style et les images sont là, c'est tout ce qu'il faut.
   await p.goto(u, { waitUntil: 'load' }).catch(() => {});
   await p.waitForTimeout(200);
-  const r = await p.evaluate(() => {
+  const r = await p.evaluate((src) => {
+    const estCode = new Function('i', src);
     const out = [];
     for (const i of document.querySelectorAll('input')) {
       // Un curseur, une case ou un bouton radio n'affiche pas sa valeur : la
       // mettre en forme n'aurait aucun sens, et le curseur la refuserait.
       if (!i.offsetWidth || i.readOnly) continue;
       if (['range', 'checkbox', 'radio', 'hidden', 'submit', 'button'].includes(i.type)) continue;
+      // Un code n'est pas un montant : code postal (PLZ, CP, ZIP), téléphone, carte, code reçu.
+      // « 10115 » dans un champ autocomplete="postal-code" était signalé (2026-10-16, RECETTE §26).
+      if (estCode(i)) continue;
       const v = i.value;
       // Un montant de quatre chiffres ou plus sans separateur, ou avec decimales.
       // Le portugais et l'espagnol ne groupent pas sous dix mille : « 1500 » y est
@@ -83,13 +108,15 @@ for (const u of [...urls].slice(0, 40)) {
       // (calcolalordonetto.it, 2026-09-24). On ne retient donc la règle de la
       // virgule que dans les langues où elle sépare les décimales.
       const langue = (document.documentElement.lang || '').slice(0, 2).toLowerCase();
-      const virguleDecimale = !['en', 'ja', 'zh', 'ko', 'ar', 'hi', 'he', 'th'].includes(langue);
+      // es-MX (et l'espagnol d'Amérique du Nord et centrale) écrit 15,000.50 comme l'anglais (CLDR).
+      const pointDecimal = /^es-(MX|US|PR|DO|GT|HN|NI|PA|SV)/i.test(document.documentElement.lang || '');
+      const virguleDecimale = !pointDecimal && !['en', 'ja', 'zh', 'ko', 'ar', 'hi', 'he', 'th'].includes(langue);
       if (/^\d{5,}$/.test(v) || (virguleDecimale && /,\d{3,}/.test(v))) {
         out.push(`${i.id || i.name || '(sans id)'} = « ${v} »`);
       }
     }
     return out;
-  });
+  }, EST_CODE);
   vues++;
   for (const m of r) fautes.push(`${u.replace(base, '') || '/'} — ${m}`);
 }

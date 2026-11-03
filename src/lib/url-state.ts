@@ -24,11 +24,14 @@ export function str(sp: URLSearchParams, key: string, def: string): string { ret
 let interacted = false;
 if (typeof window !== 'undefined') {
   const mark = () => { interacted = true; };
-  document.addEventListener('input', mark, { once: true });
-  document.addEventListener('change', mark, { once: true });
+  // Saisie, choix ou clic sur un bouton du calculateur : avant cela, la barre d'adresse reste
+  // exactement l'URL de la page (sitemap, canonical, barre finale). check-url-propre.mjs.
+  for (const t of ['input', 'change', 'click', 'keydown']) document.addEventListener(t, mark, { once: true, capture: true });
 }
 export function updateURL(params: Record<string, string | number | boolean | undefined>): void {
   if (!interacted || typeof window === 'undefined') return;
   const enc = encodeState(params);
-  window.history.replaceState(null, '', `${window.location.pathname}${enc ? '?' + enc : ''}`);
+  // Appel sur le prototype : un outil de mesure (Clarity) qui surveille history.replaceState
+  // ne voit pas ce changement, et les valeurs saisies ne quittent donc pas le navigateur.
+  History.prototype.replaceState.call(window.history, null, '', `${window.location.pathname}${enc ? '?' + enc : ''}`);
 }

@@ -2,6 +2,7 @@
 /** Page embarquable (iframe) : calculateur nu, lien de crédit visible (RECETTE §13). */
 import '../../../styles/global.css';
 import BeCalculator from '../../../components/calc/BeCalculator';
+import LicenceNotice from '../../../components/LicenceNotice.astro';
 import { SITE_URL } from '../../../data/site-config';
 ---
 <!doctype html>
@@ -14,6 +15,7 @@ import { SITE_URL } from '../../../data/site-config';
   </head>
   <body class="bg-white p-2 text-navy-900">
     <BeCalculator client:load lang="nl" />
-    <p class="mt-2 text-center text-xs text-navy-500"><a href={`${SITE_URL}/nl/`} target="_blank" rel="noopener" class="hover:underline">brutnetto.be</a></p>
+    <p class="mt-2 text-center text-xs text-navy-500"><a href={`${SITE_URL}/nl/`} target="_blank" rel="noopener" class="hover:underline">brutnetto.be</a> · Onafhankelijke tool van Radif Partners, geen overheidsdienst.</p>
+    <LicenceNotice lang="nl" class="mt-1 text-center text-xs text-navy-500" />
   </body>
 </html>

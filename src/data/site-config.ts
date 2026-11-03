@@ -8,7 +8,7 @@ export const CURRENCY = 'EUR';
 export const YEAR = 2026;
 /** Année de création du site — signal d'ancienneté (RECETTE §8.0). */
 export const SITE_FOUNDED = '2026';
-export const LAST_UPDATED = '2026-09-28';
+export const LAST_UPDATED = '2026-11-03';
 export const AUTHOR_NAME = 'Radif Partners';
 export const AUTHOR_ROLE: Record<string, string> = {"fr": "Éditeur de calculateurs de salaire et de guides pratiques · précompte professionnel, ONSS et bonus à l'emploi", "nl": "Uitgever van loonberekeningen en praktische gidsen · bedrijfsvoorheffing, RSZ en werkbonus"};
 export const AUTHOR_DESC: Record<string, string> = {"fr": "Radif Partners publie des calculateurs de salaire gratuits et des guides pratiques. Chaque taux de ce site provient du SPF Finances, de l'ONSS, du CNT ou de l'INASTI, avec la source et la date de vérification sur la page.", "nl": "Radif Partners publiceert gratis loonberekeningen en praktische gidsen. Elk tarief op deze site komt van de FOD Financiën, de RSZ, de NAR of het RSVZ, met de bron en de controledatum op de pagina."};
@@ -25,6 +25,9 @@ export const GOOGLE_VERIFY_CODE = '';
  *  aucun cookie, aucun GA4. Les anciens régimes 'opt-in' / 'notice' ne sont plus utilisés. */
 export const CONSENT_MODE: 'opt-in' | 'notice' | 'none' = 'none';
 export const GA4_ID = '';
+export const CLARITY_ID = '';
+/** Partie du nom affichée en couleur dans l'en-tête (RECETTE §10.3) ; vide : tout le nom en sombre. */
+export const BRAND_ACCENT = '';
 export const INDEXNOW_KEY = '5e8a1c3f7b2d4a69c0e4f1b8d3a7c2e5';
 
 /* ------------------------------------------------------------------------- *

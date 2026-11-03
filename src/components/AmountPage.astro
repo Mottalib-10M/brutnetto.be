@@ -2,7 +2,7 @@
 /** Page « par montant » (RECETTE §6.2) : angle propre en tête, données du moteur, voisins. */
 import PageLayout from '../layouts/PageLayout.astro';
 import BeCalculator from './calc/BeCalculator';
-import AdSlot from './AdSlot.astro';
+import Clamp from './Clamp.astro';
 import ContentTable from './ContentTable.astro';
 import { route, type Locale } from '../i18n/routes';
 import { t } from '../i18n/ui';
@@ -10,7 +10,7 @@ import { webApplicationSchema, webPageSchema, faqSchema, breadcrumbSchema } from
 import { AUTHOR_NAME } from '../data/site-config';
 import type { Angle } from '../lib/amount-angles';
 import { fitDescription, fitTitle } from '../lib/snippet';
-interface Props { lang: Locale; id: string; crumb: string; angle: Angle; gross: number; table: { caption: string; headers: string[]; rows: string[][] }; neighbours: Array<{ href: string; name: string }>; position?: { text: string; href: string; label: string }; sources: Array<{ name: string; url: string }> }
+interface Props { lang: Locale; id: string; crumb: string; angle: Angle; gross: number; table: { caption: string; headers: string[]; rows: string[][] }; neighbours: Array<{ href: string; name: string }>; position?: { text: string; href: string; label: string }; sources: Array<{ name: string; url: string; read_on?: string }> }
 const { lang, id, crumb, angle: A, gross, table, neighbours, position, sources } = Astro.props;
 const ui = t(lang); const path = route(id, lang);
 const title = fitTitle(A.title, lang); const description = fitDescription(A.description, lang);
@@ -20,17 +20,14 @@ const note = lang === 'fr'
   : 'Bedragen berekend met de sleutelformule voor de bedrijfsvoorheffing 2026, de RSZ van 13,07 % en de werkbonus die sinds 1 september 2026 geldt, voor een voltijdse bediende. Schatting: je loonfiche is bepalend.';
 ---
 <PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} faqs={A.faqs} breadcrumbs={[{ label: crumb }]} related={neighbours.map((n) => ({ ...n, description: '' }))} sources={sources}>
-  <header class="mb-6">
+  <header class="mb-2">
     <h1 class="text-3xl font-bold text-navy-900 md:text-4xl">{A.h1}</h1>
-    <p class="mt-2 text-sm text-navy-500">{ui.reviewedBy} <a href={route('about', lang)} class="text-accent-700 hover:underline">{AUTHOR_NAME}</a></p>
+    <p class="mt-1 text-sm text-navy-500">{ui.reviewedBy} <a href={route('about', lang)} class="text-accent-700 hover:underline">{AUTHOR_NAME}</a></p>
   </header>
-  <section class="prose prose-slate max-w-none">
-    <h2>{A.h2}</h2>
-    <p>{A.p}</p>
-  </section>
+  <h2 class="mt-6 mb-1 text-xl font-semibold text-navy-900">{A.h2}</h2>
+  <Clamp text={A.p} id={`clamp-${id}`} lang={lang} class="mb-4" />
   <BeCalculator client:load mode="brutNet" lang={lang} initialGross={gross} methodHref={route('method', lang)} />
-  <AdSlot slot={`${id}-1`} />
-  <section class="prose prose-slate max-w-none">
+  <section class="prose prose-slate mt-8 max-w-none">
     <h2>{A.h2b}</h2>
     <p>{A.p2}</p>
     <h2>{table.caption}</h2>

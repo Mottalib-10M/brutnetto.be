@@ -193,7 +193,9 @@ function inspect(__EDITORIAL__) {
     if (!vis(sel) || (sel.size && sel.size > 1)) continue;
     const cs = getComputedStyle(sel);
     if (cs.appearance !== 'none' && cs.webkitAppearance !== 'none') out.push(`liste #${sel.id || sel.name || '?'} : flèche native collée au bord (appearance: ${cs.appearance}) — dessiner la flèche, marge droite ≥ 28 px`);
-    else if (parseFloat(cs.paddingRight) < 28) out.push(`liste #${sel.id || sel.name || '?'} : marge droite de ${Math.round(parseFloat(cs.paddingRight))} px, le texte passe sous la flèche`);
+    // En arabe ou en hébreu (direction rtl), la flèche est à gauche : c'est la marge de début qui compte.
+    else { const pad = parseFloat(cs.direction === 'rtl' ? cs.paddingLeft : cs.paddingRight);
+      if (pad < 28) out.push(`liste #${sel.id || sel.name || '?'} : marge ${cs.direction === 'rtl' ? 'gauche' : 'droite'} de ${Math.round(pad)} px, le texte passe sous la flèche`); }
   }
   // 13 — blanc entre l'en-tête et le titre
   {
@@ -350,7 +352,8 @@ async function overMax(page) {
     await i.press('Tab'); await page.waitForTimeout(100);
     await i.click(); await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
     await page.keyboard.type('99999999', { delay: 15 }); await page.waitForTimeout(150);
-    const shown = await page.evaluate((id) => { const el = document.getElementById(id); const box = el.closest('div')?.parentElement; return !!box && [...box.querySelectorAll('[role="status"]')].some((m) => m.textContent.trim()); }, id);
+    // Champ sans id : on passe par l'élément lui-même (getElementById(null) plantait).
+    const shown = await i.evaluate((el) => { const box = el.closest('div')?.parentElement; return !!box && [...box.querySelectorAll('[role="status"]')].some((m) => m.textContent.trim()); });
     await i.press('Tab'); await page.waitForTimeout(150);
     const v = await i.inputValue();
     if (!shown) out.push(`#${id} : valeur trop grande acceptée ou ignorée sans message`);
@@ -404,6 +407,34 @@ for (const [vw, vh, label] of LARGEURS) {
     }
     const path = u.replace(base, '') || '/';
     for (const i of issues) if (label === 'desktop' || !/contenu décentré|rangée|blanc avant le titre|unité «|^liste #/.test(i)) faults.push(`[${label}] ${path} — ${i}`);
+  }
+  await ctx.close();
+}
+// Menu du haut : chaque intitulé sur une seule ligne, rien hors de l'écran, à toutes
+// les largeurs d'ordinateur (règle du 2026-10-25 : 75 sites avaient un menu sur deux
+// lignes, « Mé- thode » coupé, ou un sous-menu caché qui débordait à droite).
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(pages[0], { waitUntil: 'domcontentloaded' }).catch(() => {});
+  for (const w of [1024, 1100, 1280, 1440]) {
+    await page.setViewportSize({ width: w, height: 900 });
+    await page.waitForTimeout(150);
+    const issues = await page.evaluate(() => {
+      const out = [];
+      const nav = document.querySelector('header nav');
+      if (nav) for (const e of nav.querySelectorAll('a, button')) {
+        const r = e.getBoundingClientRect();
+        if (!r.width || r.top > 120 || !e.textContent.trim()) continue;
+        const rg = document.createRange(); rg.selectNodeContents(e);
+        const cs = getComputedStyle(e); const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.3;
+        if (rg.getBoundingClientRect().height > lh * 1.6) out.push(`« ${e.textContent.replace(/\s+/g, ' ').trim().slice(0, 30)} » sur deux lignes — intitulé plus court, ou menu ☰ jusqu'à 1 280 px (xl)`);
+      }
+      const over = document.documentElement.scrollWidth - innerWidth;
+      if (over > 1) out.push(`débordement horizontal de ${over} px (sous-menu de droite à ouvrir vers la gauche : right-0)`);
+      return out;
+    });
+    for (const i of issues) faults.push(`[menu ${w}] ${i}`);
   }
   await ctx.close();
 }

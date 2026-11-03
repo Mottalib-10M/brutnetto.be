@@ -12,11 +12,11 @@ const jsonLd = [webPageSchema({ name: title, description, path: route('editorial
   <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Redactiebeleid</h1></header>
   <div class="prose prose-slate max-w-none">
     <h2>Bronnen</h2>
-    <p>Tarieven en regels komen enkel uit primaire bronnen: de FOD Financiën, de RSZ, de Nationale Arbeidsraad, het RSVZ en de teksten die zij toepassen. Persartikels en andere rekenmodules dienen nooit als bron voor een cijfer. Elke pagina vermeldt de bronnen die ze gebruikt, en elke parameter in de rekenmotor draagt het adres waar hij werd gelezen.</p>
+    <p>Tarieven en regels komen enkel uit primaire bronnen: de FOD Financiën, de RSZ, de Nationale Arbeidsraad, het RSVZ en de teksten die zij toepassen. Persartikels en andere rekenmodules dienen nooit als bron voor een cijfer. Elke pagina vermeldt de bronnen die ze gebruikt, en het parameterbestand bewaart het adres en de leesdatum van elke bron.</p>
     <h2>Cijfers</h2>
     <p>De bedragen op de pagina’s worden berekend met dezelfde rekenmotor als de rekenmodules, vanuit hetzelfde parameterbestand, zodat een correctie alle pagina’s tegelijk bijwerkt. Tests op basis van officiële voorbeelden, waaronder dat van de simulator van de FOD Financiën, worden vóór elke publicatie uitgevoerd.</p>
     <h2>Updates</h2>
-    <p>Elke pagina wordt minstens om de {REVIEW_CYCLE_MONTHS} maanden herlezen, en alle parameters bij de publicatie van een nieuwe sleutelformule, bij elke indexering en bij elke wijziging van de werkbonus. De datum bovenaan en onderaan elke pagina is die van de laatste controle.</p>
+    <p>De bijwerking gebeurt met de hand: de parameters worden herlezen bij de publicatie van een nieuwe sleutelformule, bij elke indexering en bij elke wijziging van de werkbonus, en elke pagina minstens om de {REVIEW_CYCLE_MONTHS} maanden. De datum onderaan de pagina, bovenaan herhaald in de gidsen, is die van de laatste wijziging van de pagina; de leesdatum van elke bron staat naast de link ernaar.</p>
     <h2>Correcties</h2>
     <p>Wanneer een fout wordt gevonden of gemeld, corrigeren we ze, voeren we de tests opnieuw uit en dateren we de wijziging. Belangrijke correcties worden op de betrokken pagina vermeld. Meldingen kan je sturen via de <a href={route('contact', lang)}>contactpagina</a>.</p>
     <h2>Onafhankelijkheid</h2>

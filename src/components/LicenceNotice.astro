@@ -1,0 +1,9 @@
+---
+/** Attribution des données sous licence (RECETTE §12.1, règle 3) : pied de toutes les pages, embeds compris. */
+interface Props { lang: 'fr' | 'nl'; class?: string }
+const { lang, class: cls = 'text-xs text-navy-500' } = Astro.props;
+const lien = 'https://creativecommons.org/licenses/by/4.0/';
+---
+{lang === 'fr'
+  ? <p class={cls} data-licence-notice>Salaires de référence : Eurostat, jeux earn_ses_monthly et nama_10_fte, © Union européenne, licence <a href={lien} rel="nofollow noopener" target="_blank" class="underline">CC BY 4.0</a> ; adapté, calculs Radif Partners.</p>
+  : <p class={cls} data-licence-notice>Referentielonen: Eurostat, datasets earn_ses_monthly en nama_10_fte, © Europese Unie, licentie <a href={lien} rel="nofollow noopener" target="_blank" class="underline">CC BY 4.0</a>; aangepast, berekeningen Radif Partners.</p>}

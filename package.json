@@ -8,14 +8,14 @@
   },
   "scripts": {
     "dev": "astro dev --port 4344",
-    "build": "astro build && node scripts/typo-nbsp.mjs",
+    "build": "astro build && node scripts/typo-nbsp.mjs && python3 scripts/check-snippets.py dist",
     "preview": "astro preview --port 4344",
     "astro": "astro",
     "test": "vitest run",
     "og": "node scripts/generate-og-images.mjs",
     "check:legal": "node scripts/check-legal.mjs",
     "check:cookies": "python3 scripts/check-cookies.py .",
-    "check": "npm run build && npx vitest run && node scripts/typo-nbsp.mjs dist --check && node scripts/check-legal.mjs && python3 scripts/check-seo.py . && python3 scripts/check-unique.py . && python3 scripts/check-trame.py . && python3 scripts/check-liens.py . && node scripts/check-layout.mjs . && node scripts/check-sources.mjs . && python3 scripts/check-simulateurs.py . && python3 scripts/check-cookies.py . && node scripts/check-url-propre.mjs ."
+    "check": "npm run build && npx vitest run && node scripts/typo-nbsp.mjs dist --check && node scripts/check-legal.mjs && python3 scripts/check-seo.py . && python3 scripts/check-unique.py . && python3 scripts/check-trame.py . && python3 scripts/check-liens.py . && node scripts/check-layout.mjs . && node scripts/check-sources.mjs . && python3 scripts/check-simulateurs.py . && python3 scripts/check-hreflang.py . && (python3 scripts/check-anglais.py . || echo 'check-anglais : signalé, non bloquant (décision de l’éditeur : pas de version anglaise, plafond de 100 pages)') && python3 scripts/check-portefeuille.py . && python3 scripts/check-cookies.py . && node scripts/check-url-propre.mjs . && node scripts/check-premier-ecran.mjs . && node scripts/check-droits.mjs . && node scripts/check-copie.mjs ."
   },
   "dependencies": {
     "@astrojs/react": "^5.0.4",

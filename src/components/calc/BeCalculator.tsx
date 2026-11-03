@@ -45,7 +45,7 @@ const S = {
 
 export default function BeCalculator({ mode = 'brutNet', lang = 'fr', initialGross = 3500, initialHourly = 20, methodHref }: Props) {
   const t = S[lang];
-  const m = (v: number, d = 2) => formatMoney(v, d, lang);
+  const m = (v: number, d = 0) => formatMoney(v, d, lang); // aucun centime à l’écran, ils restent dans les calculs (RECETTE §4.1)
   const sp = new URLSearchParams(); // premier rendu = HTML du build (RECETTE §17.5)
   const [gross, setGross] = useState(num(sp, 'b', initialGross));
   const [net, setNet] = useState(num(sp, 'n', 2500));
@@ -112,8 +112,13 @@ export default function BeCalculator({ mode = 'brutNet', lang = 'fr', initialGro
           </>}
           {mode === 'independant' && <NumberField id="c" lang={lang} label={t.communal} value={communal} onChange={setCommunal} unit="%" max={12} decimals={1} />}
           <p className="text-xs text-navy-500">{t.free}</p>
+          {/* Sur téléphone, le résultat résumé reste à portée pendant la saisie (RECETTE §5). */}
+          <div aria-hidden="true" className="sticky bottom-2 z-10 flex items-baseline justify-between gap-3 rounded-lg border border-accent-200 bg-white px-4 py-2 shadow-sm lg:hidden">
+            <span className="text-sm font-medium text-navy-600">{head.l}</span>
+            <span className="tabular-nums whitespace-nowrap text-xl font-bold text-navy-900">{head.v}</span>
+          </div>
         </form>
-        <div className="lg:col-span-3" aria-live="polite">
+        <div className="lg:col-span-3" aria-live="polite" data-resultat>
           <div className="rounded-lg border border-accent-200 bg-white p-5">
             <div className="mb-4 text-center">
               <p className="text-sm font-medium text-navy-500">{head.l}</p>

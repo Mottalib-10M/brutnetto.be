@@ -20,7 +20,7 @@ if (!existsSync(ficheLegale)) {
   // page servie et on y cherche les mentions exigées par la LCEN art. 6-III.
   const pages = ['fr/mentions-legales', 'mentions-legales', 'fr/impressum', 'impressum',
                  'fr/aviso-legal', 'aviso-legal', 'legal-notice', 'fr/legal-notice',
-                 'colofon', 'note-legali', 'legal', 'fr/legal']
+                 'colofon', 'note-legali', 'legal', 'fr/legal', 'tr/yasal-bilgiler', 'yasal-bilgiler', 'id/legal', 'id/ketentuan']
     // Le dossier servi ne s'appelle pas toujours dist : salaryafter.com publie
     // depuis docs/ et calorierule.com depuis output/. Ne chercher que dist et out
     // faisait déclarer « aucune page de mentions légales » sur des sites qui en
@@ -41,10 +41,10 @@ if (!existsSync(ficheLegale)) {
   // ne cherche que « éditeur » et « hébergeur » déclare non conforme un site
   // anglais parfaitement en règle (costoflivingusa.com, 2026-09-24).
   const exige = {
-    'éditeur nommé': /(éditeur|editeur|publié par|edité par|published by|publisher|editor|herausgeber|uitgever|editado por)/i,
+    'éditeur nommé': /(éditeur|editeur|publié par|edité par|published by|publisher|editor|herausgeber|uitgever|editado por|yayıncı|yayımlayan|penerbit|pengelola)/i,
     'adresse postale': /\b\d{4,5}\s+[A-ZÀ-Ý][\wÀ-ÿ'-]+|\b[A-Z][a-z]+,?\s+[A-Z]{2}\s+\d{5}\b/,
     'contact': /[\w.+-]+@[\w-]+\.[a-z]{2,}|formulaire de contact|contact form/i,
-    'hébergeur': /(hébergeur|hebergeur|hébergé par|hosting|hosted by|host:|provider)/i,
+    'hébergeur': /(hébergeur|hebergeur|hébergé par|hosting|hosted by|host:|provider|barındırma|yer sağlayıcı)/i,
     'directeur de la publication ou responsable': /(directeur de la publication|responsable de la publication|représentant légal|société|managing director|responsible for content|legal representative|company|LLC|Ltd|Inc\.)/i,
   };
   const absents = Object.entries(exige).filter(([, re]) => !re.test(texte)).map(([k]) => k);

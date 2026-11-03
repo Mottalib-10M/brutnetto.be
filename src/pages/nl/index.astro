@@ -2,7 +2,6 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import BeCalculator from '../../components/calc/BeCalculator';
 import ContentTable from '../../components/ContentTable.astro';
-import AdSlot from '../../components/AdSlot.astro';
 import Sources from '../../components/Sources.astro';
 import { YEAR, LAST_UPDATED, AUTHOR_NAME, LANG_TAGS } from '../../data/site-config';
 import { route, MONTHLY } from '../../i18n/routes';
@@ -16,46 +15,86 @@ const lang = 'nl'; const f = fmt(lang); const S = src(lang);
 const title = `Bruto netto berekenen 2026: je nettoloon in België`;
 const description = `Bereken je nettoloon in België voor 2026: RSZ van 13,07 %, werkbonus, bedrijfsvoorheffing volgens de sleutelformule en bijzondere bijdrage. Gratis en anoniem.`;
 const g = 3500; const r = ex(g); const E = P.bonus.employe;
-const rows = [2200, 2600, 3000, 3500, 4000, 5000, 6000, 7500].map((x) => { const a = ex(x); return [f.money(x, 0), f.money(a.onssNet, 2), f.money(a.pp, 2), f.money(a.csss, 2), f.money(a.net, 2), f.pct(a.net / x, 1)]; });
-const fam = [['Alleenstaande', ex(g)], ['Alleenstaande, 1 kind', ex(g, { children: 1 })], ['Alleenstaande, 2 kinderen', ex(g, { children: 2 })], ['Alleenstaande ouder, 2 kinderen', ex(g, { children: 2, parentIsole: true })], ['Partner met inkomen', ex(g, { situation: 'conjoint_revenus' })], ['Partner zonder inkomen', ex(g, { situation: 'conjoint_sans' })]].map(([l, x]: any) => [l, f.money(x.pp, 2), f.money(x.csss, 2), f.money(x.net, 2)]);
+const fam = [['Alleenstaande', ex(g)], ['Alleenstaande, 1 kind', ex(g, { children: 1 })], ['Alleenstaande, 2 kinderen', ex(g, { children: 2 })], ['Alleenstaande ouder, 2 kinderen', ex(g, { children: 2, parentIsole: true })], ['Partner met inkomen', ex(g, { situation: 'conjoint_revenus' })], ['Partner zonder inkomen', ex(g, { situation: 'conjoint_sans' })]].map(([l, x]: any) => [l, f.money(x.pp, 0), f.money(x.csss, 0), f.money(x.net, 0)]);
 const faqs = [
-  { q: 'Hoe bereken je je nettoloon in België?', a: `Trek van het brutoloon de RSZ-bijdrage van 13,07 % af, verminderd met de werkbonus, daarna de bedrijfsvoorheffing volgens de sleutelformule van de FOD Financiën en ten slotte de bijzondere bijdrage voor de sociale zekerheid. Bij ${f.money(g, 0)} bruto ontvangt een alleenstaande bediende ${f.money(r.net, 2)} netto per maand in 2026.` },
+  { q: 'Hoe bereken je je nettoloon in België?', a: `Trek van het brutoloon de RSZ-bijdrage van 13,07 % af, verminderd met de werkbonus, daarna de bedrijfsvoorheffing volgens de sleutelformule van de FOD Financiën en ten slotte de bijzondere bijdrage voor de sociale zekerheid. Bij ${f.money(g, 0)} bruto ontvangt een alleenstaande bediende ${f.money(r.net, 0)} netto per maand in 2026.` },
   { q: 'Welk percentage van het brutoloon blijft netto over?', a: `Tussen 55 en 95 % volgens het loon en de gezinssituatie. Op het minimumloon laat de werkbonus meer dan 90 % over; bij ${f.money(g, 0)} blijft ${f.pct(r.net / g, 1)} over voor een alleenstaande; boven 6 000 euro minder dan 60 %. Kinderen ten laste en een partner zonder inkomen verhogen het netto.` },
-  { q: 'Houdt de rekenmodule rekening met de wijzigingen van 2026?', a: 'Ja. Ze past de sleutelformule toe voor lonen betaald sinds 1 januari 2026, de bedragen van de werkbonus die sinds 1 september 2026 gelden en het minimumloon van 2 189,81 euro sinds 1 april 2026. De parameters worden nagekeken op de datum bovenaan de pagina.' },
+  { q: 'Houdt de rekenmodule rekening met de wijzigingen van 2026?', a: `Ja. Ze past de sleutelformule toe voor lonen betaald sinds 1 januari 2026, de bedragen van de werkbonus die sinds 1 september 2026 gelden en het minimumloon van ${f.money(P.rmmmg.amount, 2)} sinds 1 april 2026. Elke bron vermeldt onderaan de pagina wanneer we ze het laatst lazen.` },
   { q: 'Wat is het verschil tussen bediende en arbeider?', a: 'Voor een arbeider wordt de RSZ-bijdrage berekend op 108 % van het brutoloon, omdat zijn vakantiegeld door een vakantiekas wordt betaald. Ook de werkbonus ligt hoger. Bij een gelijk brutoloon is het netto maandloon van een arbeider dus iets lager, maar zijn vakantiegeld wordt apart uitbetaald.' },
   { q: 'Waarom levert een opslag soms heel weinig op?', a: `Tussen ${f.money(E.b_from, 0)} en ${f.money(E.a_to, 0)} bruto daalt de werkbonus wanneer het loon stijgt. Het verlies van de bonus komt bij de voorheffing, zodat 100 euro bruto meer in de zone van luik B maar een twintigtal euro netto kan opleveren. Daarboven levert een opslag 40 tot 44 % netto op.` },
   { q: 'Is de bedrijfsvoorheffing de definitieve belasting?', a: 'Nee, het is een voorschot. De definitieve belasting wordt berekend na de belastingaangifte, met de werkelijke gemeentebelasting, de belastingverminderingen en de inkomens van het gezin. Het verschil met de ingehouden voorheffing leidt tot een terugbetaling of een bijbetaling in het aanslagbiljet.' },
   { q: 'Worden mijn gegevens bewaard?', a: 'Nee. De berekening gebeurt volledig in je browser, met de parameters van 2026 die in de pagina zitten. Niets van wat je invult, wordt verstuurd of bewaard. De deellink, als je die gebruikt, bevat de bedragen in het adres, alleen zichtbaar voor wie je hem stuurt.' },
 ];
-const related = ['brutNet', 'pp', 'netBrut', 'horaire', 'pecule', 'prime', 'cout', 'bonus', 'baremes'].map((id) => ({ href: route(id, lang), name: label(id, lang), description: '' }));
-const sources = [S.formule, S.onss, S.bonus, S.csss, S.rmmmg, S.ipp_taux];
+const paliers = [2200, 2400, 2600, 2800, 3000, 3200, 3400, 3600, 4000, 5000].map((x) => { const d = ex(x + 100).net - ex(x).net; return [f.money(x, 0), f.money(ex(x).net, 0), f.money(d, 0), f.pct(d / 100, 0)]; });
+const statuts = [2500, 3500, 5000].map((x) => { const e = ex(x); const o = ex(x, { status: 'ouvrier' }); return [f.money(x, 0), f.money(e.onssNet, 0), f.money(o.onssNet, 0), f.money(e.net, 0), f.money(o.net, 0)]; });
+const brutTable = MONTHLY.map((x) => { const a = ex(x); return { x, href: route(`m-${x}`, lang), label: monthlyLabel(x, lang), onss: f.money(a.onssNet, 0), pp: f.money(a.pp, 0), net: f.money(a.net, 0), part: f.pct(a.net / x, 0) }; });
+const dp = doublePecule({ gross: g }); const yb = yearEndBonus({ gross: g }); const ec = employerCost(g);
 const jsonLd = [webApplicationSchema({ name: `Bruto netto berekenen ${YEAR}`, description, path: route('home', lang), lang }), faqSchema(faqs, lang), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }]), organizationSchema(lang), personSchema(lang), websiteSchema(lang)];
 ---
-<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} faqs={faqs} related={related} sources={sources}>
+<PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} faqs={faqs}>
   <header class="mb-6">
     <h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Bruto netto {YEAR}: bereken je nettoloon in België</h1>
-    <p class="mt-3 text-lg text-navy-600">Vul je bruto maandloon, je statuut en je gezinssituatie in. Je krijgt de RSZ-bijdrage, de werkbonus, de bedrijfsvoorheffing, de bijzondere bijdrage voor de sociale zekerheid en je nettoloon, lijn per lijn zoals op een loonfiche.</p>
+    <p class="mt-3 text-lg text-navy-600">Brutoloon, statuut, gezinssituatie: je ziet meteen de RSZ, de werkbonus, de voorheffing, de bijzondere bijdrage en het netto, zoals op een Belgische loonfiche.</p>
     <p class="mt-3"><span class="inline-block rounded-full border border-navy-200 bg-white px-3 py-1 text-xs font-medium text-navy-600">Sleutelformule FOD Financiën {YEAR}</span></p>
   </header>
   <BeCalculator client:load mode="brutNet" lang={lang} methodHref={route('method', lang)} />
-  <AdSlot slot="home-1" />
-  <section class="prose prose-slate max-w-none">
+  <section class="prose prose-slate mt-8 max-w-none">
     <h2 id="antwoord">Wat er overblijft van {f.money(g, 0)} bruto per maand</h2>
-    <p>Voor een alleenstaande bediende zonder kinderen met {f.money(g, 0)} bruto per maand in 2026 houdt de persoonlijke socialezekerheidsbijdrage van 13,07 % {f.money(r.onss, 2)} in. Op dit niveau speelt de werkbonus niet meer: hij stopt bij {f.money(E.a_to, 2)}. Het belastbaar loon bedraagt dus {f.money(r.imposable, 2)}. De bedrijfsvoorheffing, berekend met de sleutelformule van de FOD Financiën, bedraagt {f.money(r.pp, 2)}. De bijzondere bijdrage voor de sociale zekerheid voegt daar {f.money(r.csss, 2)} aan toe. Het nettoloon bedraagt {f.money(r.net, 2)}, of {f.pct(r.net / g, 1)} van het brutoloon. Met een partner zonder beroepsinkomen brengt het huwelijksquotiënt het nettoloon op {f.money(ex(g, { situation: 'conjoint_sans' }).net, 2)}, en met twee kinderen ten laste op {f.money(ex(g, { children: 2 }).net, 2)}. De werkgever betaalt van zijn kant ongeveer {f.money(employerCost(g).monthly, 2)} per maand, werkgeversbijdragen inbegrepen. Eén keer per jaar komen daar het dubbel vakantiegeld, {f.money(doublePecule({ gross: g }).net, 2)} netto, en in de meeste sectoren een eindejaarspremie van {f.money(yearEndBonus({ gross: g }).net, 2)} netto bij.</p>
+    <p>Voor een alleenstaande bediende zonder kinderen met {f.money(g, 0)} bruto per maand in 2026 houdt de persoonlijke socialezekerheidsbijdrage van 13,07 % {f.money(r.onss, 0)} in. Op dit niveau speelt de werkbonus niet meer: hij stopt bij {f.money(E.a_to, 2)}. Het belastbaar loon bedraagt dus {f.money(r.imposable, 0)}. De bedrijfsvoorheffing, berekend met de sleutelformule van de FOD Financiën, bedraagt {f.money(r.pp, 0)}. De bijzondere bijdrage voor de sociale zekerheid voegt daar {f.money(r.csss, 0)} aan toe. Het nettoloon bedraagt {f.money(r.net, 0)}, of {f.pct(r.net / g, 1)} van het brutoloon. Met een partner zonder beroepsinkomen brengt het huwelijksquotiënt het nettoloon op {f.money(ex(g, { situation: 'conjoint_sans' }).net, 0)}, en met twee kinderen ten laste op {f.money(ex(g, { children: 2 }).net, 0)}. De werkgever betaalt van zijn kant ongeveer {f.money(ec.monthly, 0)} per maand, werkgeversbijdragen inbegrepen. Eén keer per jaar komen daar het dubbel vakantiegeld, {f.money(dp.net, 0)} netto, en in de meeste sectoren een eindejaarspremie van {f.money(yb.net, 0)} netto bij.</p>
+  </section>
 
-    <h2 id="stappen">Hoe het nettoloon wordt berekend</h2>
-    <p>De overgang van bruto naar netto volgt altijd dezelfde stappen, die de werkgever of het sociaal secretariaat elke maand toepast.</p>
-    <ol>
-      <li><strong>Brutoloon.</strong> Het basisloon, premies, overuren en voordelen die aan RSZ onderworpen zijn.</li>
-      <li><strong>Persoonlijke RSZ-bijdrage.</strong> 13,07 % van het brutoloon voor een bediende, 13,07 % van 108 % van het brutoloon voor een arbeider.</li>
-      <li><strong>Sociale werkbonus.</strong> Voor lonen tot {f.money(E.a_to, 2)}, een vermindering van de bijdrage in twee luiken, A en B, begrensd op de verschuldigde bijdrage.</li>
-      <li><strong>Belastbaar loon.</strong> Het brutoloon min de werkelijk ingehouden RSZ.</li>
-      <li><strong>Bedrijfsvoorheffing.</strong> Berekend met de sleutelformule: omrekening naar een jaarbedrag, forfaitaire kosten, barema van 26,75 tot 53,50 %, belastingvrije som, verminderingen voor gezinslasten en daarna fiscale werkbonus.</li>
-      <li><strong>Bijzondere bijdrage voor de sociale zekerheid.</strong> Een maandelijkse inhouding volgens barema, naargelang het loon en het gezin.</li>
-    </ol>
-    <p>Het nettoloon is wat na die inhoudingen overblijft. Maaltijdcheques, onkostenvergoedingen en eventuele voordelen in natura zitten niet in deze berekening.</p>
+  <figure class="mt-8" id="loonfiche">
+    <figcaption class="mb-2 text-lg font-semibold text-navy-900">De loonfiche van {f.money(g, 0)} bruto, lijn per lijn</figcaption>
+    <div class="overflow-x-auto"><table class="journal w-full text-sm">
+      <thead><tr><th scope="col" class="px-3 py-2 text-left">Lijn</th><th scope="col" class="px-3 py-2 text-right">Bedrag</th><th scope="col" class="px-3 py-2 text-left">Waar ze vandaan komt</th></tr></thead>
+      <tbody class="divide-y divide-navy-100 text-navy-700">
+        <tr><td class="px-3 py-2">Brutoloon</td><td class="tabular-nums px-3 py-2 text-right">{f.money(g, 0)}</td><td class="px-3 py-2">Basisloon, premies, overuren en voordelen die aan RSZ onderworpen zijn.</td></tr>
+        <tr><td class="px-3 py-2">RSZ-bijdrage</td><td class="tabular-nums px-3 py-2 text-right">− {f.money(r.onss, 0)}</td><td class="px-3 py-2">13,07 % van het brutoloon voor een bediende, van 108 % ervan voor een arbeider: <a class="underline" href={route('onss', lang)}>RSZ-bijdragen</a>.</td></tr>
+        <tr><td class="px-3 py-2">Werkbonus</td><td class="tabular-nums px-3 py-2 text-right">{f.money(r.bonus, 0)}</td><td class="px-3 py-2">Luiken A en B, tot {f.money(E.a_to, 2)} bruto, begrensd op de verschuldigde bijdrage: <a class="underline" href={route('bonus', lang)}>werkbonus</a>.</td></tr>
+        <tr><td class="px-3 py-2">Belastbaar loon</td><td class="tabular-nums px-3 py-2 text-right">{f.money(r.imposable, 0)}</td><td class="px-3 py-2">Het brutoloon min de werkelijk ingehouden RSZ.</td></tr>
+        <tr><td class="px-3 py-2">Bedrijfsvoorheffing</td><td class="tabular-nums px-3 py-2 text-right">− {f.money(r.pp, 0)}</td><td class="px-3 py-2">Sleutelformule: jaarbedrag, forfaitaire kosten, barema van 26,75 tot 53,50 %, belastingvrije som, gezinslasten: <a class="underline" href={route('pp', lang)}>bedrijfsvoorheffing</a>.</td></tr>
+        <tr><td class="px-3 py-2">Bijzondere bijdrage</td><td class="tabular-nums px-3 py-2 text-right">− {f.money(r.csss, 0)}</td><td class="px-3 py-2">Maandelijkse inhouding volgens loon en gezin: <a class="underline" href={route('csss', lang)}>bijzondere bijdrage sociale zekerheid</a>.</td></tr>
+        <tr class="font-semibold text-navy-900"><td class="px-3 py-2">Nettoloon</td><td class="tabular-nums px-3 py-2 text-right">{f.money(r.net, 0)}</td><td class="px-3 py-2">Zonder maaltijdcheques, onkostenvergoedingen en voordelen in natura.</td></tr>
+      </tbody>
+    </table></div>
+  </figure>
 
-    <h2 id="parameters">Parameters {YEAR}</h2>
+  <article class="prose prose-slate mt-8 max-w-none" id="loonval">
+    <h2>De zone waar 100 euro bruto meer weinig opbrengt</h2>
+    <p>Dit is de Belgische eigenaardigheid die de meeste rekenmodules niet tonen. Tussen {f.money(E.b_from, 0)} en {f.money(E.a_to, 0)} bruto smelt de werkbonus naarmate het loon stijgt: het verlies aan bonus komt bovenop de voorheffing. Een loonsverhoging in deze zone beoordeel je dus in netto, niet in bruto.</p>
+    <figure>
+      <ContentTable caption="Alleenstaande bediende zonder kinderen, nettowinst van 100 euro bruto meer per maand" headers={['Huidig bruto', 'Huidig netto', 'Nettowinst per 100 euro bruto', 'Behouden deel']} align={['r', 'r', 'r', 'r']} rows={paliers} />
+    </figure>
+    <p>Boven {f.money(E.a_to, 0)} is de bonus verdwenen en stijgt het behouden deel weer, tot de volgende schijf van het barema het opnieuw drukt.</p>
+  </article>
+
+  <article class="prose prose-slate mt-8 max-w-none" id="statuut">
+    <h2>Bediende of arbeider, bij hetzelfde brutoloon</h2>
+    <p>De arbeider betaalt bijdragen op 108 % van zijn brutoloon, omdat zijn vakantiegeld van een vakantiekas komt en niet van de werkgever. Zijn werkbonus is hoger, maar zijn netto per maand blijft iets lager. Daarmee is de vergelijking niet af: de bediende krijgt zijn dubbel vakantiegeld van de werkgever, de arbeider krijgt het apart, één keer per jaar, van de kas.</p>
+    <ContentTable headers={['Bruto', 'RSZ bediende', 'RSZ arbeider', 'Netto bediende', 'Netto arbeider']} align={['r', 'r', 'r', 'r', 'r']} rows={statuts} />
+  </article>
+
+  <section class="prose prose-slate mt-8 max-w-none" id="lonen">
+    <h2>Jouw loon in netto, van {f.money(MONTHLY[0], 0)} tot {f.money(MONTHLY[MONTHLY.length - 1], 0)} bruto</h2>
+    <p>Elk loon verwijst naar zijn eigen pagina, die de grens uitlegt die op dat niveau telt: werkbonus, bijzondere bijdrage, huwelijksquotiënt, kinderen, vakantiegeld, eindejaarspremie of de hoogste schijf. Het deel van het brutoloon dat netto overblijft, daalt met het loon.</p>
+    <div class="overflow-x-auto"><table class="w-full text-sm">
+      <thead><tr><th scope="col" class="text-left">Loon</th><th scope="col" class="text-right">RSZ na werkbonus</th><th scope="col" class="text-right">Voorheffing</th><th scope="col" class="text-right">Netto</th><th scope="col" class="text-right">Netto / bruto</th></tr></thead>
+      <tbody>{brutTable.map((l) => <tr><td><a href={l.href}>{l.label}</a></td><td class="tabular-nums text-right">{l.onss}</td><td class="tabular-nums text-right">{l.pp}</td><td class="tabular-nums text-right">{l.net}</td><td class="tabular-nums text-right">{l.part}</td></tr>)}</tbody>
+    </table></div>
+
+    <h2 id="gezin">Volgens gezinssituatie, {f.money(g, 0)} bruto</h2>
+    <ContentTable headers={['Situatie', 'Voorheffing', 'Bijzondere bijdrage', 'Netto']} align={['l', 'r', 'r', 'r']} rows={fam} />
+    <p>Elk kind ten laste verlaagt de jaarbelasting met een vast bedrag, en de alleenstaande ouder krijgt een extra vermindering. Het huwelijksquotiënt kent de partner zonder inkomen 30 % van het belastbaar inkomen toe, met een maximum van {f.money(P.pp.conjoint_max, 0)} per jaar. Heeft de partner een inkomen, dan volgt de bijzondere bijdrage het barema voor tweeverdieners.</p>
+
+    <h2 id="jaar">Over een volledig jaar</h2>
+    <p>Een bediende krijgt niet enkel twaalf lonen. Het dubbel vakantiegeld, gelijk aan 92 % van het bruto maandloon, wordt één keer per jaar uitbetaald met een voorheffing tegen een vast tarief, en de meeste paritaire comités voorzien een eindejaarspremie van één maandloon. Voor {f.money(g, 0)} bruto nadert het netto jaartotaal {f.money(r.net * 12 + dp.net + yb.net, 0)}. De rekenmodules voor het <a href={route('pecule', lang)}>vakantiegeld</a> en de <a href={route('prime', lang)}>eindejaarspremie</a> geven de details. Om te weten welk brutoloon je voor een bepaald netto moet vragen, zoekt <a href={route('netBrut', lang)}>van netto naar bruto</a> het omgekeerde; voor 2 800 euro netto als alleenstaande is bijvoorbeeld {f.money(grossForNet(2800), 0)} bruto nodig.</p>
+
+    <h2 id="werkgever">Wat het loon de werkgever kost</h2>
+    <p>De werkgever betaalt bovenop het brutoloon een basiswerkgeversbijdrage en een loonmatiging, samen ongeveer 25 % voor een bediende in de privésector. Een loon van {f.money(g, 0)} kost zo {f.money(ec.monthly, 0)} per maand en ongeveer {f.money(ec.annual, 0)} per jaar met eindejaarspremie en dubbel vakantiegeld. De structurele vermindering verlaagt die kost voor lage en middelgrote lonen. De <a href={route('cout', lang)}>rekenmodule voor de werkgeverskost</a> geeft de details.</p>
+  </section>
+
+  <aside class="prose prose-slate mt-8 max-w-none rounded-lg border-l-4 border-accent-500 bg-navy-50 px-5 py-1" id="parameters">
+    <h2 class="!border-0">Parameters {YEAR}</h2>
     <ContentTable headers={['Parameter', 'Waarde']} align={['l', 'r']} rows={[
       ['Persoonlijke RSZ-bijdrage', '13,07 % (arbeiders: op 108 %)'],
       ['Werkbonus, luik A (bediende)', `${f.money(E.a_max, 2)} tot ${f.money(E.a_from, 2)}, nul bij ${f.money(E.a_to, 2)}`],
@@ -66,29 +105,9 @@ const jsonLd = [webApplicationSchema({ name: `Bruto netto berekenen ${YEAR}`, de
       ['Bijzondere bijdrage, maandmaximum', `${f.money(P.csss.max_single, 2)} (alleenstaande of partner zonder inkomen) · ${f.money(P.csss.max_two, 2)} (partner met inkomen)`],
       ['Minimumloon (GGMMI) sinds 1 april 2026', f.money(P.rmmmg.amount, 2)],
     ]} />
+  </aside>
 
-    <h2 id="voorbeelden">Van bruto naar netto, alleenstaande bediende zonder kinderen</h2>
-    <ContentTable headers={['Bruto', 'RSZ na werkbonus', 'Voorheffing', 'Bijzondere bijdrage', 'Netto', 'Netto / bruto']} align={['r', 'r', 'r', 'r', 'r', 'r']} rows={rows} />
-    <p>Het deel van het brutoloon dat netto overblijft, daalt met het loon. Op het minimumloon neemt de werkbonus de RSZ weg; boven {f.money(E.a_to, 0)} bestaat hij niet meer en stijgt de voorheffing volgens het barema.</p>
-
-    <h2 id="gezin">Volgens gezinssituatie, {f.money(g, 0)} bruto</h2>
-    <ContentTable headers={['Situatie', 'Voorheffing', 'Bijzondere bijdrage', 'Netto']} align={['l', 'r', 'r', 'r']} rows={fam} />
-    <p>Elk kind ten laste verlaagt de jaarbelasting met een vast bedrag, en de alleenstaande ouder krijgt een extra vermindering. Het huwelijksquotiënt kent de partner zonder inkomen 30 % van het belastbaar inkomen toe, met een maximum van {f.money(P.pp.conjoint_max, 0)} per jaar. Heeft de partner een inkomen, dan volgt de bijzondere bijdrage het barema voor tweeverdieners.</p>
-
-    <h2 id="jaar">Over een volledig jaar</h2>
-    <p>Een bediende krijgt niet enkel twaalf lonen. Het dubbel vakantiegeld, gelijk aan 92 % van het bruto maandloon, wordt één keer per jaar uitbetaald met een voorheffing tegen een vast tarief, en de meeste paritaire comités voorzien een eindejaarspremie van één maandloon. Voor {f.money(g, 0)} bruto nadert het netto jaartotaal {f.money(r.net * 12 + doublePecule({ gross: g }).net + yearEndBonus({ gross: g }).net, 0)}. De rekenmodules voor het <a href={route('pecule', lang)}>vakantiegeld</a> en de <a href={route('prime', lang)}>eindejaarspremie</a> geven de details. Om te weten welk brutoloon je voor een bepaald netto moet vragen, zoekt <a href={route('netBrut', lang)}>van netto naar bruto</a> het omgekeerde; voor 2 800 euro netto als alleenstaande is bijvoorbeeld {f.money(grossForNet(2800), 2)} bruto nodig.</p>
-
-    <h2 id="werkgever">Wat het loon de werkgever kost</h2>
-    <p>De werkgever betaalt bovenop het brutoloon een basiswerkgeversbijdrage en een loonmatiging, samen ongeveer 25 % voor een bediende in de privésector. Een loon van {f.money(g, 0)} kost zo {f.money(employerCost(g).monthly, 2)} per maand en ongeveer {f.money(employerCost(g).annual, 0)} per jaar met eindejaarspremie en dubbel vakantiegeld. De structurele vermindering verlaagt die kost voor lage en middelgrote lonen. De <a href={route('cout', lang)}>rekenmodule voor de werkgeverskost</a> geeft de details.</p>
-
-    <AdSlot slot="home-2" />
-
-    <h2 id="lonen">Voorbeelden per brutoloon</h2>
-    <p>Elke pagina hieronder vertrekt van één loon en legt de grens uit die op dat niveau telt: werkbonus, bijzondere bijdrage, huwelijksquotiënt, kinderen, vakantiegeld, eindejaarspremie of de hoogste schijf.</p>
-    <ul class="columns-2 sm:columns-3" data-chrome>
-      {MONTHLY.map((x) => <li><a href={route(`m-${x}`, lang)}>{monthlyLabel(x, lang)}</a></li>)}
-    </ul>
-
+  <section class="prose prose-slate mt-8 max-w-none">
     <h2 id="tips">Zes punten om na te kijken op je loonfiche</h2>
     <ol>
       <li><strong>Het statuut.</strong> Bediende of arbeider verandert de RSZ-basis en de werkbonus.</li>
@@ -104,6 +123,9 @@ const jsonLd = [webApplicationSchema({ name: `Bruto netto berekenen ${YEAR}`, de
 
     <h2 id="belasting">Van voorheffing tot definitieve belasting</h2>
     <p>De voorheffing die elke maand wordt ingehouden, is een raming van de belasting op het loon. De definitieve belasting, berekend het jaar daarna, gebruikt de <a href={route('baremes', lang)}>belastingschijven</a> van 25 tot 50 %, de werkelijke gemeentebelasting van je gemeente en al je belastingverminderingen. Voor de meeste werknemers zonder andere inkomsten is het verschil beperkt. Het kan groter zijn bij een wijziging van situatie in de loop van het jaar, inkomsten van de partner of uitgaven die recht geven op een vermindering, zoals pensioensparen of dienstencheques.</p>
+
+    <h2 id="modules">De andere berekeningen van de site</h2>
+    <p data-chrome><a href={route('brutNet', lang)}>{label('brutNet', lang)}</a> · <a href={route('pp', lang)}>{label('pp', lang)}</a> · <a href={route('netBrut', lang)}>{label('netBrut', lang)}</a> · <a href={route('horaire', lang)}>{label('horaire', lang)}</a> · <a href={route('pecule', lang)}>{label('pecule', lang)}</a> · <a href={route('prime', lang)}>{label('prime', lang)}</a> · <a href={route('cout', lang)}>{label('cout', lang)}</a> · <a href={route('independant', lang)}>{label('independant', lang)}</a> · <a href={route('baremes', lang)}>{label('baremes', lang)}</a> · <a href={route('minimum', lang)}>{label('minimum', lang)}</a> · <a href={route('moyen', lang)}>{label('moyen', lang)}</a></p>
     <Sources lang={lang} />
   </section>
 </PageLayout>

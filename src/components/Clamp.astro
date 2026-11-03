@@ -1,0 +1,21 @@
+---
+/**
+ * Chapeau replié (RECETTE §5, §26) : UN seul <p> entier dans le HTML ; l'écran montre la première
+ * phrase, la suite est dans un <span> masqué du même <p>, dépliée par une case à cocher, sans JavaScript.
+ * Jamais de <details> : check-seo doit trouver le bloc de 120 mots dans les premiers 30 % de la page (§21).
+ */
+import { t } from '../i18n/ui';
+import type { Locale } from '../i18n/routes';
+interface Props { text: string; id: string; lang: Locale; class?: string }
+const { text, id, lang, class: cls = '' } = Astro.props;
+// Coupe entre deux phrases : ponctuation finale, espace, majuscule. Jamais après un ordinal, une
+// abréviation ou à l'intérieur d'une balise (« 1er janvier », « art. 3 », lien dans le texte).
+const parts = text.split(/(?<=[.!?])(?<!(?:^|[\s(])(?:\d{1,2}|[a-zàéèëïöü]|art|n|nr|vb|bv|bijv|cf|etc)\.)\s+(?=[\p{Lu}<])(?![^<]*>)/u);
+const head = parts[0].trim();
+const rest = parts.slice(1).join(' ').trim();
+---
+<div class={`clamp ${cls}`}>
+  {rest && <input type="checkbox" id={id} class="clamp-toggle" aria-label={t(lang).readMore} />}
+  <p class="text-navy-700"><Fragment set:html={head} />{rest && <span class="clamp-rest"> <Fragment set:html={rest} /></span>}</p>
+  {rest && <label for={id} class="clamp-more">{t(lang).readMore}</label>}
+</div>

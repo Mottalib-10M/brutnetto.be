@@ -13,12 +13,28 @@ Ce controle compare, pour chaque simulateur :
     lecture sans champ correspondant vaut toujours zero ;
   - les `key` des resultats affiches, contre les cles que la fonction renvoie.
     Un resultat affiche mais jamais produit laisse une ligne vide.
+
+Usage : python3 check-coherence.py [dossier-du-site]   (defaut : dossier courant)
+
+Le controle vise la structure Next.js des anciens sites (configuration centrale des
+simulateurs dans SimulatorClient.tsx + calculations.ts). Un site Astro de la trame n'a pas
+cette configuration : chaque simulateur est un composant qui lit ses propres champs, et la
+coherence champs/calcul y est couverte par les tests vitest et par check-saisie.mjs. Sur
+Astro le controle sort donc « sans objet » (code 0) au lieu de planter (RECETTE §26, 2026-10-16).
 """
-import io, re, sys
+import io, os, re, sys
 
 CLIENT = 'src/app/simulateurs/[slug]/SimulatorClient.tsx'
 CALCULS = 'src/lib/calculations.ts'
 
+site = sys.argv[1] if len(sys.argv) > 1 else '.'
+CLIENT, CALCULS = os.path.join(site, CLIENT), os.path.join(site, CALCULS)
+if not (os.path.isfile(CLIENT) and os.path.isfile(CALCULS)):
+    astro = any(os.path.isfile(os.path.join(site, f)) for f in ('astro.config.mjs', 'astro.config.ts', 'astro.config.js'))
+    print(f"check-coherence : sans objet — {'site Astro' if astro else 'structure non Next.js'} "
+          f"(ni {os.path.relpath(CLIENT, site)} ni configuration centrale des simulateurs ; "
+          "cohérence couverte par vitest et check-saisie.mjs)")
+    sys.exit(0)
 client = io.open(CLIENT, encoding='utf8').read()
 calculs = io.open(CALCULS, encoding='utf8').read()
 

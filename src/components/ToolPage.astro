@@ -2,14 +2,13 @@
 /** Page outil (RECETTE §9) : le calculateur est le contenu principal, 500 à 700 mots autour, `data-outil`. */
 import PageLayout from '../layouts/PageLayout.astro';
 import BeCalculator, { type Mode } from './calc/BeCalculator';
-import AdSlot from './AdSlot.astro';
 import { route, type Locale } from '../i18n/routes';
 import { label } from '../i18n/nav';
 import { t } from '../i18n/ui';
 import { webApplicationSchema, faqSchema, breadcrumbSchema, webPageSchema, type FAQItem } from '../lib/seo';
 import { AUTHOR_NAME } from '../data/site-config';
 import { fitDescription, fitTitle } from '../lib/snippet';
-interface Props { lang: Locale; id: string; title: string; h1: string; description: string; intro: string; mode: Mode; faqs: FAQItem[]; related: string[]; sources: Array<{ name: string; url: string }>; initialGross?: number; initialHourly?: number }
+interface Props { lang: Locale; id: string; title: string; h1: string; description: string; intro: string; mode: Mode; faqs: FAQItem[]; related: string[]; sources: Array<{ name: string; url: string; read_on?: string }>; initialGross?: number; initialHourly?: number }
 const { lang, id, title: rawTitle, h1, description: rawDesc, intro, mode, faqs, related, sources, initialGross, initialHourly } = Astro.props;
 const ui = t(lang);
 const title = fitTitle(rawTitle, lang); const description = fitDescription(rawDesc, lang);
@@ -26,6 +25,5 @@ const rel = related.map((r) => ({ href: route(r, lang), name: label(r, lang), de
   <div data-outil>
     <BeCalculator client:load mode={mode} lang={lang} methodHref={route('method', lang)} initialGross={initialGross} initialHourly={initialHourly} />
   </div>
-  <AdSlot slot={`${id}-1`} />
-  <section class="prose prose-slate max-w-none"><slot /></section>
+  <section class="prose prose-slate mt-8 max-w-none"><slot /></section>
 </PageLayout>

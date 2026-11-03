@@ -8,7 +8,12 @@ Impressum / Confidentialité / Contact ») et §2.6 exige la traçabilité édit
 """
 import os, re, sys
 
-ROOT = '/Users/mottalib/Documents/simulateurs-2026'
+# Ancien générateur (vague 2). Depuis la décision du 2026-10-17 (GA4 avec cookies), la page cookies
+# d'un site se fait avec gen-legal-pages.py, qui dit vrai avec ou sans GA4_ID.
+# Règle du 2026-10-06 : aucun cookie, aucun bandeau, ni Google Analytics ni publicité ;
+# seule mesure = Microsoft Clarity sans cookie (page cookies et encart « financement »).
+# Essai sans toucher aux sites : GEN_SERVICE_ROOT=/chemin/vers/dossier-test python3 gen-service-pages.py
+ROOT = os.environ.get('GEN_SERVICE_ROOT', '/Users/mottalib/Documents/simulateurs-2026')
 
 # subject      : le sujet du site, décliné dans la langue
 # authority    : l'organisme qui décide en dernier ressort (pour « nous ne conseillons pas »)
@@ -307,7 +312,7 @@ EDITORIAL = {
     <p>We do not delete pages to hide mistakes, and we do not publish a correction without saying what was wrong.</p>
 
     <h2>Independence and funding</h2>
-    <p>The site is funded by advertising. No advertising appears above the calculator, and it influences neither the calculation nor the ordering of any result we publish. We sell no leads, refer no one to a lender, insurer or law firm, and accept no payment for a mention. If a relationship with a named organisation existed, it would be stated in the text.</p>
+    <p>The site carries no advertising and is funded by its publisher alone. No third party influences the calculation or the ordering of any result we publish. We sell no leads, refer no one to a lender, insurer or law firm, and accept no payment for a mention. If a relationship with a named organisation existed, it would be stated in the text.</p>
 
     <h2>What the calculator does not do</h2>
     <p>The result is an estimate based on the standard rules. It replaces neither a decision by {authority} nor individual professional advice. The limits are listed one by one in the <a href={{route('method', lang)}}>methodology</a>.</p>
@@ -343,7 +348,7 @@ EDITORIAL = {
     <p>Nous ne supprimons pas de page pour masquer une erreur et ne publions pas de correction sans dire ce qui était faux.</p>
 
     <h2>Indépendance et financement</h2>
-    <p>Le site est financé par la publicité. Aucune publicité n’apparaît au-dessus du calculateur, et elle n’influence ni le calcul, ni l’ordre d’aucun résultat que nous publions. Nous ne vendons aucun prospect, n’orientons personne vers un prêteur, un assureur ou un cabinet, et n’acceptons aucune rémunération pour une citation. S’il existait un lien avec un organisme mentionné, il serait indiqué dans le texte.</p>
+    <p>Le site n’affiche aucune publicité et il est financé par son seul éditeur. Aucun tiers n’influe sur le calcul ni sur l’ordre des résultats que nous publions. Nous ne vendons aucun prospect, n’orientons personne vers un prêteur, un assureur ou un cabinet, et n’acceptons aucune rémunération pour une citation. S’il existait un lien avec un organisme mentionné, il serait indiqué dans le texte.</p>
 
     <h2>Ce que le calculateur ne fait pas</h2>
     <p>Le résultat est une estimation fondée sur les règles standard. Il ne remplace ni une décision de {authority}, ni un conseil professionnel individuel. Les limites sont énumérées une à une dans la <a href={{route('method', lang)}}>méthodologie</a>.</p>
@@ -379,7 +384,7 @@ EDITORIAL = {
     <p>We verwijderen geen pagina’s om fouten te verbergen, en publiceren geen correctie zonder te zeggen wat er mis was.</p>
 
     <h2>Onafhankelijkheid en financiering</h2>
-    <p>De site wordt gefinancierd met advertenties. Er staat nooit een advertentie boven de rekenhulp, en advertenties beïnvloeden noch de berekening, noch de volgorde van enig resultaat dat we publiceren. We verkopen geen leads, verwijzen niemand door naar een kredietverstrekker, verzekeraar of advocatenkantoor, en aanvaarden geen betaling voor een vermelding. Bestond er een band met een genoemde organisatie, dan zou dat in de tekst staan.</p>
+    <p>De site toont geen advertenties en wordt uitsluitend door de uitgever zelf bekostigd. Geen enkele derde heeft invloed op de berekening of op de volgorde van de resultaten die we publiceren. We verkopen geen leads, verwijzen niemand door naar een kredietverstrekker, verzekeraar of advocatenkantoor, en aanvaarden geen betaling voor een vermelding. Bestond er een band met een genoemde organisatie, dan zou dat in de tekst staan.</p>
 
     <h2>Wat de rekenhulp niet doet</h2>
     <p>De uitkomst is een schatting op basis van de standaardregels. Ze vervangt geen beslissing van {authority} en geen individueel professioneel advies. De beperkingen staan stuk voor stuk in <a href={{route('method', lang)}}>methode en bronnen</a>.</p>
@@ -415,7 +420,7 @@ EDITORIAL = {
     <p>Wir löschen keine Seiten, um Fehler zu verbergen, und veröffentlichen keine Korrektur ohne Angabe dessen, was falsch war.</p>
 
     <h2>Unabhängigkeit und Finanzierung</h2>
-    <p>Die Website finanziert sich über Werbung. Werbung erscheint nie oberhalb des Rechners und beeinflusst weder die Berechnung noch die Reihenfolge eines von uns veröffentlichten Ergebnisses. Wir verkaufen keine Leads, vermitteln niemanden an Kreditgeber, Versicherer oder Kanzleien und nehmen kein Geld für eine Erwähnung entgegen. Bestünde eine Verbindung zu einer genannten Stelle, stünde sie im Text.</p>
+    <p>Die Website zeigt keine Werbung und wird allein vom Anbieter finanziert. Kein Dritter nimmt Einfluss auf die Berechnung oder auf die Reihenfolge der von uns veröffentlichten Ergebnisse. Wir verkaufen keine Leads, vermitteln niemanden an Kreditgeber, Versicherer oder Kanzleien und nehmen kein Geld für eine Erwähnung entgegen. Bestünde eine Verbindung zu einer genannten Stelle, stünde sie im Text.</p>
 
     <h2>Was der Rechner nicht leistet</h2>
     <p>Das Ergebnis ist eine Schätzung auf Basis der Standardregeln. Es ersetzt weder eine Entscheidung durch {authority} noch eine individuelle fachliche Beratung. Die Grenzen sind in der <a href={{route('method', lang)}}>Methodik</a> einzeln aufgeführt.</p>
@@ -451,7 +456,7 @@ EDITORIAL = {
     <p>No borramos páginas para ocultar errores ni publicamos una corrección sin decir qué estaba mal.</p>
 
     <h2>Independencia y financiación</h2>
-    <p>El sitio se financia con publicidad. Nunca aparece publicidad por encima de la calculadora, y no influye ni en el cálculo ni en el orden de ningún resultado que publiquemos. No vendemos contactos, no derivamos a nadie a entidades de crédito, aseguradoras o despachos, y no aceptamos pago por una mención. Si existiera un vínculo con alguna entidad citada, constaría en el texto.</p>
+    <p>El sitio no muestra publicidad y lo financia únicamente su titular. Ningún tercero influye en el cálculo ni en el orden de los resultados que publicamos. No vendemos contactos, no derivamos a nadie a entidades de crédito, aseguradoras o despachos, y no aceptamos pago por una mención. Si existiera un vínculo con alguna entidad citada, constaría en el texto.</p>
 
     <h2>Lo que la calculadora no hace</h2>
     <p>El resultado es una estimación basada en las reglas estándar. No sustituye una resolución de {authority} ni el asesoramiento profesional individual. Los límites se enumeran uno a uno en la <a href={{route('method', lang)}}>metodología</a>.</p>
@@ -461,104 +466,109 @@ EDITORIAL = {
 
 COOKIES = {
  'en': """    <h1>Cookies</h1>
-    <p>This page sets out the cookies and equivalent technologies we use. It supplements the <a href={{route('privacy', lang)}}>privacy policy</a>.</p>
+    <p>This page explains what the site stores on your device and what it measures. It supplements the <a href={{route('privacy', lang)}}>privacy policy</a>.</p>
 
-    <h2>The calculator itself needs no cookies</h2>
-    <p>Every calculation runs in your browser. Your inputs are never sent to a server and never stored in a cookie. If you use the calculator without consenting to analytics or advertising, the site sets no cookies at all.</p>
+    <h2>No cookies at all</h2>
+    <p>This site sets <strong>no cookies</strong> — none for analytics, none for advertising, none to remember a choice. There is no advertising on the site, no audience analytics, and the publisher records no personal information about you. Every calculation runs in your browser; your inputs are never sent to a server.</p>
 
-    <h2>Categories</h2>
-    <h3>Strictly necessary</h3>
-    <p>Used only to remember your choice about the cookie banner, so that we do not ask again on every visit. It is stored locally in your browser and contains no identifier that could recognise you. Under {law} this does not require consent.</p>
-    <h3>Analytics (consent required)</h3>
-    <p>Where enabled, we measure traffic with Google Analytics 4 in consent mode with IP anonymisation, solely to learn which pages are found and used. Without your consent, no analytics cookie is set and no identifier is transmitted.</p>
-    <h3>Advertising (consent required)</h3>
-    <p>Some pages carry advertising served through Google AdSense. With your consent, Google may set cookies for personalisation; without it, only non-personalised ads are served. Google’s processing is described at <a href="https://policies.google.com/technologies/ads" rel="noopener" target="_blank">policies.google.com/technologies/ads</a>.</p>
+    <h2>Stability checks with Microsoft Clarity, cookie-free</h2>
+    <p>To spot what goes wrong — JavaScript errors, slow pages, clicks that have no effect — the site uses Microsoft Clarity in its cookieless mode. Before anything is collected, the site tells Clarity not to store anything on your device. Clarity then sets no cookie, gives each page view its own one-off identifier and does not link one visit to another. Page text and everything you type are masked (“Strict” masking), so Clarity receives only the layout of the page, clicks, scrolling, device and browser type, load times and errors.</p>
+    <ul>
+      <li><strong>Purpose:</strong> a technical, anonymous measure of the site’s stability, and nothing else.</li>
+      <li><strong>Provider:</strong> Microsoft Ireland Operations Limited, One Microsoft Place, South County Business Park, Leopardstown, Dublin 18, Ireland. Data may be transferred to Microsoft Corporation in the United States under the EU–U.S. Data Privacy Framework and standard contractual clauses.</li>
+      <li><strong>Retention at Microsoft:</strong> page recordings 30 days, aggregated data up to 13 months.</li>
+    </ul>
+    <p>Because nothing is stored on or read back from your device to follow you, there is nothing to accept or refuse when you arrive on the site.</p>
 
     <h2>Local storage</h2>
-    <p>Separately from cookies, the calculator may keep your last selection in your browser’s <code>localStorage</code> so you do not have to enter it again. That data never leaves your device and disappears if you clear site data in your browser settings.</p>
+    <p>The calculator may keep your last selection in your browser’s <code>localStorage</code> so you do not have to enter it again. That data never leaves your device, is never sent to us, and disappears if you clear site data in your browser settings.</p>
 
-    <h2>Withdrawing consent</h2>
-    <p>You can change your mind at any time: through the cookie banner, by clearing site data in your browser, or by blocking third-party cookies altogether. Withdrawal takes effect for the future and does not affect the lawfulness of processing already carried out. Questions about this page, or about your data rights before {regulator}: <a href={{`mailto:${{CONTACT_EMAIL}}`}}>{{CONTACT_EMAIL}}</a>. Last updated: {{LAST_UPDATED}}.</p>""",
+    <h2>Opting out and contact</h2>
+    <p>If you prefer the site not to be measured at all, block the domain <code>clarity.ms</code> in your browser or use a content blocker: everything keeps working as before. Questions about this page, or about your rights under the applicable law ({law}) and before {regulator}: <a href={{`mailto:${{CONTACT_EMAIL}}`}}>{{CONTACT_EMAIL}}</a>. Last updated: {{LAST_UPDATED}}.</p>""",
 
  'fr': """    <h1>Cookies</h1>
-    <p>Cette page décrit les cookies et technologies équivalentes que nous utilisons. Elle complète la <a href={{route('privacy', lang)}}>politique de confidentialité</a>.</p>
+    <p>Cette page indique ce que le site enregistre sur votre appareil et ce qu’il mesure. Elle complète la <a href={{route('privacy', lang)}}>politique de confidentialité</a>.</p>
 
-    <h2>Le calculateur lui-même n’a besoin d’aucun cookie</h2>
-    <p>Tous les calculs s’exécutent dans votre navigateur. Vos saisies ne sont transmises à aucun serveur et ne sont enregistrées dans aucun cookie. Si vous utilisez le calculateur sans consentir à la mesure d’audience ni à la publicité, le site ne dépose aucun cookie.</p>
+    <h2>Aucun cookie</h2>
+    <p>Ce site ne dépose <strong>aucun cookie</strong> : ni de mesure d’audience, ni publicitaire, ni même pour mémoriser un choix. Il n’affiche aucune publicité, n’utilise aucun outil d’analyse d’audience, et l’éditeur n’enregistre aucune donnée personnelle vous concernant. Les calculs s’exécutent dans votre navigateur ; vos saisies ne sont transmises à aucun serveur.</p>
 
-    <h2>Catégories</h2>
-    <h3>Strictement nécessaires</h3>
-    <p>Servent uniquement à mémoriser votre choix concernant le bandeau cookies, afin de ne pas vous interroger à chaque visite. L’enregistrement est local à votre navigateur et ne contient aucun identifiant permettant de vous reconnaître. Au sens {law}, il ne requiert pas de consentement.</p>
-    <h3>Mesure d’audience (consentement requis)</h3>
-    <p>Le cas échéant, nous mesurons l’audience avec Google Analytics 4 en mode consentement et avec anonymisation de l’adresse IP, uniquement pour savoir quelles pages sont trouvées et utilisées. Sans votre consentement, aucun cookie de mesure n’est déposé et aucun identifiant n’est transmis.</p>
-    <h3>Publicité (consentement requis)</h3>
-    <p>Certaines pages affichent de la publicité via Google AdSense. Avec votre consentement, Google peut déposer des cookies de personnalisation ; sans consentement, seules des annonces non personnalisées sont diffusées. Le traitement opéré par Google est décrit sur <a href="https://policies.google.com/technologies/ads" rel="noopener" target="_blank">policies.google.com/technologies/ads</a>.</p>
+    <h2>Mesure de la stabilité avec Microsoft Clarity, sans cookie</h2>
+    <p>Pour détecter ce qui ne fonctionne pas – erreurs JavaScript, lenteurs, clics sans effet –, le site utilise Microsoft Clarity dans son mode sans cookie. Avant toute collecte, le site indique à Clarity de ne rien stocker sur votre appareil. Clarity ne dépose alors aucun cookie, attribue à chaque page vue un identifiant qui lui est propre et ne relie pas les visites entre elles. Le texte des pages et vos saisies sont masqués (masquage « strict ») : Clarity ne reçoit que la mise en page, les clics, le défilement, le type d’appareil et de navigateur, les temps de chargement et les erreurs.</p>
+    <ul>
+      <li><strong>Finalité :</strong> mesure technique et anonyme de la stabilité du site, à l’exclusion de tout autre usage.</li>
+      <li><strong>Prestataire :</strong> Microsoft Ireland Operations Limited, One Microsoft Place, South County Business Park, Leopardstown, Dublin 18 (Irlande). Un transfert vers Microsoft Corporation aux États-Unis est possible, encadré par l’EU–U.S. Data Privacy Framework et des clauses contractuelles types.</li>
+      <li><strong>Conservation chez Microsoft :</strong> enregistrements de pages 30 jours, données agrégées jusqu’à 13 mois.</li>
+    </ul>
+    <p>Rien n’étant déposé ni relu sur votre appareil pour vous suivre, vous n’avez rien à accepter ni à refuser en arrivant sur le site.</p>
 
     <h2>Stockage local</h2>
-    <p>Indépendamment des cookies, le calculateur peut conserver votre dernière sélection dans le <code>localStorage</code> de votre navigateur, pour vous éviter de la ressaisir. Ces données ne quittent pas votre appareil et disparaissent si vous effacez les données de site dans les réglages de votre navigateur.</p>
+    <p>Le calculateur peut conserver votre dernière sélection dans le <code>localStorage</code> de votre navigateur, pour vous éviter de la ressaisir. Ces données ne quittent pas votre appareil, ne nous sont jamais envoyées et disparaissent si vous effacez les données de site dans les réglages de votre navigateur.</p>
 
-    <h2>Retirer votre consentement</h2>
-    <p>Vous pouvez revenir sur votre choix à tout moment : depuis le bandeau cookies, en effaçant les données de site dans votre navigateur, ou en bloquant globalement les cookies tiers. Le retrait vaut pour l’avenir et ne remet pas en cause la licéité des traitements déjà effectués. Pour toute question sur cette page, ou sur vos droits devant {regulator} : <a href={{`mailto:${{CONTACT_EMAIL}}`}}>{{CONTACT_EMAIL}}</a>. Dernière mise à jour : {{LAST_UPDATED}}.</p>""",
+    <h2>S’opposer à la mesure et nous écrire</h2>
+    <p>Si vous préférez qu’aucune mesure n’ait lieu, bloquez le domaine <code>clarity.ms</code> dans votre navigateur ou utilisez un bloqueur de contenu : le site continue de fonctionner normalement. Pour toute question sur cette page ou sur vos droits au regard du cadre applicable ({law}) et devant {regulator} : <a href={{`mailto:${{CONTACT_EMAIL}}`}}>{{CONTACT_EMAIL}}</a>. Dernière mise à jour : {{LAST_UPDATED}}.</p>""",
 
  'nl': """    <h1>Cookies</h1>
-    <p>Deze pagina beschrijft de cookies en vergelijkbare technieken die we gebruiken. Ze vult de <a href={{route('privacy', lang)}}>privacyverklaring</a> aan.</p>
+    <p>Deze pagina legt uit wat de site op uw apparaat bewaart en wat hij meet. Ze vult de <a href={{route('privacy', lang)}}>privacyverklaring</a> aan.</p>
 
-    <h2>De rekenhulp zelf heeft geen cookies nodig</h2>
-    <p>Alle berekeningen draaien in uw browser. Uw invoer wordt nooit naar een server gestuurd en nooit in een cookie opgeslagen. Gebruikt u de rekenhulp zonder toestemming voor statistiek of advertenties, dan plaatst de site helemaal geen cookies.</p>
+    <h2>Helemaal geen cookies</h2>
+    <p>Deze site plaatst <strong>geen enkele cookie</strong>: geen statistiekcookies, geen advertentiecookies en ook geen cookie om een keuze te onthouden. Er staan geen advertenties op de site, er draaien geen bezoekstatistieken, en de uitgever slaat geen persoonsgegevens van u op. Alle berekeningen gebeuren in uw browser; uw invoer gaat naar geen enkele server.</p>
 
-    <h2>Categorieën</h2>
-    <h3>Strikt noodzakelijk</h3>
-    <p>Uitsluitend om uw keuze over de cookiemelding te onthouden, zodat we het niet bij elk bezoek opnieuw vragen. De opslag is lokaal in uw browser en bevat geen identificator waarmee u te herkennen bent. Onder {law} is hiervoor geen toestemming vereist.</p>
-    <h3>Statistiek (toestemming vereist)</h3>
-    <p>Indien ingeschakeld meten we het bereik met Google Analytics 4 in consent mode en met geanonimiseerd IP-adres, uitsluitend om te zien welke pagina’s gevonden en gebruikt worden. Zonder uw toestemming wordt geen analysecookie geplaatst en geen identificator verzonden.</p>
-    <h3>Advertenties (toestemming vereist)</h3>
-    <p>Op sommige pagina’s worden advertenties via Google AdSense getoond. Met uw toestemming kan Google cookies plaatsen voor personalisatie; zonder toestemming worden alleen niet-gepersonaliseerde advertenties getoond. De verwerking door Google staat beschreven op <a href="https://policies.google.com/technologies/ads" rel="noopener" target="_blank">policies.google.com/technologies/ads</a>.</p>
+    <h2>Stabiliteitsmeting met Microsoft Clarity, zonder cookies</h2>
+    <p>Om te zien wat er misgaat – JavaScript-fouten, trage pagina’s, klikken die niets doen – gebruikt de site Microsoft Clarity in de modus zonder cookies. Nog voordat er iets wordt verzameld, vraagt de site Clarity om niets op uw apparaat op te slaan. Clarity plaatst dan geen cookie, geeft elke paginaweergave een eigen kenmerk en koppelt bezoeken niet aan elkaar. Paginateksten en alles wat u invult worden afgeschermd (maskering ‘Strict’): Clarity krijgt alleen de opbouw van de pagina, klikken, scrollen, het type apparaat en browser, laadtijden en fouten te zien.</p>
+    <ul>
+      <li><strong>Doel:</strong> een technische en anonieme meting van de stabiliteit van de site, en verder niets.</li>
+      <li><strong>Leverancier:</strong> Microsoft Ireland Operations Limited, One Microsoft Place, South County Business Park, Leopardstown, Dublin 18, Ierland. Doorgifte aan Microsoft Corporation in de Verenigde Staten is mogelijk, op basis van het EU–U.S. Data Privacy Framework en modelcontractbepalingen.</li>
+      <li><strong>Bewaartermijn bij Microsoft:</strong> pagina-opnames 30 dagen, samengevoegde gegevens tot 13 maanden.</li>
+    </ul>
+    <p>Omdat er niets op uw apparaat wordt opgeslagen of uitgelezen om u te volgen, hoeft u bij binnenkomst niets te accepteren of te weigeren.</p>
 
     <h2>Lokale opslag</h2>
-    <p>Los van cookies kan de rekenhulp uw laatste keuze bewaren in de <code>localStorage</code> van uw browser, zodat u die niet opnieuw hoeft in te voeren. Die gegevens verlaten uw apparaat niet en verdwijnen zodra u de sitegegevens in uw browserinstellingen wist.</p>
+    <p>De rekenhulp kan uw laatste keuze bewaren in de <code>localStorage</code> van uw browser, zodat u die niet opnieuw hoeft in te voeren. Die gegevens verlaten uw apparaat niet, worden nooit naar ons gestuurd en verdwijnen zodra u de sitegegevens in uw browserinstellingen wist.</p>
 
-    <h2>Toestemming intrekken</h2>
-    <p>U kunt uw keuze op elk moment wijzigen: via de cookiemelding, door de sitegegevens in uw browser te wissen, of door cookies van derden helemaal te blokkeren. Intrekking geldt voor de toekomst en tast de rechtmatigheid van reeds verrichte verwerkingen niet aan. Vragen over deze pagina, of over uw rechten bij {regulator}: <a href={{`mailto:${{CONTACT_EMAIL}}`}}>{{CONTACT_EMAIL}}</a>. Bijgewerkt: {{LAST_UPDATED}}.</p>""",
+    <h2>Bezwaar en contact</h2>
+    <p>Wilt u helemaal niet gemeten worden, blokkeer dan het domein <code>clarity.ms</code> in uw browser of gebruik een contentblocker: de site blijft gewoon werken. Vragen over deze pagina, of over uw rechten onder het toepasselijke kader ({law}) en bij {regulator}: <a href={{`mailto:${{CONTACT_EMAIL}}`}}>{{CONTACT_EMAIL}}</a>. Bijgewerkt: {{LAST_UPDATED}}.</p>""",
 
  'de': """    <h1>Cookie-Hinweis</h1>
-    <p>Diese Seite erklärt, welche Cookies und vergleichbaren Technologien wir einsetzen. Sie ergänzt die <a href={{route('privacy', lang)}}>Datenschutzerklärung</a>.</p>
+    <p>Diese Seite erklärt, was die Website auf Ihrem Gerät ablegt und was sie misst. Sie ergänzt die <a href={{route('privacy', lang)}}>Datenschutzerklärung</a>.</p>
 
-    <h2>Der Rechner selbst braucht keine Cookies</h2>
-    <p>Alle Berechnungen laufen in Ihrem Browser. Ihre Eingaben werden nie an einen Server übermittelt und nie in einem Cookie gespeichert. Wenn Sie den Rechner ohne Einwilligung in Statistik oder Werbung nutzen, setzt die Website überhaupt keine Cookies.</p>
+    <h2>Überhaupt keine Cookies</h2>
+    <p>Diese Website setzt <strong>keine Cookies</strong> – weder für Statistik noch für Werbung, nicht einmal, um eine Auswahl zu speichern. Es gibt keine Werbung, keine Reichweitenanalyse, und der Anbieter speichert keine personenbezogenen Daten über Sie. Alle Berechnungen laufen in Ihrem Browser; Ihre Eingaben gehen an keinen Server.</p>
 
-    <h2>Kategorien</h2>
-    <h3>Technisch notwendig</h3>
-    <p>Wird ausschliesslich verwendet, um Ihre Entscheidung über den Cookie-Hinweis zu speichern, damit wir nicht bei jedem Aufruf erneut fragen. Die Speicherung erfolgt lokal in Ihrem Browser und enthält keine Kennung, die Sie identifiziert. Nach {law} ist sie nicht einwilligungspflichtig.</p>
-    <h3>Statistik (nur mit Einwilligung)</h3>
-    <p>Sofern aktiviert, messen wir die Reichweite mit Google Analytics 4 im Consent-Mode und mit IP-Anonymisierung, ausschliesslich um zu erkennen, welche Seiten gefunden und genutzt werden. Ohne Ihre Einwilligung wird kein Analyse-Cookie gesetzt und keine Kennung übertragen.</p>
-    <h3>Werbung (nur mit Einwilligung)</h3>
-    <p>Auf einzelnen Seiten wird Werbung über Google AdSense ausgeliefert. Mit Einwilligung kann Google Cookies zur Personalisierung setzen; ohne Einwilligung werden ausschliesslich nicht personalisierte Anzeigen ausgeliefert. Die Verarbeitung durch Google ist beschrieben unter <a href="https://policies.google.com/technologies/ads" rel="noopener" target="_blank">policies.google.com/technologies/ads</a>.</p>
+    <h2>Stabilitätsmessung mit Microsoft Clarity, ohne Cookies</h2>
+    <p>Um Störungen zu erkennen – JavaScript-Fehler, langsame Seiten, Klicks ohne Wirkung –, nutzt die Website Microsoft Clarity im cookielosen Modus. Bevor irgendetwas erfasst wird, weist die Website Clarity an, nichts auf Ihrem Gerät zu speichern. Clarity setzt daraufhin kein Cookie, vergibt für jeden Seitenaufruf eine eigene Kennung und verknüpft Besuche nicht miteinander. Seitentexte und alle Eingaben werden ausgeblendet (Maskierung „Strict“): Clarity erhält lediglich Seitenaufbau, Klicks, Scrollbewegungen, Geräte- und Browsertyp, Ladezeiten und Fehler.</p>
+    <ul>
+      <li><strong>Zweck:</strong> technische, anonyme Messung der Stabilität der Website – zu keinem anderen Zweck.</li>
+      <li><strong>Anbieter:</strong> Microsoft Ireland Operations Limited, One Microsoft Place, South County Business Park, Leopardstown, Dublin 18, Irland. Eine Übermittlung an die Microsoft Corporation in den USA ist möglich; sie stützt sich auf das EU-US Data Privacy Framework und Standardvertragsklauseln.</li>
+      <li><strong>Speicherdauer bei Microsoft:</strong> Seitenaufzeichnungen 30 Tage, zusammengefasste Daten bis zu 13 Monate.</li>
+    </ul>
+    <p>Da auf Ihrem Gerät nichts gespeichert und nichts zum Wiedererkennen ausgelesen wird, müssen Sie beim Aufruf der Website weder etwas annehmen noch ablehnen.</p>
 
     <h2>Lokale Speicherung</h2>
-    <p>Unabhängig von Cookies kann der Rechner Ihre letzte Auswahl im <code>localStorage</code> Ihres Browsers ablegen, damit Sie sie nicht erneut eingeben müssen. Diese Daten verlassen Ihr Gerät nicht und lassen sich löschen, indem Sie die Websitedaten in Ihren Browsereinstellungen entfernen.</p>
+    <p>Der Rechner kann Ihre letzte Auswahl im <code>localStorage</code> Ihres Browsers ablegen, damit Sie sie nicht erneut eingeben müssen. Diese Daten verlassen Ihr Gerät nicht, werden nie an uns übertragen und lassen sich löschen, indem Sie die Websitedaten in Ihren Browsereinstellungen entfernen.</p>
 
-    <h2>Einwilligung widerrufen</h2>
-    <p>Sie können Ihre Entscheidung jederzeit ändern: über den Cookie-Hinweis, durch Löschen der Websitedaten in Ihrem Browser oder indem Sie Cookies von Drittanbietern generell blockieren. Ein Widerruf wirkt für die Zukunft; die Rechtmässigkeit der bis dahin erfolgten Verarbeitung bleibt unberührt. Fragen zu dieser Seite oder zu Ihren Rechten gegenüber {regulator}: <a href={{`mailto:${{CONTACT_EMAIL}}`}}>{{CONTACT_EMAIL}}</a>. Stand: {{LAST_UPDATED}}.</p>""",
+    <h2>Widerspruch und Kontakt</h2>
+    <p>Möchten Sie gar nicht gemessen werden, sperren Sie die Domain <code>clarity.ms</code> in Ihrem Browser oder verwenden Sie einen Inhaltsblocker – die Website funktioniert weiterhin uneingeschränkt. Fragen zu dieser Seite oder zu Ihren Rechten nach dem geltenden Recht ({law}) – Aufsichtsbehörde: {regulator} – richten Sie an <a href={{`mailto:${{CONTACT_EMAIL}}`}}>{{CONTACT_EMAIL}}</a>. Stand: {{LAST_UPDATED}}.</p>""",
 
  'es': """    <h1>Cookies</h1>
-    <p>Esta página describe las cookies y tecnologías equivalentes que utilizamos. Complementa la <a href={{route('privacy', lang)}}>política de privacidad</a>.</p>
+    <p>Esta página explica qué guarda el sitio en su dispositivo y qué mide. Complementa la <a href={{route('privacy', lang)}}>política de privacidad</a>.</p>
 
-    <h2>La calculadora en sí no necesita cookies</h2>
-    <p>Todos los cálculos se ejecutan en su navegador. Sus datos no se envían a ningún servidor ni se guardan en ninguna cookie. Si utiliza la calculadora sin consentir la medición de audiencia ni la publicidad, el sitio no instala ninguna cookie.</p>
+    <h2>Ninguna cookie</h2>
+    <p>Este sitio <strong>no instala ninguna cookie</strong>: ni de medición, ni publicitaria, ni siquiera para recordar una elección. No muestra publicidad, no utiliza analítica de audiencia y el titular no registra ningún dato personal suyo. Los cálculos se hacen en su navegador; sus datos no se envían a ningún servidor.</p>
 
-    <h2>Categorías</h2>
-    <h3>Estrictamente necesarias</h3>
-    <p>Sirven únicamente para recordar su decisión sobre el aviso de cookies, de modo que no se le pregunte en cada visita. El almacenamiento es local en su navegador y no contiene ningún identificador que permita reconocerle. Conforme a {law}, no requiere consentimiento.</p>
-    <h3>Medición de audiencia (requiere consentimiento)</h3>
-    <p>Cuando está activada, medimos la audiencia con Google Analytics 4 en modo consentimiento y con anonimización de la IP, con el único fin de saber qué páginas se encuentran y se usan. Sin su consentimiento no se instala ninguna cookie de medición ni se transmite identificador alguno.</p>
-    <h3>Publicidad (requiere consentimiento)</h3>
-    <p>Algunas páginas muestran publicidad a través de Google AdSense. Con su consentimiento, Google puede instalar cookies de personalización; sin él, solo se muestran anuncios no personalizados. El tratamiento realizado por Google se describe en <a href="https://policies.google.com/technologies/ads" rel="noopener" target="_blank">policies.google.com/technologies/ads</a>.</p>
+    <h2>Medición de la estabilidad con Microsoft Clarity, sin cookies</h2>
+    <p>Para localizar fallos —errores de JavaScript, páginas lentas, clics que no hacen nada— el sitio utiliza Microsoft Clarity en su modo sin cookies. Antes de recoger cualquier dato, el sitio indica a Clarity que no almacene nada en su dispositivo. Clarity no instala entonces ninguna cookie, asigna a cada página vista un identificador propio y no vincula unas visitas con otras. Los textos y todo lo que usted escribe quedan ocultos (enmascaramiento «estricto»): Clarity solo recibe la disposición de la página, los clics, el desplazamiento, el tipo de dispositivo y de navegador, los tiempos de carga y los errores.</p>
+    <ul>
+      <li><strong>Finalidad:</strong> medición técnica y anónima de la estabilidad del sitio, sin ningún otro uso.</li>
+      <li><strong>Proveedor:</strong> Microsoft Ireland Operations Limited, One Microsoft Place, South County Business Park, Leopardstown, Dublín 18 (Irlanda). Puede haber una transferencia a Microsoft Corporation en Estados Unidos, amparada en el EU–U.S. Data Privacy Framework y en cláusulas contractuales tipo.</li>
+      <li><strong>Conservación en Microsoft:</strong> grabaciones de páginas 30 días, datos agregados hasta 13 meses.</li>
+    </ul>
+    <p>Como no se guarda ni se lee nada en su dispositivo para seguirle, no tiene nada que aceptar ni rechazar al entrar en el sitio.</p>
 
     <h2>Almacenamiento local</h2>
-    <p>Al margen de las cookies, la calculadora puede conservar su última selección en el <code>localStorage</code> del navegador para que no tenga que volver a introducirla. Esos datos no salen de su dispositivo y desaparecen si borra los datos del sitio en la configuración del navegador.</p>
+    <p>La calculadora puede conservar su última selección en el <code>localStorage</code> del navegador para que no tenga que volver a introducirla. Esos datos no salen de su dispositivo, nunca se nos envían y desaparecen si borra los datos del sitio en la configuración del navegador.</p>
 
-    <h2>Retirar el consentimiento</h2>
-    <p>Puede cambiar su decisión en cualquier momento: desde el aviso de cookies, borrando los datos del sitio en su navegador, o bloqueando por completo las cookies de terceros. La retirada surte efecto hacia el futuro y no afecta a la licitud de los tratamientos ya realizados. Para cualquier duda sobre esta página, o sobre sus derechos ante {regulator}: <a href={{`mailto:${{CONTACT_EMAIL}}`}}>{{CONTACT_EMAIL}}</a>. Última actualización: {{LAST_UPDATED}}.</p>""",
+    <h2>Oposición y contacto</h2>
+    <p>Si prefiere que no se mida nada, bloquee el dominio <code>clarity.ms</code> en su navegador o use un bloqueador de contenidos: el sitio sigue funcionando con normalidad. Para cualquier duda sobre esta página o sobre sus derechos conforme a la normativa aplicable ({law}) y ante {regulator}: <a href={{`mailto:${{CONTACT_EMAIL}}`}}>{{CONTACT_EMAIL}}</a>. Última actualización: {{LAST_UPDATED}}.</p>""",
 }
 
 # --------------------------------------------------------------------------- #
@@ -567,19 +577,19 @@ COOKIES = {
 META = {
  'en': {'contact': ('Contact – {site}', 'How to reach us: questions about the calculator, reporting a figure that looks wrong, press enquiries and embedding the tool on your own site.'),
         'editorial': ('Editorial and corrections policy – {site}', 'Where our figures come from, who answers for them, how often they are checked, and exactly what we do when a reader reports an error.'),
-        'cookies': ('Cookies – {site}', 'Which cookies this site sets, which ones need your consent, and how to withdraw it or block them from your browser at any time.')},
+        'cookies': ('Cookies – {site}', 'This site sets no cookies. The only measurement is a cookieless, anonymous stability check with Microsoft Clarity, which you can block.')},
  'fr': {'contact': ('Contact – {site}', 'Comment nous joindre : questions sur le calculateur, signalement d’un montant qui paraît faux, demandes presse et intégration de l’outil sur votre site.'),
         'editorial': ('Charte éditoriale et corrections – {site}', 'D’où viennent nos chiffres, qui en répond, à quelle fréquence ils sont vérifiés, et ce que nous faisons exactement lorsqu’une erreur est signalée.'),
-        'cookies': ('Cookies – {site}', 'Quels cookies ce site dépose, lesquels requièrent votre consentement, et comment le retirer ou les bloquer depuis votre navigateur à tout moment.')},
+        'cookies': ('Cookies – {site}', 'Ce site ne dépose aucun cookie. Seule mesure : la stabilité du site, anonyme et sans cookie, avec Microsoft Clarity, que vous pouvez bloquer.')},
  'nl': {'contact': ('Contact – {site}', 'Hoe u ons bereikt: vragen over de rekenhulp, een bedrag melden dat niet lijkt te kloppen, persvragen en de tool op uw eigen site insluiten.'),
         'editorial': ('Redactiestatuut en correcties – {site}', 'Waar onze cijfers vandaan komen, wie ervoor verantwoordelijk is, hoe vaak ze worden getoetst en wat we doen als iemand een fout meldt.'),
-        'cookies': ('Cookies – {site}', 'Welke cookies deze site plaatst, welke uw toestemming vragen, en hoe u die intrekt of cookies blokkeert vanuit uw eigen browser.')},
+        'cookies': ('Cookies – {site}', 'Deze site plaatst geen cookies. We meten alleen de stabiliteit, anoniem en zonder cookies, met Microsoft Clarity, en u kunt dat blokkeren.')},
  'de': {'contact': ('Kontakt – {site}', 'So erreichen Sie uns: Fragen zum Rechner, Meldung eines Betrags, der falsch wirkt, Presseanfragen und Einbindung des Rechners auf Ihrer Website.'),
         'editorial': ('Redaktion und Korrekturen – {site}', 'Woher unsere Zahlen stammen, wer sie verantwortet, wie oft sie geprüft werden und was genau geschieht, wenn jemand einen Fehler meldet.'),
-        'cookies': ('Cookie-Hinweis – {site}', 'Welche Cookies diese Website setzt, welche eine Einwilligung brauchen und wie Sie diese jederzeit widerrufen oder im Browser blockieren.')},
+        'cookies': ('Cookie-Hinweis – {site}', 'Diese Website setzt keine Cookies. Gemessen wird nur die Stabilität, anonym und cookielos mit Microsoft Clarity, was Sie blockieren können.')},
  'es': {'contact': ('Contacto – {site}', 'Cómo contactarnos: dudas sobre la calculadora, avisar de un importe que parece incorrecto, prensa e integración de la herramienta en su web.'),
         'editorial': ('Política editorial y correcciones – {site}', 'De dónde salen nuestras cifras, quién responde de ellas, con qué frecuencia se revisan y qué hacemos exactamente cuando alguien avisa de un error.'),
-        'cookies': ('Cookies – {site}', 'Qué cookies instala este sitio, cuáles requieren su consentimiento, y cómo retirarlo o bloquearlas desde su propio navegador en todo momento.')},
+        'cookies': ('Cookies – {site}', 'Este sitio no instala cookies. Solo mide su estabilidad, de forma anónima y sin cookies, con Microsoft Clarity, algo que usted puede bloquear.')},
 }
 
 SRC_INTRO = {'en': 'for', 'fr': 'pour', 'nl': 'voor', 'de': 'für', 'es': 'para'}
@@ -597,7 +607,8 @@ def render(site, lang, kind, cfg, routes_path):
         f"      <li><strong>{n}</strong> {SRC_INTRO[lang]} {d}.</li>" for n, d in cfg['sources'])
     body = body_tpl.format(fields=fields_str, authority=cfg['authority'],
                            official_name=cfg['official'][0], official_url=cfg['official'][1],
-                           regulator=cfg['regulator'], law=cfg['law'], sources_html=src_html)
+                           regulator=cfg['regulator'], law=cfg['law'], sources_html=src_html,
+                           lang='{lang}')   # <LegalIdentity lang={lang} /> doit rester tel quel
 
     title_tpl, desc = META[lang][kind]
     depth = routes_path.strip('/').count('/') + 1          # /en/contact/ -> 1 segment de dossier

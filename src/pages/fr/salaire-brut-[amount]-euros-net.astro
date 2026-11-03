@@ -12,7 +12,7 @@ const f = fmt(lang);
 export function getStaticPaths() { return MONTHLY.map((a) => ({ params: { amount: String(a) } })); }
 const amount = Number(Astro.params.amount);
 const cases: Array<[string, Omit<Input, 'gross'>]> = [['Isolé', {}], ['Isolé, 2 enfants', { children: 2 }], ['Conjoint avec revenus', { situation: 'conjoint_revenus' }], ['Conjoint sans revenus', { situation: 'conjoint_sans' }], ['Ouvrier isolé', { status: 'ouvrier' }]];
-const rows = cases.map(([l, o]) => { const r = compute({ gross: amount, ...o }); return [l, f.money(r.pp, 2), f.money(r.csss, 2), f.money(r.net, 2)]; });
+const rows = cases.map(([l, o]) => { const r = compute({ gross: amount, ...o }); return [l, f.money(r.pp, 0), f.money(r.csss, 0), f.money(r.net, 0)]; });
 const i = MONTHLY.indexOf(amount as (typeof MONTHLY)[number]);
 const near = [MONTHLY[i - 1], MONTHLY[i + 1]].filter(Boolean) as number[];
 const S = src(lang);

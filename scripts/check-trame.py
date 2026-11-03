@@ -63,7 +63,8 @@ SERVICE = re.compile(
     # Italien : les pages de service d'un site italien n'étaient pas reconnues,
     # si bien que « chi siamo » ou « glossario » se voyaient reprocher
     # l'absence de FAQ (calcolalordonetto.it, 2026-09-24).
-    r'chi-siamo|contatti|glossario|glossary|glossaire|termini|cookie-policy|informativa|'
+    # « metodo » : la page /method/ en italien (it-calendario-ponti, 2026-10-28).
+    r'chi-siamo|contatti|metodo(?=/|$)|glossario|glossary|glossaire|termini|cookie-policy|informativa|'
     r'impressum|mentions|aviso|colofon|legal|privacy|datenschutz|confidentialite|privacidad|'
     # « cgu » : abréviation française de conditions générales d'utilisation, page de service
     # au même titre que /terms/ (cartegrisesimple.fr, 2026-09-20)
@@ -77,18 +78,24 @@ SERVICE = re.compile(
     # Finnois (fi-laskurit, 2026-10-05)
     r'tietoa|laskentatapa|yhteystiedot|toimitusperiaatteet|tietosuoja|kayttoehdot|evasteet|upota-laskuri|'
     # Espagnol et italien (calcularsueldoneto.mx, aliquoteimu.it, 2026-10-03)
-    r'glosario|domande-frequenti)', re.I)
+    r'glosario|domande-frequenti|'
+    # Turc et indonésien (tr-bayram, id-kalender, 2026-10-28) : mentions, confidentialité,
+    # cookies, à propos, méthode, contact, ligne éditoriale.
+    r'yasal-bilgiler|gizlilik|cerezler|hakkimizda|yontem(?=/|$)|iletisim|yayin-ilkeleri|kullanim-kosullari|'
+    r'tentang-kami|privasi|kebijakan-privasi|ketentuan|syarat-ketentuan|kontak|kebijakan-redaksi|cookie(?=/|$))', re.I)
 
 # Liens que le pied de page doit porter sur toutes les pages (§8.4 identité
 # légale, §12). On accepte n'importe laquelle des variantes linguistiques.
 FOOTER_LINKS = {
     'legal':   r'(kayttoehdot|impressum|mentions-legales|aviso-legal|legal-notice|colofon|legal|'
-               r'terms|conditions|voorwaarden|disclaimer|villkor|betingelser|vilkar|vilkaar|regulamin|nota-prawna)',
+               r'terms|conditions|voorwaarden|disclaimer|villkor|betingelser|vilkar|vilkaar|regulamin|nota-prawna|'
+               # Turc et indonésien (2026-10-28)
+               r'yasal-bilgiler|kullanim-kosullari|ketentuan)',
     'privacy': r'(tietosuoja|datenschutz|privacy|confidentialite|confidentialidade|privacidad|'
                r'privacidade|protection-donnees|gegevensbescherming|persondata|personvern|'
-               r'integritetspolicy|privatliv|polityka-prywatnosci)',
-    'about':   r'(tietoa|about|a-propos|ueber-uns|over-ons|sobre|chi-siamo|om-os|om-oss|o-nas)',
-    'method':  r'(laskentatapa|method|methode|methodik|methodologie|metodolog|metod|metode)',
+               r'integritetspolicy|privatliv|polityka-prywatnosci|gizlilik|privasi)',
+    'about':   r'(tietoa|about|a-propos|ueber-uns|over-ons|sobre|chi-siamo|om-os|om-oss|o-nas|hakkimizda|tentang-kami)',
+    'method':  r'(laskentatapa|method|methode|methodik|methodologie|metodolog|metod|metode|yontem)',
 }
 
 # §10.1 — réglages par défaut de Tailwind et des bibliothèques de composants.
@@ -118,7 +125,19 @@ DISCLAIMER = re.compile(
     # Grec (ypologismosmisthou.gr, 2026-10-03) : « ενδεικτικοί υπολογισμοί », « δεν αποτελούν συμβουλή ».
     r'ενδεικτικ|δεν αποτελ|'
     # Finnois (fi-laskurit, 2026-10-05) : « tulokset ovat arvioita », « ei korvaa verokorttia ».
-    r'arvio|ei korvaa|eivätkä ne korvaa)', re.I)
+    r'arvio|ei korvaa|eivätkä ne korvaa|'
+    # Turc (de-einbuergerung, 2026-10-22) : « Hukuki danışmanlık değildir », « tahmini ».
+    r'danışmanlık değildir|tahmin|'
+    # Italien (it-calendario-ponti, 2026-10-28) : « il sito non sostituisce una consulenza ».
+    r'non sostituisc|'
+    # Portugais (br-feriados, 2026-10-28) : « não substitui orientação jurídica ».
+    r'n[ãa]o substitu|n[ãa]o constitu|'
+    # Turc (tr-bayram, 2026-10-28) : « yatırım / hukuki tavsiye değildir », « bilgi amaçlıdır »,
+    # « resmi kaynağın yerine geçmez ».
+    r'tavsiye(?:si)? değildir|bilgi(?:lendirme)? amaçl|yerine geçmez|'
+    # Indonésien (id-kalender, 2026-10-28) : « bukan nasihat hukum », « hanya untuk informasi »,
+    # « bersifat panduan », « tidak menggantikan ».
+    r'bukan nasihat|hanya untuk informasi|hanya sebagai informasi|bersifat (?:panduan|informatif)|tidak menggantikan)', re.I)
 
 ISO_DATE = re.compile(r'\b20\d{2}-\d{2}-\d{2}\b')
 # La date de mise à jour est désormais écrite dans la langue du site
@@ -481,9 +500,16 @@ if os.path.exists(racine):
         flags.append(f'{len(muets)} lien(s) sans texte lisible '
                      f'({", ".join(repr(t) for t in muets[:3])})')
 
+    # Un dossier de langue dont l'accueil n'est qu'un renvoi (meta refresh) n'est plus une langue
+    # publiée : langue retirée du site, ses anciennes adresses renvoient ailleurs
+    # (citizenshiptestfree.com, arbre /fr/ devenu des renvois vers le site canadien le 2026-10-25).
+    def renvoi_seul(d):
+        f = f'{site}/{sortie}/{d}/index.html'
+        return os.path.exists(f) and 'http-equiv="refresh"' in open(f, encoding='utf-8').read()
     locales = sorted(d for d in os.listdir(f'{site}/{sortie}')
                      if re.fullmatch(r'[a-z]{2}', d)
-                     and os.path.isdir(f'{site}/{sortie}/{d}'))
+                     and os.path.isdir(f'{site}/{sortie}/{d}')
+                     and not renvoi_seul(d))
     if len(liens) < len(locales):
         flags.append(f'{len(locales)} langue(s) publiée(s) ({", ".join(locales)}) '
                      f'mais {len(liens)} lien(s) : une langue est inatteignable sans JS')
@@ -519,6 +545,51 @@ if _cle:
         flags.append(f'public/{_cle}.txt manquant : IndexNow refusera la clé (403)')
 if flags:
     pages.append({'path': '(indexnow)', 'kind': 'config', 'noindex': True, 'flags': flags})
+
+# ---- §10.3 : le nom affiché est celui du domaine (règle du 2026-10-25) ----
+# Les mots exacts du domaine, rendus lisibles par les majuscules, les espaces et la couleur
+# (monare.fr → « Mon ARE »), jamais d'autres mots (« Simulateur ARE ») : la marque se retient
+# par l'adresse. On compare les lettres seules, sans accents ni espaces, dans chaque langue ;
+# l'extension peut faire partie du nom (« NZSalary.com »), un nom sans lettre latine est admis.
+def _lettres(t, translit=False):
+    import unicodedata
+    # ä, ö, ü, ß s'écrivent ae, oe, ue, ss dans un domaine allemand (stromerpraemie.de « Stromerprämie »),
+    # mais a, o dans un domaine suédois ou finnois (lonkalkylator.se « Lönkalkylator ») : on accepte les deux.
+    # « ı » turc (sans point) n'a pas de décomposition NFD : il s'écrit « i » dans un domaine
+    # (« Bayram Takvimi » → bayramtakvimi, 2026-10-28).
+    t = t.lower().replace('ß', 'ss').replace('ı', 'i')
+    if translit:
+        t = t.replace('ä', 'ae').replace('ö', 'oe').replace('ü', 'ue')
+    return re.sub(r'[^a-z0-9]', '', unicodedata.normalize('NFD', t))
+flags = []
+_noms = re.search(r'SITE_NAMES[^=]*=\s*(\{[^}]*\})', _cfg)
+_label = _dom.removeprefix('www.').split('.')[0] if _dom else ''
+if _noms and _label and not _label.startswith('example'):
+    for _lang, _nom in re.findall(r'["\']?(\w+)["\']?\s*:\s*["\']([^"\']*)["\']', _noms.group(1)):
+        if _lettres(_nom) and not {_lettres(_nom), _lettres(_nom, True)} & {_lettres(_label), _lettres(_dom.removeprefix('www.'))}:
+            flags.append(f'nom affiché « {_nom} » ({_lang}) ≠ domaine {_dom} : reprendre les mots du domaine '
+                         f'(majuscules, espaces, BRAND_ACCENT en couleur)')
+if flags:
+    pages.append({'path': '(marque)', 'kind': 'config', 'noindex': True, 'flags': flags})
+
+# ---- §3 : 100 pages au plus, toutes langues comprises (règle absolue du 2026-10-16) ----
+# Sur les 22 sites en ligne avant juin, le nombre de pages joue contre les clics (−0,40) et
+# l'indexation est le facteur le plus fort (0,75) : les gagnants ont 18 à 42 pages.
+# On compte chaque page HTML servie, légales, widget et /embed/ comprises ; seule la 404 est exclue.
+PLAFOND_PAGES = 100
+_servies = []
+for _racine, _, _fichiers in os.walk(f'{site}/{sortie}'):
+    _rel = os.path.relpath(_racine, f'{site}/{sortie}').replace(os.sep, '/') + '/'
+    if any(a in '/' + _rel for a in ARCHIVES):
+        continue
+    _servies += [_rel + f for f in _fichiers if f.endswith('.html') and f != '404.html']
+if len(_servies) > PLAFOND_PAGES:
+    _par_langue = collections.Counter(p.split('/')[0] if re.fullmatch(r'[a-z]{2}', p.split('/')[0]) else '(racine)'
+                                      for p in _servies)
+    pages.append({'path': '(périmètre)', 'kind': 'config', 'noindex': True, 'flags': [
+        f'{len(_servies)} pages HTML servies pour {PLAFOND_PAGES} au plus, toutes langues comprises '
+        f'(RECETTE §3, règle absolue) — {", ".join(f"{k} : {v}" for k, v in sorted(_par_langue.items()))}. '
+        'Fusionner ou supprimer les pages les plus faibles.']})
 
 # ---- §7 : une question ne paraît que sur une seule page ------------------
 doublons = {q: p for q, p in questions_seen.items() if len(set(p)) > 1}
