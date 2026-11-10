@@ -30,8 +30,9 @@ const terms: Array<[string, string, string?]> = [
 const jsonLd = [webPageSchema({ name: title, description, path: route('glossary', lang), lang }), breadcrumbSchema([{ name: 'Accueil', path: route('home', lang) }, { name: 'Glossaire', path: route('glossary', lang) }])];
 ---
 <PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Glossaire' }]}>
-  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Glossaire du salaire et de l’impôt</h1>
-    <p class="mt-3 text-lg text-navy-600">Les termes de la fiche de paie, du précompte et de l’avertissement-extrait de rôle, chacun avec un lien vers la page qui l’explique.</p></header>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Glossaire de la fiche de paie belge : salaire et impôt</h1>
+    <p class="mt-3 text-lg text-navy-600">Ce glossaire de la fiche de paie belge définit les termes du salaire, du précompte et de l’avertissement-extrait de rôle, chacun avec un lien vers la page qui l’explique.</p></header>
+  <h2 class="mb-3 text-xl font-semibold text-navy-900">Les termes de la fiche de paie belge, de A à Z</h2>
   <dl class="prose prose-slate max-w-none">
     {terms.map(([t, d, id]) => <><dt class="font-semibold text-navy-900">{id ? <a href={route(id, lang)}>{t}</a> : t}</dt><dd>{d}</dd></>)}
   </dl>

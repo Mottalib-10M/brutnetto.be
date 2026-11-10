@@ -6,7 +6,7 @@ import { compute, employerCost, doublePecule, yearEndBonus } from './engine/be';
 import P from '../data/params-2026.json';
 import { fmt } from './format';
 
-export interface Angle { title: string; description: string; h1: string; h2: string; p: string; h2b: string; p2: string; faqs: Array<{ q: string; a: string }> }
+export interface Angle { title: string; description: string; h1: string; lead?: string; h2: string; p: string; h2b: string; p2: string; faqs: Array<{ q: string; a: string }> }
 type Lang = 'fr' | 'nl';
 const B = P.bonus.employe;
 
@@ -275,5 +275,9 @@ export function monthlyAngle(g: number, lang: Lang): Angle {
         { q: 'Verlaagt een groepsverzekering de voorheffing?', a: 'Ja. De verplichte persoonlijke inhoudingen voor een groepsverzekering verlagen de maandelijkse voorheffing met 30 % van hun bedrag. Een inhouding van 100 euro verlaagt het nettoloon dus maar met ongeveer 70 euro. Het voordeel wordt daarna bevestigd of bijgesteld in de belastingaangifte.' },
       ] }),
   };
-  return F[g]();
+  // Phrase-réponse sous le H1 (§13 : terme-clé dans le premier paragraphe), net tiré du moteur.
+  const lead = lang === 'fr'
+    ? `En net, un salaire de ${$(g, 0)} brut laisse ${$(r.net)} par mois en 2026 à un employé isolé sans enfant.`
+    : `In netto houdt een alleenstaande bediende zonder kinderen met ${$(g, 0)} bruto per maand ${$(r.net)} over in 2026.`;
+  return { ...F[g](), lead };
 }

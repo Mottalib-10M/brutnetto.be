@@ -30,8 +30,9 @@ const terms: Array<[string, string, string?]> = [
 const jsonLd = [webPageSchema({ name: title, description, path: route('glossary', lang), lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Woordenlijst', path: route('glossary', lang) }])];
 ---
 <PageLayout title={title} description={description} lang={lang} jsonLd={jsonLd} breadcrumbs={[{ label: 'Woordenlijst' }]}>
-  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Woordenlijst van loon en belasting</h1>
-    <p class="mt-3 text-lg text-navy-600">De termen van de loonfiche, de voorheffing en het aanslagbiljet, elk met een link naar de pagina die ze uitlegt.</p></header>
+  <header class="mb-6"><h1 class="text-3xl font-bold text-navy-900 md:text-4xl">Woordenlijst van de Belgische loonfiche: loon en belasting</h1>
+    <p class="mt-3 text-lg text-navy-600">Deze woordenlijst van de Belgische loonfiche verklaart de termen van het loon, de voorheffing en het aanslagbiljet, elk met een link naar de pagina die ze uitlegt.</p></header>
+  <h2 class="mb-3 text-xl font-semibold text-navy-900">De termen van de Belgische loonfiche van A tot Z</h2>
   <dl class="prose prose-slate max-w-none">
     {terms.map(([t, d, id]) => <><dt class="font-semibold text-navy-900">{id ? <a href={route(id, lang)}>{t}</a> : t}</dt><dd>{d}</dd></>)}
   </dl>

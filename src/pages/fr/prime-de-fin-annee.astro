@@ -18,10 +18,10 @@ const faqs = [
 ---
 <ToolPage lang={lang} id="prime" title="Prime de fin d’année 2026 : calcul du treizième mois net" h1="Prime de fin d’année : combien reste-t-il de votre treizième mois ?"
   description="Calculez le net de votre prime de fin d’année 2026 : ONSS de 13,07 % et précompte au taux des allocations exceptionnelles selon votre rémunération annuelle."
-  intro="Indiquez votre salaire brut mensuel. Le calculateur suppose une prime égale à un mois de brut et donne le montant net versé en décembre."
+  intro="Le net de votre prime de fin d’année dépend de votre salaire brut mensuel : indiquez-le. Le calculateur suppose une prime égale à un mois de brut et donne le montant net versé en décembre."
   mode="prime" initialGross={g} faqs={faqs} related={['pecule', 'pp', 'brutNet', 'cout', 'home', 'baremes']} sources={[S.formule, S.onss, S.pp_calcul]}>
   <p>La prime de fin d’année, appelée aussi treizième mois, est versée en décembre dans la plupart des secteurs. Elle est soumise à la cotisation ONSS personnelle de 13,07 %, sans bonus à l’emploi, puis au précompte professionnel. Celui-ci n’est pas calculé avec la formule-clé mais selon un tableau de taux fixes pour les allocations exceptionnelles, qui dépend de la rémunération annuelle brute normale. Pour un salaire de {f.money(g, 0)} brut par mois, la prime brute de {f.money(y.amount, 0)} perd {f.money(y.onss, 0)} d’ONSS et {f.money(y.pp, 0)} de précompte au taux de {f.pct(y.rate, 2)} : il reste {f.money(y.net, 0)} net. Le calculateur ne tient pas compte des exonérations et réductions pour enfants à charge prévues pour les revenus modestes, ni des primes payées par un fonds de sécurité d’existence, qui suivent un taux distinct. Pour un ouvrier, la prime est souvent calculée autrement et soumise à l’ONSS sur 108 %.</p>
-  <h2>Prime nette selon le salaire mensuel</h2>
+  <h2>Prime de fin d’année nette selon le salaire mensuel</h2>
   <ContentTable headers={['Brut mensuel', 'ONSS', 'Taux de précompte', 'Précompte', 'Prime nette']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
   <h2>Les taux des allocations exceptionnelles</h2>
   <ContentTable headers={['Rémunération annuelle normale', 'Taux de précompte']} align={['l', 'r']} rows={taux} />

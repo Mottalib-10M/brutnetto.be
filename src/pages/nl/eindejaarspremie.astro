@@ -18,10 +18,10 @@ const faqs = [
 ---
 <ToolPage lang={lang} id="prime" title="Eindejaarspremie berekenen 2026: dertiende maand netto" h1="Eindejaarspremie: hoeveel blijft er over van je dertiende maand?"
   description="Bereken het netto van je eindejaarspremie 2026: RSZ van 13,07 % en voorheffing tegen het tarief voor uitzonderlijke vergoedingen volgens je normale jaarloon."
-  intro="Vul je bruto maandloon in. De rekenmodule gaat uit van een premie gelijk aan één bruto maandloon en geeft het nettobedrag dat in december wordt uitbetaald."
+  intro="Om je eindejaarspremie in netto te kennen, vul je je bruto maandloon in. De rekenmodule gaat uit van een premie gelijk aan één bruto maandloon en geeft het nettobedrag dat in december wordt uitbetaald."
   mode="prime" initialGross={g} faqs={faqs} related={['pecule', 'pp', 'brutNet', 'cout', 'home', 'baremes']} sources={[S.formule, S.onss, S.pp_calcul]}>
   <p>De eindejaarspremie, ook dertiende maand genoemd, wordt in de meeste sectoren in december uitbetaald. Ze is onderworpen aan de persoonlijke RSZ-bijdrage van 13,07 %, zonder werkbonus, en daarna aan de bedrijfsvoorheffing. Die wordt niet met de sleutelformule berekend, maar volgens een tabel met vaste tarieven voor uitzonderlijke vergoedingen, die afhangt van het normale bruto jaarloon. Voor een loon van {f.money(g, 0)} bruto per maand verliest de bruto premie van {f.money(y.amount, 0)} {f.money(y.onss, 0)} aan RSZ en {f.money(y.pp, 0)} aan voorheffing tegen {f.pct(y.rate, 2)}: er blijft {f.money(y.net, 0)} netto over. De rekenmodule houdt geen rekening met de vrijstellingen en verminderingen voor kinderen ten laste bij bescheiden inkomens, noch met premies die een fonds voor bestaanszekerheid betaalt, die een apart tarief volgen. Voor een arbeider wordt de premie vaak anders berekend en onderworpen aan RSZ op 108 %.</p>
-  <h2>Netto premie volgens maandloon</h2>
+  <h2>Netto eindejaarspremie volgens maandloon</h2>
   <ContentTable headers={['Bruto maandloon', 'RSZ', 'Voorheffingstarief', 'Voorheffing', 'Netto premie']} align={['r', 'r', 'r', 'r', 'r']} rows={rows} />
   <h2>De tarieven voor uitzonderlijke vergoedingen</h2>
   <ContentTable headers={['Normaal jaarloon', 'Voorheffingstarief']} align={['l', 'r']} rows={taux} />

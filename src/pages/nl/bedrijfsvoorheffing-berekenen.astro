@@ -26,6 +26,6 @@ const faqs = [
   <h2>Voorheffing volgens gezinssituatie</h2>
   <ContentTable headers={['Kinderen ten laste', '2 500 euro belastbaar, alleenstaande', '3 500 euro belastbaar, alleenstaande', '3 500 euro, partner zonder inkomen']} align={['r', 'r', 'r', 'r']} rows={sit} />
   <p>De tabel vertrekt van het belastbaar loon, na RSZ. Het huwelijksquotiënt kent de partner zonder inkomen 30 % van het netto belastbaar inkomen toe, met een maximum van {f.money(P.pp.conjoint_max, 0)} per jaar.</p>
-  <h2>Voorheffing en definitieve belasting</h2>
+  <h2>Bedrijfsvoorheffing en definitieve belasting</h2>
   <p>De voorheffing is slechts een raming van de belasting. De definitieve belasting houdt rekening met de werkelijke gemeentebelasting, met aftrekken zoals pensioensparen of dienstencheques, en met de inkomens van het gezin. De <a href={route('baremes', lang)}>belastingschijven 2026</a> tonen de tarieven van de aangifte. Premies en vakantiegeld volgen bijzondere percentages, uitgelegd bij de <a href={route('prime', lang)}>eindejaarspremie</a>.</p>
 </ToolPage>
